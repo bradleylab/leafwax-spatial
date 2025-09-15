@@ -14,3 +14,4 @@
 .Rhistory
 .RData
 .DS_Store
+check_all_knots.R
