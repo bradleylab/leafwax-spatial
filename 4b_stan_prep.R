@@ -69,8 +69,19 @@ if (length(missing_site) > 0) {
 pft_columns <- c("pft_tree", "pft_shrub", "pft_grass")
 has_pft_columns <- all(pft_columns %in% names(sediment))
 
+# Additional check: verify these are valid list columns with data
+if (has_pft_columns) {
+  # Check if they're list columns and have data
+  for (col in pft_columns) {
+    if (!is.list(sediment[[col]]) || length(sediment[[col]]) == 0) {
+      has_pft_columns <- FALSE
+      break
+    }
+  }
+}
+
 if (!has_pft_columns) {
-  cat("WARNING: PFT columns not available in data\n")
+  cat("WARNING: PFT columns not available or invalid in data\n")
   cat("Models requesting PFT will have it disabled\n\n")
 }
 
