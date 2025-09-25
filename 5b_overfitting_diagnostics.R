@@ -18,13 +18,13 @@ cat("=======================\n")
 # 1. SPATIAL CROSS-VALIDATION
 #───────────────────────────────────────────────────────────────────────────────
 
-spatial_cv_analysis <- function(model_name) {
+spatial_cv_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
   cat("\n1. SPATIAL CROSS-VALIDATION for", model_name, "\n")
   cat(strrep("-", 50), "\n")
-  
+
   # Load model and data
   fit <- readRDS(paste0("model_output/", model_name, "/fit.rds"))
-  stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
+  stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
   
   # Extract predictions and observations
   y_rep <- fit$draws("d2H_rep", format = "matrix")
@@ -124,10 +124,10 @@ spatial_cv_analysis <- function(model_name) {
 # 2. COMPLEXITY ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-complexity_analysis <- function(model_name) {
+complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
   cat("\n\n2. MODEL COMPLEXITY ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
-  
+
   # Load LOO results
   loo_file <- paste0("model_output/", model_name, "/loo.rds")
   if (!file.exists(loo_file)) {
@@ -162,7 +162,7 @@ complexity_analysis <- function(model_name) {
   if (k_summary[2] > 0) {
     cat("\n  Problematic observations (k > 0.7):\n")
     prob_idx <- which(k_values > 0.7)
-    stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
+    stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
     
     prob_obs <- data.frame(
       idx = prob_idx,
@@ -180,13 +180,13 @@ complexity_analysis <- function(model_name) {
 # 3. PREDICTION UNCERTAINTY ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-uncertainty_analysis <- function(model_name) {
+uncertainty_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
   cat("\n\n3. PREDICTION UNCERTAINTY ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
-  
+
   # Load model and data
   fit <- readRDS(paste0("model_output/", model_name, "/fit.rds"))
-  stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
+  stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
   
   # Get posterior predictions
   y_rep <- fit$draws("d2H_rep", format = "matrix")
@@ -249,11 +249,11 @@ uncertainty_analysis <- function(model_name) {
 # 4. SPATIAL SCALE ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-spatial_scale_analysis <- function(model_name) {
+spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
   cat("\n\n4. SPATIAL SCALE ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
-  
-  config <- readRDS(paste0("prepared_data/config_", model_name, ".rds"))
+
+  config <- readRDS(paste0(prepared_data_dir, "/config_", model_name, ".rds"))
   if (!config$include_gp) {
     cat("  No GP component - skipping\n")
     return(NULL)
@@ -275,7 +275,7 @@ spatial_scale_analysis <- function(model_name) {
     cat("    95% CI:", round(quantile(ls_slope, c(0.025, 0.975))), "\n")
     
     # Compare to data spacing
-    stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
+    stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
     coords <- cbind(stan_data$longitude, stan_data$latitude)
     dist_matrix <- fields::rdist.earth(coords, coords, miles = FALSE)
     diag(dist_matrix) <- NA
@@ -326,9 +326,12 @@ compare_model_sizes <- function() {
   # Extract model names from file paths
   models <- basename(dirname(loo_files))
   
+  # Get the prepared_data directory (use consolidated if it exists)
+  prepared_data_dir <- if(dir.exists("prepared_data_consolidated")) "prepared_data_consolidated" else "prepared_data"
+
   size_comparison <- map_df(models, function(m) {
     loo_file <- paste0("model_output/", m, "/loo.rds")
-    config_file <- paste0("prepared_data/config_", m, ".rds")
+    config_file <- paste0(prepared_data_dir, "/config_", m, ".rds")
     
     # Check if both files exist
     if (file.exists(loo_file) && file.exists(config_file)) {
@@ -394,29 +397,40 @@ if (length(fitted_models) == 0) {
 
 cat("Found", length(fitted_models), "fitted models:", paste(fitted_models, collapse = ", "), "\n")
 
+# Determine which prepared_data directory to use
+prepared_data_dir <- if(dir.exists("prepared_data_consolidated")) {
+  cat("Using prepared_data_consolidated directory\n")
+  "prepared_data_consolidated"
+} else if(dir.exists("prepared_data")) {
+  cat("Using prepared_data directory\n")
+  "prepared_data"
+} else {
+  stop("No prepared_data directory found!")
+}
+
 all_results <- list()
 
 for (model in fitted_models) {
   cat("\n", strrep("=", 70), "\n")
   cat("ANALYZING MODEL:", model, "\n")
   cat(strrep("=", 70), "\n")
-  
+
   results <- list()
-  
+
   tryCatch({
-    results$spatial_cv <- spatial_cv_analysis(model)
+    results$spatial_cv <- spatial_cv_analysis(model, prepared_data_dir)
   }, error = function(e) cat("  Spatial CV error:", e$message, "\n"))
-  
+
   tryCatch({
-    results$complexity <- complexity_analysis(model)
+    results$complexity <- complexity_analysis(model, prepared_data_dir)
   }, error = function(e) cat("  Complexity error:", e$message, "\n"))
-  
+
   tryCatch({
-    results$uncertainty <- uncertainty_analysis(model)
+    results$uncertainty <- uncertainty_analysis(model, prepared_data_dir)
   }, error = function(e) cat("  Uncertainty error:", e$message, "\n"))
-  
+
   tryCatch({
-    results$spatial_scale <- spatial_scale_analysis(model)
+    results$spatial_scale <- spatial_scale_analysis(model, prepared_data_dir)
   }, error = function(e) cat("  Spatial scale error:", e$message, "\n"))
   
   all_results[[model]] <- results
