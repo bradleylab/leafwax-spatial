@@ -1,5 +1,14 @@
-# overfitting_diagnostics.R
-# Comprehensive tests for overfitting in spatial models
+#!/usr/bin/env Rscript
+#───────────────────────────────────────────────────────────────────────────────
+# 5b_overfitting_diagnostics.R
+#
+# Comprehensive overfitting diagnostics for spatial models
+# Tests model complexity, effective degrees of freedom, and generalization
+# Performs cross-validation and out-of-sample prediction tests
+#
+# Input: results/model_fits/*.rds, results/3_sediment_ready_for_modeling.rds
+# Output: results/overfitting_diagnostics/ (diagnostic plots and metrics)
+#───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
 library(cmdstanr)

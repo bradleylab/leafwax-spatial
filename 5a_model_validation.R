@@ -1,5 +1,14 @@
 #!/usr/bin/env Rscript
-# 5a_model_comparison.R - Comprehensive model comparison
+#───────────────────────────────────────────────────────────────────────────────
+# 5a_model_validation.R
+#
+# Comprehensive model validation and comparison
+# Performs LOO-CV, WAIC, posterior predictive checks, and residual diagnostics
+# Compares performance across different model specifications
+#
+# Input: results/model_fits/*.rds (fitted models)
+# Output: results/model_validation/ (comparison tables, diagnostic plots)
+#───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
 library(cmdstanr)

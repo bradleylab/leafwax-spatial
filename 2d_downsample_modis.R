@@ -110,7 +110,7 @@ if (length(existing_files) > 0) {
 
 #───────────────────────────────────────────────────────────────────────────────
 # Step 5: Create PFT aggregated layers 
-# We'll just have three - tree, shrub, grass
+# Three categories: tree, shrub, grass
 # C3/C4 will come in via the Luo raster
 #───────────────────────────────────────────────────────────────────────────────
 

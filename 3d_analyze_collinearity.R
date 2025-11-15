@@ -1,6 +1,13 @@
+#!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
-# analyze_collinearity.R
+# 3d_analyze_collinearity.R
+#
 # Comprehensive collinearity analysis for spatial leaf wax model predictors
+# Evaluates multicollinearity among environmental covariates using VIF and PCA
+# Generates diagnostic plots for predictor selection
+#
+# Input: results/3_sediment_ready_for_modeling.rds
+# Output: results/collinearity_analysis/ (diagnostic plots and summaries)
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)

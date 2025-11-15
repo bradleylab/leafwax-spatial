@@ -1,8 +1,13 @@
 #!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
-# evaluate_tau_sparse_data.R
-# Test tau parameterizations with larger radius and different knot numbers
-# Addresses extreme data sparsity issue
+# 3h_prior_checks.R
+#
+# Test prior parameterizations for spatial model components
+# Evaluates tau (range) parameters with different knot configurations
+# Addresses data sparsity and prior predictive checks
+#
+# Input: results/3_sediment_ready_for_modeling.rds, Stan model files
+# Output: results/prior_checks/ (prior predictive plots and diagnostics)
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)

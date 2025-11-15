@@ -1,6 +1,14 @@
 #!/usr/bin/env Rscript
-# 5c_spatial_patterns.R - Analyze and visualize spatial patterns
-# Analyzes spatial variation in model parameters and creates diagnostic plots
+#───────────────────────────────────────────────────────────────────────────────
+# 5c_spatial_patterns.R
+#
+# Analyze and visualize spatial patterns in model outputs
+# Maps spatial random effects, identifies spatial clusters, and tests residuals
+# Creates diagnostic plots for spatial variation in parameters
+#
+# Input: results/model_fits/*.rds, results/3_sediment_ready_for_modeling.rds
+# Output: results/spatial_patterns/ (maps, variograms, diagnostic plots)
+#───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
 library(cmdstanr)

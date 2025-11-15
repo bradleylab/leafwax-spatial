@@ -1,6 +1,13 @@
+#!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
 # 4c_fit_models.R
-# Fit models using CmdStanR and prepared Stan data
+#
+# Fit Bayesian spatial models using CmdStanR
+# Runs multiple model configurations with different covariate combinations
+# Handles model compilation, sampling, and diagnostics
+#
+# Input: results/stan_data_*.rds (prepared Stan data)
+# Output: results/model_fits/*.rds (fitted model objects)
 #───────────────────────────────────────────────────────────────────────────────
 
 library(cmdstanr)

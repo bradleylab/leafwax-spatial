@@ -1,5 +1,13 @@
-# Load configuration from YAML file
-# Source this at the beginning of each script
+#───────────────────────────────────────────────────────────────────────────────
+# 0_load_config.R
+#
+# Load project configuration from YAML file
+# Provides centralized configuration management for all scripts
+# Source this at the beginning of each script to access config settings
+#
+# Input: config.yaml (project configuration file)
+# Output: config list object with project settings
+#───────────────────────────────────────────────────────────────────────────────
 
 library(yaml)
 

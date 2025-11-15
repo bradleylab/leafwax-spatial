@@ -1,5 +1,14 @@
-# spatial_clustering_analysis.R
+#!/usr/bin/env Rscript
+#───────────────────────────────────────────────────────────────────────────────
+# 3e_spatial_clustering_analysis.R
+#
 # Analyze spatial clustering and environmental-spatial correlation
+# Tests for spatial autocorrelation in environmental covariates
+# Evaluates spatial structure in residuals
+#
+# Input: results/3_sediment_ready_for_modeling.rds
+# Output: results/spatial_clustering/ (diagnostic plots and analyses)
+#───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
 library(fields)

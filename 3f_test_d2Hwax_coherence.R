@@ -1,6 +1,13 @@
+#!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
+# 3f_test_d2Hwax_coherence.R
+#
 # Test for spatial structure in δ²Hwax values
-# Outputs saved to results/d2H_coherence/
+# Analyzes spatial autocorrelation and coherence in isotope measurements
+# Generates variograms and spatial diagnostic plots
+#
+# Input: results/3_sediment_ready_for_modeling.rds
+# Output: results/d2H_coherence/ (variograms, Moran's I, spatial plots)
 #───────────────────────────────────────────────────────────────────────────────
 
 library(spdep)

@@ -1,13 +1,14 @@
+#!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
-# 3_prep_data_optimized.R 
+# 3_prep_data.R
 #
-# Key optimizations:
-# 1. Keep ALL C4 pixels (critical for coverage)
-# 2. Downsample OIPC to 1000 pixels per observation  
-# 3. Downsample elevation to 2000 pixels per observation
-# 4. Use distance-weighted sampling to preserve spatial patterns
-# 5. Handle NAs properly during downsampling
-# 6. Include TerraClimate climate variables
+# Prepare sediment and predictor data for spatial modeling
+# Extracts environmental covariates at sediment sites with optimized sampling
+# Creates model-ready dataset with all necessary predictors
+#
+# Input: site_locations.csv, environmental rasters (OIPC, C4, elevation, climate)
+# Output: results/3_sediment_ready_for_modeling.rds
+#         results/3_sediment_ready_for_modeling.csv
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)

@@ -45,7 +45,7 @@ for (var in variables) {
   first_rast <- rast(files[1])
   
   # TerraClimate files have 12 layers (one per month)
-  # We need to compute annual means first, then overall mean
+  # Compute annual means first, then overall mean
   
   annual_means <- list()
   

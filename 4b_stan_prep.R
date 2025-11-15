@@ -36,7 +36,7 @@ if (length(missing_coords) > 0) {
   
   # If coordinates are missing, we need to extract them from the data
   # This assumes each pixel array has associated coordinates
-  # You may need to modify this based on your actual data structure
+  # Modify based on actual data structure if needed
   
   # Example: If coordinates are stored within the list columns
   if (!"c4_lon" %in% names(sediment) && "c4_values_filled" %in% names(sediment)) {

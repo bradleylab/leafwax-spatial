@@ -1,7 +1,7 @@
 #───────────────────────────────────────────────────────────────────────────────
 # 4a_spatial_functions.R
 # Helper functions for spatial data preparation AND validation
-# UPDATED: B-splines, consistent great circle distances, coordinate scaling
+# Includes: B-splines, consistent great circle distances, coordinate scaling
 #───────────────────────────────────────────────────────────────────────────────
 
 library(fields)
@@ -1258,7 +1258,7 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
       cat("  Basis dimensions:", nrow(elevation_bspline_matrix), "x", ncol(elevation_bspline_matrix), "\n")
     }
   } else {
-    # IMPORTANT: When elevation is not included, we still need valid dimensions
+    # When elevation is not included, still need valid dimensions
     cat("\nElevation not included - creating dummy B-spline matrix\n")
     n_basis_knots <- 0  # Must be >= 0 for Stan constraint
     # Create a dummy matrix with the expected number of columns
@@ -1342,7 +1342,7 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     
     # Coordinates for kernel computation
     coords = coords_std,
-    coord_scaling = coord_scaling,  # NEW: for proper length scale conversion
+    coord_scaling = coord_scaling,  # For proper length scale conversion
     
     # Original coordinates (don't standardize these)
     longitude = data$longitude,

@@ -1,6 +1,15 @@
+#!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
-# Revised Site Clustering Analysis - Properly Handling Collinearity
-# This version removes redundant variables before clustering
+# 3c_covariate_distribution.R
+#
+# Performs site clustering analysis based on environmental covariates
+# Handles collinearity by removing redundant variables before clustering
+# Analyzes OIPC-d2Hwax relationships within environmental clusters
+#
+# Input: results/3_sediment_ready_for_modeling.rds
+# Output: results/site_clustering_revised/sediment_with_[k]clusters_revised.rds
+#         results/site_clustering_revised/*.pdf (validation plots)
+#         results/site_clustering_revised/clustering_summary_revised.rds
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)

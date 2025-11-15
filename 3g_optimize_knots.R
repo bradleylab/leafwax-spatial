@@ -1,7 +1,13 @@
 #!/usr/bin/env Rscript
 #───────────────────────────────────────────────────────────────────────────────
-# find_optimal_knots.R
-# Determine optimal number of knots balancing data coverage and global resolution
+# 3g_optimize_knots.R
+#
+# Determine optimal number of knots for spatial basis functions
+# Balances data coverage, computational efficiency, and spatial resolution
+# Tests different knot configurations and evaluates coverage
+#
+# Input: results/3_sediment_ready_for_modeling.rds
+# Output: results/knot_optimization/ (plots and optimal knot selection)
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
