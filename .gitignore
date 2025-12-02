@@ -2,6 +2,10 @@
 *
 */
 
+#Add input_data
+!input_data/
+!input_data/global_data_c29.csv
+
 # But not these files
 !*.R
 !*.stan

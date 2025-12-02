@@ -1,7 +1,6 @@
 #───────────────────────────────────────────────────────────────────────────────
 # 4a_spatial_functions.R
-# Helper functions for spatial data preparation AND validation
-# Includes: B-splines, consistent great circle distances, coordinate scaling
+# Helper functions for spatial data preparation and  validation
 #───────────────────────────────────────────────────────────────────────────────
 
 library(fields)
@@ -186,7 +185,6 @@ calculate_min_dist_to_data <- function(coords_all, coords_obs) {
 }
 
 # Calculate data density at each knot with exponential regularization
-# Based on Lindgren et al. (2011) JRSS-B
 calculate_knot_data_density <- function(knot_coords, obs_coords, radius = 0.2, verbose = TRUE) {
   # knot_coords: matrix of knot coordinates (n_knots x 2) in standardized space
   # obs_coords: matrix of observation coordinates (n_obs x 2) in standardized space
@@ -219,16 +217,6 @@ calculate_knot_data_density <- function(knot_coords, obs_coords, radius = 0.2, v
     cat("    Mean density:", round(mean(knot_density), 1), "\n")
     cat("    Median density:", median(knot_density), "\n")
     
-    # Show tau values that will result from exponential regularization
-    tau_base <- 0.5
-    tau_values <- numeric(n_knots)
-    for (k in 1:n_knots) {
-      density_factor <- exp(-knot_density[k] / CONFIG$gp_regularization$density_scaling)
-      tau_values[k] <- tau_base * (0.5 + 0.5 * density_factor)
-    }
-    cat("\n    Resulting tau values (Lindgren et al., 2011):\n")
-    cat("    Tau range: [", round(min(tau_values), 3), 
-        ", ", round(max(tau_values), 3), "]\n")
   }
   
   return(knot_density)
