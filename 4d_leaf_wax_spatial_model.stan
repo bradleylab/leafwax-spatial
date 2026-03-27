@@ -174,6 +174,9 @@ transformed data {
                                 local_oipc_max - local_oipc_min : 0.0;
     }
     
+    // Compute global OIPC range for data-relative thresholds
+    real max_oipc_range = max(oipc_range_at_knots);
+    
     // Now compute tau values with OIPC range adjustment
     for (k in 1:n_pp_knots) {
       real d = knot_data_density[k];
@@ -190,12 +193,15 @@ transformed data {
       }
       
       // Multiply slope tau by OIPC range factor
+      // Thresholds are relative to the global OIPC range at knots
+      // (fixed thresholds in standardized units were unreachable;
+      //  see validation_log/01_correlation_and_regularization_diagnostic.md)
       real range_factor;
-      if (oipc_range_at_knots[k] < 5) {      // Very tight range
+      if (oipc_range_at_knots[k] < 0.25 * max_oipc_range) {  // < 25% of global range
         range_factor = 0.2;
-      } else if (oipc_range_at_knots[k] < 15) {  // Moderate range
+      } else if (oipc_range_at_knots[k] < 0.60 * max_oipc_range) {  // 25-60% of global range
         range_factor = 0.5;
-      } else {                                    // Good range
+      } else {                                                        // > 60% of global range
         range_factor = 1.0;
       }
       
@@ -510,5 +516,9 @@ generated quantities {
   vector[n_pp_knots] knot_oipc_ranges = oipc_range_at_knots;
   vector[n_pp_knots] tau_final_slope = tau_spatial_slope;
   vector[n_pp_knots] tau_final_intercept = tau_spatial_intercept;
+  
+  // Range factor threshold diagnostics
+  real range_threshold_low = include_gp ? 0.25 * max(oipc_range_at_knots) : 0;
+  real range_threshold_high = include_gp ? 0.60 * max(oipc_range_at_knots) : 0;
 
 }
