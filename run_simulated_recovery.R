@@ -62,7 +62,7 @@ generate_gp_surface <- function(stan_data, ls_std, sigma_gp, seed = NULL) {
   K_knots <- matrix(0, n_knots, n_knots)
   for (i in 1:n_knots) {
     K_knots[i, i] <- 1.0  # eta^2 = 1
-    for (j in (i+1):n_knots) {
+    if (i < n_knots) for (j in (i+1):n_knots) {
       d <- sqrt(sum((knot_coords[i,] - knot_coords[j,])^2))
       scaled <- sqrt3 * d / ls_std
       K_knots[i, j] <- (1 + scaled) * exp(-scaled)
@@ -261,7 +261,7 @@ if ("3c" %in% scenarios) {
   
   # Scale to have realistic intercept variance (~sigma_int_std)
   # intercept = alpha * OIPC_pattern + small GP noise
-  alpha <- sigma_int_std * 1.5  # Strong correlation
+  alpha <- 0.3  # ~25% of posterior sigma_intercept_std, gives effective OLS slope ~1.0  # Strong correlation
   gp_noise <- generate_gp_surface(stan_data, ls_std, sigma_int_std * 0.3, seed = 200)
   confounding_intercept <- alpha * oipc_spatial_pattern + gp_noise
   
