@@ -1172,10 +1172,9 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
                         Grass = oipc_x_grass_matrix_std)
       pft_var <- var(as.vector(pft_mat))
       cat("  OIPC×", pft_name, " interaction variance: ", signif(pft_var, 4), "\n", sep = "")
-      stopifnot(
-        paste0("OIPC×", pft_name, " interaction matrix has zero variance") =
-          pft_var > 0
-      )
+      if (pft_var == 0) {
+        stop("OIPC×", pft_name, " interaction matrix has zero variance — grid alignment fix may have failed")
+      }
     }
   }
 
