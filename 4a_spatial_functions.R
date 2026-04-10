@@ -997,132 +997,78 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     oipc_x_grass_matrix_std <- matrix(0, N, n_scales)
   }
   
-  # Handle missing values by interpolating across scales
+  # Handle missing values by interpolating across scales.
+  # For each site-scale cell with NA, fill with the site's mean across other
+  # scales. If all scales are NA, fill with `default` (0 on standardized scale
+  # = population mean; 0.33 for PFT fractions = equal-split default; 0.1 for
+  # OIPC SE = small positive value for numerical stability).
   cat("\nHandling missing values...\n")
-  
+
+  # Helper: fill NA cells in row i of a matrix with the row mean, or a default.
+  fill_na_row <- function(mat, i, default = 0) {
+    if (any(is.na(mat[i, ]))) {
+      non_na <- mat[i, !is.na(mat[i, ])]
+      fill_val <- ifelse(length(non_na) > 0, mean(non_na), default)
+      mat[i, is.na(mat[i, ])] <- fill_val
+    }
+    mat
+  }
+
+  # Diagnostic: count NAs per matrix before filling (Fix 7).
+  count_na <- function(mat, name) {
+    n <- sum(is.na(mat))
+    if (n > 0) cat("  NA fill:", name, "—", n, "cells (",
+                    round(100 * n / length(mat), 1), "%)\n")
+    n
+  }
+  if (include_c4) count_na(c4_weighted_matrix_std, "C4")
+  count_na(oipc_weighted_matrix_std, "OIPC")
+  count_na(oipc_se_weighted_matrix_std, "OIPC_SE")
+  count_na(elev_weighted_matrix_std, "elevation")
+  if (include_precip) count_na(precip_weighted_matrix_std, "precip")
+  if (include_temp)   count_na(temp_weighted_matrix_std, "temp")
+  if (include_vpd)    count_na(vpd_weighted_matrix_std, "vpd")
+  if (include_soil)   count_na(soil_weighted_matrix_std, "soil")
+  if (include_c4)     count_na(oipc_x_c4_matrix_std, "OIPC×C4")
+  if (include_pft) {
+    count_na(oipc_x_tree_matrix_std, "OIPC×Tree")
+    count_na(oipc_x_shrub_matrix_std, "OIPC×Shrub")
+    count_na(oipc_x_grass_matrix_std, "OIPC×Grass")
+  }
+
   for (i in 1:N) {
-    # For each variable, fill NAs with the mean across scales for that observation
-    # If all scales are NA, use 0 (population mean after standardization)
-    
-    # C4
-    if (include_c4 && any(is.na(c4_weighted_matrix_std[i, ]))) {
-      non_na <- c4_weighted_matrix_std[i, !is.na(c4_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      c4_weighted_matrix_std[i, is.na(c4_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    # OIPC
-    if (any(is.na(oipc_weighted_matrix_std[i, ]))) {
-      non_na <- oipc_weighted_matrix_std[i, !is.na(oipc_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      oipc_weighted_matrix_std[i, is.na(oipc_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    # OIPC SE
-    if (any(is.na(oipc_se_weighted_matrix_std[i, ]))) {
-      non_na <- oipc_se_weighted_matrix_std[i, !is.na(oipc_se_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0.1)
-      oipc_se_weighted_matrix_std[i, is.na(oipc_se_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    # Elevation
-    if (any(is.na(elev_weighted_matrix_std[i, ]))) {
-      non_na <- elev_weighted_matrix_std[i, !is.na(elev_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      elev_weighted_matrix_std[i, is.na(elev_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    # PFT
+    if (include_c4)    c4_weighted_matrix_std       <- fill_na_row(c4_weighted_matrix_std, i, 0)
+    oipc_weighted_matrix_std                        <- fill_na_row(oipc_weighted_matrix_std, i, 0)
+    oipc_se_weighted_matrix_std                     <- fill_na_row(oipc_se_weighted_matrix_std, i, 0.1)
+    elev_weighted_matrix_std                        <- fill_na_row(elev_weighted_matrix_std, i, 0)
+
     if (include_pft) {
       for (p in 1:3) {
         if (any(is.na(pft_weighted_array[i, p, ]))) {
           non_na <- pft_weighted_array[i, p, !is.na(pft_weighted_array[i, p, ])]
-          fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0.33)
-          pft_weighted_array[i, p, is.na(pft_weighted_array[i, p, ])] <- fill_value
+          fill_val <- ifelse(length(non_na) > 0, mean(non_na), 0.33)
+          pft_weighted_array[i, p, is.na(pft_weighted_array[i, p, ])] <- fill_val
         }
       }
     }
-    
-    # Climate variables
-    if (include_precip && any(is.na(precip_weighted_matrix_std[i, ]))) {
-      non_na <- precip_weighted_matrix_std[i, !is.na(precip_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      precip_weighted_matrix_std[i, is.na(precip_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    if (include_temp && any(is.na(temp_weighted_matrix_std[i, ]))) {
-      non_na <- temp_weighted_matrix_std[i, !is.na(temp_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      temp_weighted_matrix_std[i, is.na(temp_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    if (include_vpd && any(is.na(vpd_weighted_matrix_std[i, ]))) {
-      non_na <- vpd_weighted_matrix_std[i, !is.na(vpd_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      vpd_weighted_matrix_std[i, is.na(vpd_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    if (include_soil && any(is.na(soil_weighted_matrix_std[i, ]))) {
-      non_na <- soil_weighted_matrix_std[i, !is.na(soil_weighted_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      soil_weighted_matrix_std[i, is.na(soil_weighted_matrix_std[i, ])] <- fill_value
-    }
-    
-    # Handle missing values for interactions
-    if (include_c4 && any(is.na(oipc_x_c4_matrix_std[i, ]))) {
-      non_na <- oipc_x_c4_matrix_std[i, !is.na(oipc_x_c4_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      oipc_x_c4_matrix_std[i, is.na(oipc_x_c4_matrix_std[i, ])] <- fill_value
-    }
-    
+
+    if (include_precip) precip_weighted_matrix_std   <- fill_na_row(precip_weighted_matrix_std, i, 0)
+    if (include_temp)   temp_weighted_matrix_std     <- fill_na_row(temp_weighted_matrix_std, i, 0)
+    if (include_vpd)    vpd_weighted_matrix_std      <- fill_na_row(vpd_weighted_matrix_std, i, 0)
+    if (include_soil)   soil_weighted_matrix_std     <- fill_na_row(soil_weighted_matrix_std, i, 0)
+
+    # Interaction matrices
+    if (include_c4)    oipc_x_c4_matrix_std          <- fill_na_row(oipc_x_c4_matrix_std, i, 0)
     if (include_pft) {
-      # Tree interaction
-      if (any(is.na(oipc_x_tree_matrix_std[i, ]))) {
-        non_na <- oipc_x_tree_matrix_std[i, !is.na(oipc_x_tree_matrix_std[i, ])]
-        fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-        oipc_x_tree_matrix_std[i, is.na(oipc_x_tree_matrix_std[i, ])] <- fill_value
-      }
-      
-      # Shrub interaction
-      if (any(is.na(oipc_x_shrub_matrix_std[i, ]))) {
-        non_na <- oipc_x_shrub_matrix_std[i, !is.na(oipc_x_shrub_matrix_std[i, ])]
-        fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-        oipc_x_shrub_matrix_std[i, is.na(oipc_x_shrub_matrix_std[i, ])] <- fill_value
-      }
-      
-      # Grass interaction
-      if (any(is.na(oipc_x_grass_matrix_std[i, ]))) {
-        non_na <- oipc_x_grass_matrix_std[i, !is.na(oipc_x_grass_matrix_std[i, ])]
-        fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-        oipc_x_grass_matrix_std[i, is.na(oipc_x_grass_matrix_std[i, ])] <- fill_value
-      }
+      oipc_x_tree_matrix_std                         <- fill_na_row(oipc_x_tree_matrix_std, i, 0)
+      oipc_x_shrub_matrix_std                        <- fill_na_row(oipc_x_shrub_matrix_std, i, 0)
+      oipc_x_grass_matrix_std                        <- fill_na_row(oipc_x_grass_matrix_std, i, 0)
     }
-    
-    # Climate interactions
-    if (include_temp && include_c4 && any(is.na(temp_x_c4_matrix_std[i, ]))) {
-      non_na <- temp_x_c4_matrix_std[i, !is.na(temp_x_c4_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      temp_x_c4_matrix_std[i, is.na(temp_x_c4_matrix_std[i, ])] <- fill_value
-    }
-    
-    if (include_vpd && include_c4 && any(is.na(vpd_x_c4_matrix_std[i, ]))) {
-      non_na <- vpd_x_c4_matrix_std[i, !is.na(vpd_x_c4_matrix_std[i, ])]
-      fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-      vpd_x_c4_matrix_std[i, is.na(vpd_x_c4_matrix_std[i, ])] <- fill_value
-    }
-    
+    if (include_temp && include_c4)    temp_x_c4_matrix_std    <- fill_na_row(temp_x_c4_matrix_std, i, 0)
+    if (include_vpd && include_c4)     vpd_x_c4_matrix_std     <- fill_na_row(vpd_x_c4_matrix_std, i, 0)
     if (include_precip && include_pft) {
-      if (any(is.na(precip_x_tree_matrix_std[i, ]))) {
-        non_na <- precip_x_tree_matrix_std[i, !is.na(precip_x_tree_matrix_std[i, ])]
-        fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-        precip_x_tree_matrix_std[i, is.na(precip_x_tree_matrix_std[i, ])] <- fill_value
-      }
-      
-      if (any(is.na(precip_x_grass_matrix_std[i, ]))) {
-        non_na <- precip_x_grass_matrix_std[i, !is.na(precip_x_grass_matrix_std[i, ])]
-        fill_value <- ifelse(length(non_na) > 0, mean(non_na), 0)
-        precip_x_grass_matrix_std[i, is.na(precip_x_grass_matrix_std[i, ])] <- fill_value
-      }
+      precip_x_tree_matrix_std                       <- fill_na_row(precip_x_tree_matrix_std, i, 0)
+      precip_x_grass_matrix_std                      <- fill_na_row(precip_x_grass_matrix_std, i, 0)
     }
   }
   
@@ -1203,8 +1149,36 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
   
   if (all_good) {
     cat("  ✓ All matrices are clean (no NaN/NA/Inf values)\n")
+  } else {
+    stop("Matrices contain NaN/NA/Inf values after zero-fill — cannot proceed")
   }
-  
+
+  # Assertion (Fix 7): interaction matrices must have non-zero variance.
+  # If they're uniformly zero, it means the P0-1 grid-alignment fix did not
+  # take effect and all models with interactions will be scientifically invalid.
+  if (include_c4) {
+    interaction_var <- var(as.vector(oipc_x_c4_matrix_std))
+    cat("  OIPC×C4 interaction variance:", signif(interaction_var, 4), "\n")
+    stopifnot(
+      "OIPC×C4 interaction matrix has zero variance — grid alignment fix may have failed" =
+        interaction_var > 0
+    )
+  }
+  if (include_pft) {
+    for (pft_name in c("Tree", "Shrub", "Grass")) {
+      pft_mat <- switch(pft_name,
+                        Tree = oipc_x_tree_matrix_std,
+                        Shrub = oipc_x_shrub_matrix_std,
+                        Grass = oipc_x_grass_matrix_std)
+      pft_var <- var(as.vector(pft_mat))
+      cat("  OIPC×", pft_name, " interaction variance: ", signif(pft_var, 4), "\n", sep = "")
+      stopifnot(
+        paste0("OIPC×", pft_name, " interaction matrix has zero variance") =
+          pft_var > 0
+      )
+    }
+  }
+
   # Generate B-spline basis for elevation if included
   elevation_bspline_matrix <- NULL
   n_basis_knots <- CONFIG$n_elevation_knots
