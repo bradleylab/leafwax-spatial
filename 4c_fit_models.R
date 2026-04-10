@@ -289,13 +289,45 @@ cat("\nSummary saved to:\n")
 cat("  -", file.path(results_dir, "model_fit_summary.rds"), "\n")
 cat("  -", file.path(results_dir, "model_fit_summary.csv"), "\n")
 
-# Create simple completion marker with timestamp
+# Completion guard: only write success marker if ALL models completed.
+# The launcher script uses pipeline_4c_complete.rds as the auto-shutdown gate.
+n_completed <- sum(fit_summary$status == "completed")
+n_failed <- sum(fit_summary$status == "failed")
+n_expected <- length(model_names)
+
+# Belt-and-suspenders: also check for error_info.rds files on disk,
+# independent of fit_summary (catches any status-tracking bugs).
+error_files <- list.files(CONFIG$output_dirs$model_output,
+                          pattern = "error_info\\.rds$",
+                          recursive = TRUE, full.names = TRUE)
+n_error_files <- length(error_files)
+
 completion_info <- list(
   completed_at = Sys.time(),
   models_fitted = fit_summary$model[fit_summary$status == "completed"],
   models_failed = fit_summary$model[fit_summary$status == "failed"],
+  n_expected = n_expected,
+  n_completed = n_completed,
+  n_failed = n_failed,
+  n_error_files = n_error_files,
   total_runtime_mins = sum(fit_summary$runtime_mins, na.rm = TRUE)
 )
-saveRDS(completion_info, file.path(results_dir, "pipeline_4c_complete.rds"))
 
-cat("\nPipeline completed successfully!\n")
+if (n_completed == n_expected && n_error_files == 0) {
+  saveRDS(completion_info, file.path(results_dir, "pipeline_4c_complete.rds"))
+  cat("\n✓ All", n_expected, "models completed successfully.\n")
+  cat("  Completion marker written: pipeline_4c_complete.rds\n")
+} else {
+  saveRDS(completion_info, file.path(results_dir, "pipeline_4c_INCOMPLETE.rds"))
+  cat("\n✗ INCOMPLETE:", n_completed, "of", n_expected, "models completed,",
+      n_failed, "failed,", n_error_files, "error files found.\n")
+  if (n_failed > 0) {
+    cat("  Failed models:", paste(fit_summary$model[fit_summary$status == "failed"],
+                                  collapse = ", "), "\n")
+  }
+  if (n_error_files > 0) {
+    cat("  Error files:", paste(error_files, collapse = "\n              "), "\n")
+  }
+  cat("  INCOMPLETE marker written: pipeline_4c_INCOMPLETE.rds\n")
+  cat("  The launcher will NOT auto-shutdown.\n")
+}
