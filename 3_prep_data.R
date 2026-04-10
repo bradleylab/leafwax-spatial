@@ -635,10 +635,10 @@ sediment_ready <- sediment %>%
     !is.na(c4_mean_filled),  # Need C4 data
     !is.na(oipc_mean),       # Need OIPC data
     !is.na(elevation_mean),  # Need GMTED elevation data
-    !is.na(tc_ppt_mean),     # Need precipitation data
-    !is.na(tc_soil_mean),    # Need soil moisture data
-    !is.na(tc_tmax_mean),    # Need temperature data
-    !is.na(tc_vpd_mean)      # Need VPD data
+    !is.na(tc_ppt_mean)      # Need precipitation data
+    # tc_soil, tc_tmax, tc_vpd filters removed — 4b_stan_prep.R hardcodes
+    # include_temp=FALSE, include_vpd=FALSE, include_soil=FALSE for all 14
+    # models. Filtering on unused variables was silently dropping sites.
   ) %>%
   mutate(
     # Create final variables for modeling
