@@ -89,7 +89,9 @@ for (model_name in model_names) {
   cat(strrep("=", 65), "\n\n")
 
   elapsed_time <- NA  # Initialize in case we load existing model
-  
+  status <- "unknown"  # Must be set before tryCatch — see Sub-fix 5a
+  fit <- NULL           # Explicit NULL so is.null(fit) is reliable
+
   stan_data_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("stan_data_", model_name, ".rds"))
   config_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("config_", model_name, ".rds"))
   output_dir <- file.path(CONFIG$output_dirs$model_output, model_name)
@@ -186,8 +188,8 @@ for (model_name in model_names) {
       )
       saveRDS(error_info, file.path(output_dir, "error_info.rds"))
       
-      status <- "failed"
-      fit <- NULL
+      status <<- "failed"   # <<- for parent-env assignment (R closure scoping)
+      fit <<- NULL           # ditto — so is.null(fit) check below works
     })
   }
   
@@ -248,7 +250,10 @@ for (model_name in model_names) {
     # Add to summary data frame
     fit_summary <- rbind(fit_summary, data.frame(
       model = model_name,
-      status = ifelse(exists("status"), status, "completed"),
+      # status is now always defined (initialized at loop top, set by tryCatch
+      # success path or <<- in error handler). Belt-and-suspenders: if fit is
+      # NULL but status somehow says "completed", override to "failed".
+      status = ifelse(is.null(fit) && status != "failed", "failed", status),
       runtime_mins = ifelse(!is.na(elapsed_time), round(elapsed_time, 1), NA),
       divergences = sum(diagnostics$num_divergent),
       max_treedepth = sum(diagnostics$num_max_treedepth),
