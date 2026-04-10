@@ -405,7 +405,11 @@ model {
   }
   
   if (include_precip == 1) {
-    beta_precip_raw[1] ~ normal(0, 0.02);  // Small effect expected
+    // Weakly informative; matches interaction prior scale. Previous
+    // value of normal(0, 0.02) was 100x tighter than all other effect
+    // priors with no documented physical justification, forcing the
+    // precipitation slope toward zero regardless of data.
+    beta_precip_raw[1] ~ normal(0, 0.5);
   }
   
   // PFT main effects
