@@ -10,6 +10,7 @@
 !*.R
 !*.stan
 !*.py
+!*.sh
 !.gitignore
 !README.md
 !config.yaml
