@@ -89,7 +89,9 @@ for (model_name in model_names) {
   cat(strrep("=", 65), "\n\n")
 
   elapsed_time <- NA  # Initialize in case we load existing model
-  
+  status <- "unknown"  # Must be set before tryCatch — see Sub-fix 5a
+  fit <- NULL           # Explicit NULL so is.null(fit) is reliable
+
   stan_data_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("stan_data_", model_name, ".rds"))
   config_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("config_", model_name, ".rds"))
   output_dir <- file.path(CONFIG$output_dirs$model_output, model_name)
@@ -186,8 +188,8 @@ for (model_name in model_names) {
       )
       saveRDS(error_info, file.path(output_dir, "error_info.rds"))
       
-      status <- "failed"
-      fit <- NULL
+      status <<- "failed"   # <<- for parent-env assignment (R closure scoping)
+      fit <<- NULL           # ditto — so is.null(fit) check below works
     })
   }
   
@@ -248,7 +250,10 @@ for (model_name in model_names) {
     # Add to summary data frame
     fit_summary <- rbind(fit_summary, data.frame(
       model = model_name,
-      status = ifelse(exists("status"), status, "completed"),
+      # status is now always defined (initialized at loop top, set by tryCatch
+      # success path or <<- in error handler). Belt-and-suspenders: if fit is
+      # NULL but status somehow says "completed", override to "failed".
+      status = ifelse(is.null(fit) && status != "failed", "failed", status),
       runtime_mins = ifelse(!is.na(elapsed_time), round(elapsed_time, 1), NA),
       divergences = sum(diagnostics$num_divergent),
       max_treedepth = sum(diagnostics$num_max_treedepth),
@@ -284,13 +289,45 @@ cat("\nSummary saved to:\n")
 cat("  -", file.path(results_dir, "model_fit_summary.rds"), "\n")
 cat("  -", file.path(results_dir, "model_fit_summary.csv"), "\n")
 
-# Create simple completion marker with timestamp
+# Completion guard: only write success marker if ALL models completed.
+# The launcher script uses pipeline_4c_complete.rds as the auto-shutdown gate.
+n_completed <- sum(fit_summary$status == "completed")
+n_failed <- sum(fit_summary$status == "failed")
+n_expected <- length(model_names)
+
+# Belt-and-suspenders: also check for error_info.rds files on disk,
+# independent of fit_summary (catches any status-tracking bugs).
+error_files <- list.files(CONFIG$output_dirs$model_output,
+                          pattern = "error_info\\.rds$",
+                          recursive = TRUE, full.names = TRUE)
+n_error_files <- length(error_files)
+
 completion_info <- list(
   completed_at = Sys.time(),
   models_fitted = fit_summary$model[fit_summary$status == "completed"],
   models_failed = fit_summary$model[fit_summary$status == "failed"],
+  n_expected = n_expected,
+  n_completed = n_completed,
+  n_failed = n_failed,
+  n_error_files = n_error_files,
   total_runtime_mins = sum(fit_summary$runtime_mins, na.rm = TRUE)
 )
-saveRDS(completion_info, file.path(results_dir, "pipeline_4c_complete.rds"))
 
-cat("\nPipeline completed successfully!\n")
+if (n_completed == n_expected && n_error_files == 0) {
+  saveRDS(completion_info, file.path(results_dir, "pipeline_4c_complete.rds"))
+  cat("\n✓ All", n_expected, "models completed successfully.\n")
+  cat("  Completion marker written: pipeline_4c_complete.rds\n")
+} else {
+  saveRDS(completion_info, file.path(results_dir, "pipeline_4c_INCOMPLETE.rds"))
+  cat("\n✗ INCOMPLETE:", n_completed, "of", n_expected, "models completed,",
+      n_failed, "failed,", n_error_files, "error files found.\n")
+  if (n_failed > 0) {
+    cat("  Failed models:", paste(fit_summary$model[fit_summary$status == "failed"],
+                                  collapse = ", "), "\n")
+  }
+  if (n_error_files > 0) {
+    cat("  Error files:", paste(error_files, collapse = "\n              "), "\n")
+  }
+  cat("  INCOMPLETE marker written: pipeline_4c_INCOMPLETE.rds\n")
+  cat("  The launcher will NOT auto-shutdown.\n")
+}

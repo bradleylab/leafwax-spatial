@@ -405,7 +405,11 @@ model {
   }
   
   if (include_precip == 1) {
-    beta_precip_raw[1] ~ normal(0, 0.02);  // Small effect expected
+    // Weakly informative; matches interaction prior scale. Previous
+    // value of normal(0, 0.02) was 100x tighter than all other effect
+    // priors with no documented physical justification, forcing the
+    // precipitation slope toward zero regardless of data.
+    beta_precip_raw[1] ~ normal(0, 0.5);
   }
   
   // PFT main effects
@@ -451,9 +455,12 @@ model {
 // Residual variance (combines nugget and residual)
 sigma ~ normal(0, 2);
 
-// Likelihood with OIPC measurement error
+// Likelihood with OIPC measurement error (error-in-variables propagation)
+// For y = beta*x + ... where x has measurement SE, Var(y from x error) =
+// beta^2 * SE_x^2. oipc_se_weighted is in standardized-OIPC-predictor units,
+// so we scale by beta_oipc_spatial[n] to convert to response-variance units.
 for (n in 1:N) {
-    real total_var = square(d2H_wax_err[n]) + square(oipc_se_weighted[n]) + square(sigma);
+    real total_var = square(d2H_wax_err[n]) + square(beta_oipc_spatial[n] * oipc_se_weighted[n]) + square(sigma);
     real total_sd = sqrt(total_var);
     d2H_wax[n] ~ normal(mu[n], total_sd);
 }
@@ -465,7 +472,8 @@ generated quantities {
   vector[N] log_lik;
   
   for (n in 1:N) {
-    real total_var = square(d2H_wax_err[n]) + square(oipc_se_weighted[n]) + square(sigma);
+    // Same error propagation as likelihood block above
+    real total_var = square(d2H_wax_err[n]) + square(beta_oipc_spatial[n] * oipc_se_weighted[n]) + square(sigma);
     real total_sd = sqrt(total_var);
     d2H_rep[n] = normal_rng(mu[n], total_sd);
     log_lik[n] = normal_lpdf(d2H_wax[n] | mu[n], total_sd);
