@@ -14,6 +14,9 @@
 !.gitignore
 !README.md
 !config.yaml
+!Dockerfile
+!.github/
+!.github/**
 
 # Still ignore these even if they match above
 .Rhistory
