@@ -24,33 +24,26 @@ cat("Loading sediment data...\n")
 sediment <- readRDS(input_file)
 cat("✓ Loaded", nrow(sediment), "sediment records\n")
 
-# Check for required coordinate columns
-# For each data type, we need values, distances, and coordinates
-required_coord_cols <- c("c4_lon", "c4_lat", "oipc_lon", "oipc_lat", 
-                        "elevation_lon", "elevation_lat")
-missing_coords <- required_coord_cols[!required_coord_cols %in% names(sediment)]
+# Check for required data columns from 3_prep_data.R
+required_cols <- c("c4_values_filled", "c4_distances",
+                   "oipc_values", "oipc_distances",
+                   "oipc_se_values",
+                   "elevation_values", "elevation_distances",
+                   "latitude", "longitude",
+                   "d2H_wax", "d2H_wax_err")
+missing_cols <- required_cols[!required_cols %in% names(sediment)]
 
-if (length(missing_coords) > 0) {
-  stop("Missing coordinate columns: ", paste(missing_coords, collapse = ", "),
-       "\n  3_prep_data.R should produce these. Re-run data preparation.")
+if (length(missing_cols) > 0) {
+  stop("Missing required columns: ", paste(missing_cols, collapse = ", "),
+       "\n  Re-run 3_prep_data.R.")
 }
 
-# Check for climate data columns
-climate_array_cols <- c("tc_ppt_values", "tc_ppt_lon", "tc_ppt_lat",
-                       "tc_soil_values", "tc_soil_lon", "tc_soil_lat",
-                       "tc_tmax_values", "tc_tmax_lon", "tc_tmax_lat",
-                       "tc_vpd_values", "tc_vpd_lon", "tc_vpd_lat")
-climate_site_cols <- c("annual_precip", "soil_moisture", "max_temp", "vpd")
+# Check for climate data columns (optional, used only if include_* flags are TRUE)
+climate_site_cols <- c("annual_precip")
 
-missing_arrays <- climate_array_cols[!climate_array_cols %in% names(sediment)]
 missing_site <- climate_site_cols[!climate_site_cols %in% names(sediment)]
-
-if (length(missing_arrays) > 0) {
-  cat("WARNING: Missing climate array columns:", paste(missing_arrays, collapse = ", "), "\n")
-  cat("         Climate-related models may fail\n")
-}
 if (length(missing_site) > 0) {
-  cat("WARNING: Missing climate site columns:", paste(missing_site, collapse = ", "), "\n")
+  cat("WARNING: Missing climate columns:", paste(missing_site, collapse = ", "), "\n")
 }
 
 # Check for PFT columns
