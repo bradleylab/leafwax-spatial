@@ -23,7 +23,7 @@ effects.
 Everything runs inside a container. Pull it from GHCR:
 
 ```bash
-apptainer pull docker://ghcr.io/bradleylab/leafwax-spatial:latest
+apptainer pull docker://ghcr.io/bradleylab/leafwax-calibration:latest
 ```
 
 Or build locally:
