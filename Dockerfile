@@ -11,10 +11,10 @@
 FROM rocker/r-ver:4.4.1
 
 LABEL org.opencontainers.image.source="https://github.com/bradleylab/leafwax-spatial"
-LABEL org.opencontainers.image.description="Bayesian spatial leaf wax d2H calibration pipeline"
+LABEL org.opencontainers.image.description="Bayesian spatial calibration of leaf wax hydrogen isotopes (d2H) against precipitation and environmental covariates. R 4.4.1, CmdStan 2.36.0, terra, sf."
 LABEL org.opencontainers.image.authors="Alexander S. Bradley"
 LABEL org.opencontainers.image.licenses="MIT"
-LABEL org.opencontainers.image.title="leafwax-spatial"
+LABEL org.opencontainers.image.title="leafwax-calibration"
 
 # System dependencies for terra, sf, and CmdStan
 # terra needs: GDAL, PROJ, GEOS
