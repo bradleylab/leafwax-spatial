@@ -11,7 +11,10 @@
 FROM rocker/r-ver:4.4.1
 
 LABEL org.opencontainers.image.source="https://github.com/bradleylab/leafwax-spatial"
-LABEL org.opencontainers.image.description="Leafwax spatial modeling pipeline (R + CmdStan)"
+LABEL org.opencontainers.image.description="Bayesian spatial leaf wax d2H calibration pipeline"
+LABEL org.opencontainers.image.authors="Alexander S. Bradley"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.title="leafwax-spatial"
 
 # System dependencies for terra, sf, and CmdStan
 # terra needs: GDAL, PROJ, GEOS
