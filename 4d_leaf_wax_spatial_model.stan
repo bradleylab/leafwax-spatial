@@ -405,10 +405,7 @@ model {
   }
   
   if (include_precip == 1) {
-    // Weakly informative; matches interaction prior scale. Previous
-    // value of normal(0, 0.02) was 100x tighter than all other effect
-    // priors with no documented physical justification, forcing the
-    // precipitation slope toward zero regardless of data.
+    // Weakly informative, matching other effect prior scales
     beta_precip_raw[1] ~ normal(0, 0.5);
   }
   
@@ -455,10 +452,7 @@ model {
 // Residual variance (combines nugget and residual)
 sigma ~ normal(0, 2);
 
-// Likelihood with OIPC measurement error (error-in-variables propagation)
-// For y = beta*x + ... where x has measurement SE, Var(y from x error) =
-// beta^2 * SE_x^2. oipc_se_weighted is in standardized-OIPC-predictor units,
-// so we scale by beta_oipc_spatial[n] to convert to response-variance units.
+// Likelihood: OIPC measurement error propagated as beta^2 * SE_x^2
 for (n in 1:N) {
     real total_var = square(d2H_wax_err[n]) + square(beta_oipc_spatial[n] * oipc_se_weighted[n]) + square(sigma);
     real total_sd = sqrt(total_var);

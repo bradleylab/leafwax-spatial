@@ -89,8 +89,8 @@ for (model_name in model_names) {
   cat(strrep("=", 65), "\n\n")
 
   elapsed_time <- NA  # Initialize in case we load existing model
-  status <- "unknown"  # Must be set before tryCatch — see Sub-fix 5a
-  fit <- NULL           # Explicit NULL so is.null(fit) is reliable
+  status <- "unknown"  # Must be set before tryCatch
+  fit <- NULL
 
   stan_data_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("stan_data_", model_name, ".rds"))
   config_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("config_", model_name, ".rds"))
@@ -188,8 +188,8 @@ for (model_name in model_names) {
       )
       saveRDS(error_info, file.path(output_dir, "error_info.rds"))
       
-      status <<- "failed"   # <<- for parent-env assignment (R closure scoping)
-      fit <<- NULL           # ditto — so is.null(fit) check below works
+      status <<- "failed"
+      fit <<- NULL
     })
   }
   
@@ -250,9 +250,7 @@ for (model_name in model_names) {
     # Add to summary data frame
     fit_summary <- rbind(fit_summary, data.frame(
       model = model_name,
-      # status is now always defined (initialized at loop top, set by tryCatch
-      # success path or <<- in error handler). Belt-and-suspenders: if fit is
-      # NULL but status somehow says "completed", override to "failed".
+      # Override status if fit is NULL despite status not being "failed"
       status = ifelse(is.null(fit) && status != "failed", "failed", status),
       runtime_mins = ifelse(!is.na(elapsed_time), round(elapsed_time, 1), NA),
       divergences = sum(diagnostics$num_divergent),
@@ -295,8 +293,7 @@ n_completed <- sum(fit_summary$status == "completed")
 n_failed <- sum(fit_summary$status == "failed")
 n_expected <- length(model_names)
 
-# Belt-and-suspenders: also check for error_info.rds files on disk,
-# independent of fit_summary (catches any status-tracking bugs).
+# Cross-check: count error_info.rds files independently of fit_summary
 error_files <- list.files(CONFIG$output_dirs$model_output,
                           pattern = "error_info\\.rds$",
                           recursive = TRUE, full.names = TRUE)

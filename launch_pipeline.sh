@@ -3,14 +3,8 @@
 # launch_pipeline.sh
 #
 # Launches the leafwax spatial modeling pipeline with parallel model fitting
-# and safe auto-shutdown. Version-controlled replacement for the original
-# launch_pipeline_4_parallel_w_shutdown.sh (which was not in git).
-#
-# Fixes incorporated:
-#   P0-3: set -eo pipefail (tee no longer masks Rscript failures)
-#   P0-4: auto-shutdown only when ALL models complete (checks both
-#          pipeline_4c_complete.rds marker AND error_info.rds count)
-#   P1-3: export PATH for yq in non-login shells
+# and safe auto-shutdown on EC2. Auto-shutdown requires ALL models to
+# complete with no errors; partial failure keeps the instance running.
 #
 # Usage:
 #   ./launch_pipeline.sh               # full pipeline (all models)
@@ -93,9 +87,7 @@ echo "======================================================================"
 
 PREP_LOG="$LOG_DIR/data_prep.log"
 
-# Use process substitution to preserve Rscript exit code through tee.
-# With set -o pipefail, a pipe like `Rscript | tee` would catch failures,
-# but process substitution is cleaner and avoids PIPESTATUS complexity.
+# Process substitution preserves Rscript exit code through tee
 Rscript "$PREP_SCRIPT" > >(tee "$PREP_LOG") 2>&1
 echo "✓ Data preparation completed (log: $PREP_LOG)"
 echo

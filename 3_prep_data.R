@@ -84,22 +84,10 @@ tc_vpd <- rast("results/2f_TerraClimate_vpd_mean_2001_2019.tif")
 cat("  All rasters loaded successfully\n")
 
 #───────────────────────────────────────────────────────────────────────────────
-# Step 2b: Resample C4 and PFT rasters to OIPC grid (P0-1 fix)
+# Step 2b: Resample C4 and PFT rasters to OIPC grid
 #───────────────────────────────────────────────────────────────────────────────
-# The downstream extraction loop computes per-site pixel vectors for each
-# raster. Interaction computations in 4a_spatial_functions.R (lines 742+)
-# require that C4, PFT, and OIPC vectors have the same length per site —
-# which only holds if they share a grid.
-#
-# Native grids:
-#   OIPC (d2h_ann)    2083 × 4320  res ≈ 0.0833°
-#   C4   (c4_rast)     360 ×  720  res = 0.5°     (35× coarser)
-#   PFT  (modis_pft)  2186 × 4371  res ≈ 0.0824°  (~1% finer)
-#
-# Without this resample, compute_weighted_interaction() returns NA on every
-# site (length mismatch), those NAs get zero-filled, and all 5 interaction
-# models fit on uniformly-zero interaction predictors. Bug present in all
-# prior runs. Must happen on SpatRaster objects BEFORE as.data.frame() below.
+# All rasters must share the OIPC grid so per-site pixel vectors align
+# for interaction computation in 4a_spatial_functions.R.
 cat("\nResampling C4 and PFT rasters to OIPC grid...\n")
 cat("  OIPC target grid: ", paste(dim(d2h_ann)[1:2], collapse = " × "),
     "res ≈", round(res(d2h_ann)[1], 4), "°\n")
@@ -108,35 +96,18 @@ cat("  C4 source grid:   ", paste(dim(c4_rast)[1:2], collapse = " × "),
 cat("  PFT source grid:  ", paste(dim(modis_pft)[1:2], collapse = " × "),
     "res ≈", round(res(modis_pft)[1], 4), "°\n")
 
-# C4 is a continuous proportion (0-100%); bilinear is appropriate.
 c4_rast <- terra::resample(c4_rast, d2h_ann, method = "bilinear")
 cat("  ✓ C4 resampled to", paste(dim(c4_rast)[1:2], collapse = " × "), "\n")
 
-# PFT has 3 layers (Tree, Shrub, Grass) which are fractional proportions
-# summing to 1.0 per pixel. Bilinear interpolation can produce small
-# negatives or values >1 near class boundaries (numerical drift), so we:
-#   1. Clamp each layer to [0, 1]
-#   2. Renormalize per pixel so Tree+Shrub+Grass = 1.0 where rowsum > 0
-#   3. Leave 0/0/0 pixels alone (ocean/no-data — don't divide by zero)
+# Clamp and renormalize PFT fractions (bilinear can push values outside [0,1])
 modis_pft <- terra::resample(modis_pft, d2h_ann, method = "bilinear")
-cat("  ✓ PFT resampled to", paste(dim(modis_pft)[1:2], collapse = " × "), "\n")
-
-# Clamp each layer to [0, 1]
 modis_pft <- terra::clamp(modis_pft, lower = 0, upper = 1, values = TRUE)
-
-# Renormalize: divide each layer by the row sum, but only where rowsum > 0.
-# terra arithmetic is vectorized over cells, so this is a raster expression.
 pft_rowsum <- modis_pft[[1]] + modis_pft[[2]] + modis_pft[[3]]
-nonzero_mask <- pft_rowsum > 0
-# For pixels where rowsum > 0: divide; elsewhere keep as-is (0/0/0).
-# Build safe denominator: rowsum where > 0, else 1 (placeholder — won't be used).
-pft_denom <- terra::ifel(nonzero_mask, pft_rowsum, 1)
+pft_denom <- terra::ifel(pft_rowsum > 0, pft_rowsum, 1)
 modis_pft <- modis_pft / pft_denom
-# Preserve layer names (terra division keeps them but be explicit)
 names(modis_pft) <- c("Tree", "Shrub", "Grass")
-cat("  ✓ PFT clamped to [0,1] and renormalized\n")
+cat("  ✓ PFT resampled, clamped to [0,1], and renormalized\n")
 
-# Assertions: dimensions must match OIPC grid
 stopifnot(
   "C4 dimensions do not match OIPC after resample" =
     all(dim(c4_rast)[1:2] == dim(d2h_ann)[1:2]),
@@ -144,12 +115,8 @@ stopifnot(
     all(dim(modis_pft)[1:2] == dim(d2h_ann)[1:2])
 )
 
-# Assertion: PFT pixel sums must be 0 (no-data) or ≈ 1.0 (valid)
-pft_sum_vals <- terra::values(pft_rowsum)
-pft_sum_vals <- pft_sum_vals[!is.na(pft_sum_vals)]
 pft_renorm_sum <- terra::values(modis_pft[[1]] + modis_pft[[2]] + modis_pft[[3]])
 pft_renorm_sum <- pft_renorm_sum[!is.na(pft_renorm_sum)]
-# Valid pixels must sum to ≈ 1.0; no-data pixels must sum to 0
 valid_sums <- pft_renorm_sum[pft_renorm_sum > 0.5]
 stopifnot(
   "PFT valid pixels do not sum to 1.0 within tolerance 1e-6" =
@@ -160,7 +127,7 @@ cat("  ✓ PFT pixel sums verified: ", length(valid_sums), " valid pixels, ",
     ifelse(length(valid_sums) > 0, signif(max(abs(valid_sums - 1.0)), 3), "n/a"),
     "\n", sep = "")
 
-rm(pft_rowsum, nonzero_mask, pft_denom, pft_sum_vals, pft_renorm_sum, valid_sums)
+rm(pft_rowsum, pft_denom, pft_renorm_sum, valid_sums)
 
 # Convert to data frames
 cat("  Converting rasters to data frames...\n")
@@ -636,9 +603,7 @@ sediment_ready <- sediment %>%
     !is.na(oipc_mean),       # Need OIPC data
     !is.na(elevation_mean),  # Need GMTED elevation data
     !is.na(tc_ppt_mean)      # Need precipitation data
-    # tc_soil, tc_tmax, tc_vpd filters removed — 4b_stan_prep.R hardcodes
-    # include_temp=FALSE, include_vpd=FALSE, include_soil=FALSE for all 14
-    # models. Filtering on unused variables was silently dropping sites.
+    # tc_soil, tc_tmax, tc_vpd filters removed (unused covariates were dropping sites)
   ) %>%
   mutate(
     # Create final variables for modeling
