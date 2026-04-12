@@ -27,7 +27,7 @@ cat("=======================\n")
 # 1. SPATIAL CROSS-VALIDATION
 #───────────────────────────────────────────────────────────────────────────────
 
-spatial_cv_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
+spatial_cv_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
   cat("\n1. SPATIAL CROSS-VALIDATION for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
@@ -133,7 +133,7 @@ spatial_cv_analysis <- function(model_name, prepared_data_dir = "prepared_data_c
 # 2. COMPLEXITY ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
+complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
   cat("\n\n2. MODEL COMPLEXITY ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
@@ -189,7 +189,7 @@ complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data_c
 # 3. PREDICTION UNCERTAINTY ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-uncertainty_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
+uncertainty_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
   cat("\n\n3. PREDICTION UNCERTAINTY ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
@@ -258,7 +258,7 @@ uncertainty_analysis <- function(model_name, prepared_data_dir = "prepared_data_
 # 4. SPATIAL SCALE ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_data_consolidated") {
+spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
   cat("\n\n4. SPATIAL SCALE ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
@@ -336,7 +336,7 @@ compare_model_sizes <- function() {
   models <- basename(dirname(loo_files))
   
   # Get the prepared_data directory (use consolidated if it exists)
-  prepared_data_dir <- if(dir.exists("prepared_data_consolidated")) "prepared_data_consolidated" else "prepared_data"
+  prepared_data_dir <- if(dir.exists("prepared_data")) "prepared_data" else "prepared_data"
 
   size_comparison <- map_df(models, function(m) {
     loo_file <- paste0("model_output/", m, "/loo.rds")
@@ -407,9 +407,9 @@ if (length(fitted_models) == 0) {
 cat("Found", length(fitted_models), "fitted models:", paste(fitted_models, collapse = ", "), "\n")
 
 # Determine which prepared_data directory to use
-prepared_data_dir <- if(dir.exists("prepared_data_consolidated")) {
-  cat("Using prepared_data_consolidated directory\n")
-  "prepared_data_consolidated"
+prepared_data_dir <- if(dir.exists("prepared_data")) {
+  cat("Using prepared_data directory\n")
+  "prepared_data"
 } else if(dir.exists("prepared_data")) {
   cat("Using prepared_data directory\n")
   "prepared_data"

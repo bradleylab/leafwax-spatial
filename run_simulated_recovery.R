@@ -26,11 +26,11 @@ cat("=== SIMULATED DATA RECOVERY ===\n")
 cat("Scenarios:", paste(scenarios, collapse = ", "), "\n")
 cat("Start time:", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"), "\n\n")
 
-setwd("/home/shared/leafwax_spatial/spatial_leafwax_model")
+# Run from repo root
 
 # Load prepared data and config
-stan_data <- readRDS("prepared_data_consolidated/stan_data_baseline_veg_sp.rds")
-config <- readRDS("prepared_data_consolidated/config_baseline_veg_sp.rds")
+stan_data <- readRDS("prepared_data/stan_data_baseline_veg_sp.rds")
+config <- readRDS("prepared_data/config_baseline_veg_sp.rds")
 
 # Load existing posteriors for realistic parameter values
 orig_draws <- readRDS("model_output/baseline_veg_sp/posterior_draws.rds")

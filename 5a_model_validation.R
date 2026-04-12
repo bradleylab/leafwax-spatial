@@ -17,7 +17,7 @@ library(loo)
 library(bayesplot)
 
 # Set data directory
-DATA_DIR <- "prepared_data_consolidated"
+DATA_DIR <- "prepared_data"
 
 cat("MODEL VALIDATION AND COMPARISON (Standalone)\n")
 cat("===========================================\n\n")

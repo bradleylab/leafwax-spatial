@@ -20,7 +20,7 @@ run_ids <- if (length(args) > 0 && args[1] != "all") args else "all"
 cat("=== SENSITIVITY ANALYSIS ===\n")
 cat("Start time:", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"), "\n\n")
 
-setwd("/home/shared/leafwax_spatial/spatial_leafwax_model")
+# Run from repo root
 
 # Define experiments (non-baseline only)
 experiments <- list(
@@ -83,8 +83,8 @@ if (run_ids[1] == "all") {
 cat("Running experiments:", paste(to_run, collapse = ", "), "\n\n")
 
 # Load base data
-stan_data_base <- readRDS("prepared_data_consolidated/stan_data_baseline_veg_sp.rds")
-config <- readRDS("prepared_data_consolidated/config_baseline_veg_sp.rds")
+stan_data_base <- readRDS("prepared_data/stan_data_baseline_veg_sp.rds")
+config <- readRDS("prepared_data/config_baseline_veg_sp.rds")
 
 # Read base Stan model
 stan_code_base <- readLines("4d_leaf_wax_spatial_model.stan")

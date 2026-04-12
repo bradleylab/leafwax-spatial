@@ -12,11 +12,11 @@ library(loo)
 cat("=== VALIDATION RUN: baseline_veg_sp with fixed range thresholds ===\n")
 cat("Start time:", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"), "\n\n")
 
-setwd("/home/shared/leafwax_spatial/spatial_leafwax_model")
+# Run from repo root
 
 # Load the SAME prepared data that was used for the Sep 2025 run
-stan_data <- readRDS("prepared_data_consolidated/stan_data_baseline_veg_sp.rds")
-config <- readRDS("prepared_data_consolidated/config_baseline_veg_sp.rds")
+stan_data <- readRDS("prepared_data/stan_data_baseline_veg_sp.rds")
+config <- readRDS("prepared_data/config_baseline_veg_sp.rds")
 
 cat("N observations:", stan_data$N, "\n")
 cat("N scales:", stan_data$n_scales, "\n")

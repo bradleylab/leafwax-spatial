@@ -59,7 +59,7 @@ for (model_name in model_names) {
     
     # Load model and data
     fit_file <- file.path("model_output", model_name, "fit.rds")
-    stan_data_file <- file.path("prepared_data_consolidated", 
+    stan_data_file <- file.path("prepared_data", 
                                 paste0("stan_data_", model_name, ".rds"))
     
     if (!file.exists(fit_file) || !file.exists(stan_data_file)) {

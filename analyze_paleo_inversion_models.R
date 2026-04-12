@@ -47,7 +47,7 @@ for (model_name in all_models) {
 
     # Load fit for R² and RMSE
     fit <- readRDS(fit_file)
-    stan_data <- readRDS(paste0("prepared_data_consolidated/stan_data_", model_name, ".rds"))
+    stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
 
     # Calculate R² and RMSE
     y_rep <- fit$draws("d2H_rep", format = "matrix")
@@ -161,7 +161,7 @@ for (model_name in c(paleo_models, "baseline_sp")) {
   cat("\n", model_name, ":\n")
 
   fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  config_file <- paste0("prepared_data_consolidated/config_", model_name, ".rds")
+  config_file <- paste0("prepared_data/config_", model_name, ".rds")
 
   if (!file.exists(fit_file)) next
 

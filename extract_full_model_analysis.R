@@ -34,7 +34,7 @@ for (model_name in all_models) {
 
     # Load fit for R² and RMSE calculation
     fit <- readRDS(fit_file)
-    stan_data <- readRDS(paste0("prepared_data_consolidated/stan_data_", model_name, ".rds"))
+    stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
 
     # Get posterior predictions
     y_rep <- fit$draws("d2H_rep", format = "matrix")
@@ -91,7 +91,7 @@ for (model_name in full_models) {
   cat("\n", model_name, ":\n")
 
   fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  config_file <- paste0("prepared_data_consolidated/config_", model_name, ".rds")
+  config_file <- paste0("prepared_data/config_", model_name, ".rds")
 
   if (!file.exists(fit_file)) next
 
@@ -225,7 +225,7 @@ cat("\n\n4. PREDICTOR CORRELATION ANALYSIS\n")
 cat(strrep("-", 60), "\n")
 
 # Load a representative dataset
-stan_data <- readRDS("prepared_data_consolidated/stan_data_full.rds")
+stan_data <- readRDS("prepared_data/stan_data_full.rds")
 
 # Create predictor matrix
 predictors <- data.frame(

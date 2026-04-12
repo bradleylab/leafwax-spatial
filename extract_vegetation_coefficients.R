@@ -23,7 +23,7 @@ for (model_name in models_to_check) {
 
   # Check if model output exists
   fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  config_file <- paste0("prepared_data_consolidated/config_", model_name, ".rds")
+  config_file <- paste0("prepared_data/config_", model_name, ".rds")
 
   if (!file.exists(fit_file)) {
     cat("  Model fit not found - skipping\n")

@@ -44,11 +44,11 @@ cat("=== SPATIAL CONFOUNDING SIMULATION (Paciorek 2010 framework) ===\n")
 cat("Scenarios:", paste(scenarios, collapse = ", "), "\n")
 cat("Start time:", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"), "\n\n")
 
-setwd("/home/shared/leafwax_spatial/spatial_leafwax_model")
+# Run from repo root
 
 # Load prepared data and compile model
-stan_data <- readRDS("prepared_data_consolidated/stan_data_baseline_veg_sp.rds")
-config <- readRDS("prepared_data_consolidated/config_baseline_veg_sp.rds")
+stan_data <- readRDS("prepared_data/stan_data_baseline_veg_sp.rds")
+config <- readRDS("prepared_data/config_baseline_veg_sp.rds")
 orig_draws <- readRDS("model_output/baseline_veg_sp_fixed_range/posterior_draws.rds")
 
 cat("Compiling Stan model...\n")
