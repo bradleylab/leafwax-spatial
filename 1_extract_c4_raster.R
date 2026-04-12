@@ -11,7 +11,7 @@
 #───────────────────────────────────────────────────────────────────────────────
 
 library(terra)
-library(viridis)
+has_viridis <- requireNamespace("viridis", quietly = TRUE)
 
 cat("C4 VEGETATION RASTER EXTRACTION\n")
 cat("===============================\n\n")
@@ -103,23 +103,18 @@ if (!dir.exists("results")) {
   cat("  Created results directory\n")
 }
 
-# Display plot
-plot(
-  c4_total_mean_fixed,
-  main = "Mean total C4 fraction (2001–2019)",
-  col  = viridis(100)
-)
-
-# Save plot to file
-png("results/1_corrected_total_c4.png", width = 800, height = 400, res = 150)
-plot(
-  c4_total_mean_fixed,
-  main = "Corrected TOTAL C4 fraction (2001–2019)",
-  col = viridis(100)
-)
-dev.off()
-
-cat("  Saved visualization: results/1_corrected_total_c4.png\n\n")
+# Save diagnostic plot (skipped if viridis not available, e.g. in container)
+if (has_viridis) {
+  plot(c4_total_mean_fixed, main = "Mean total C4 fraction (2001-2019)",
+       col = viridis::viridis(100))
+  png("results/1_corrected_total_c4.png", width = 800, height = 400, res = 150)
+  plot(c4_total_mean_fixed, main = "Corrected TOTAL C4 fraction (2001-2019)",
+       col = viridis::viridis(100))
+  dev.off()
+  cat("  Saved visualization: results/1_corrected_total_c4.png\n\n")
+} else {
+  cat("  Skipping visualization (viridis not installed)\n\n")
+}
 
 #───────────────────────────────────────────────────────────────────────────────
 # Step 7: Save processed raster for downstream use
