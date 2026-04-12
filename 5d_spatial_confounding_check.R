@@ -190,30 +190,26 @@ for (model_name in spatial_models) {
   cor_value <- cor_result$estimate
   p_value <- cor_result$p.value
   
-  cat("\n┌─ COLLINEARITY RESULTS ─────────────────────────────────────┐\n")
-  cat("│                                                              │\n")
-  cat(sprintf("│  Correlation (r):       %7.3f                           │\n", cor_value))
-  cat(sprintf("│  P-value:               %.3e                         │\n", p_value))
-  cat(sprintf("│  R² (shared variance):  %7.3f                           │\n", cor_value^2))
-  cat("│                                                              │\n")
+  cat("\nCOLLINEARITY RESULTS\n")
+  cat(sprintf("  Correlation (r):       %7.3f\n", cor_value))
+  cat(sprintf("  P-value:               %.3e\n", p_value))
+  cat(sprintf("  R² (shared variance):  %7.3f\n", cor_value^2))
   
   # Interpretation
   abs_cor <- abs(cor_value)
   if (abs_cor > 0.7) {
-    cat("│  ⚠ HIGH CONFOUNDING RISK                                     │\n")
-    cat("│    Spatial term strongly correlated with predictor          │\n")
+    cat("  HIGH CONFOUNDING RISK\n")
+    cat("    Spatial term strongly correlated with predictor\n")
   } else if (abs_cor > 0.5) {
-    cat("│  ⚠ MODERATE CONFOUNDING RISK                                │\n")
-    cat("│    Consider restricted spatial regression                   │\n")
+    cat("  MODERATE CONFOUNDING RISK\n")
+    cat("    Consider restricted spatial regression\n")
   } else if (abs_cor > 0.3) {
-    cat("│  ⚡ LOW-MODERATE CORRELATION                                 │\n")
-    cat("│    Some shared variance but likely acceptable               │\n")
+    cat("  LOW-MODERATE CORRELATION\n")
+    cat("    Some shared variance but likely acceptable\n")
   } else {
-    cat("│  ✓ LOW CONFOUNDING RISK                                     │\n")
-    cat("│    Spatial term is largely independent of predictor         │\n")
+    cat("  LOW CONFOUNDING RISK\n")
+    cat("    Spatial term is largely independent of predictor\n")
   }
-  cat("│                                                              │\n")
-  cat("└──────────────────────────────────────────────────────────────┘\n")
 
   # Determine risk level (outside plot creation for use in results)
   risk_text <- if (abs_cor > 0.7) "HIGH RISK" else if (abs_cor > 0.5) "MODERATE RISK" else "LOW RISK"
@@ -416,27 +412,11 @@ if (length(results_list) > 0) {
   # ───────────────────────────────────────────────────────────────────────
   
   cat("\n")
-  cat("┌────────────────────────────────────────────────────────────────────┐\n")
-  cat("│                    INTERPRETATION GUIDE                            │\n")
-  cat("├────────────────────────────────────────────────────────────────────┤\n")
-  cat("│                                                                    │\n")
-  cat("│  |r| > 0.7:   HIGH confounding risk                               │\n")
-  cat("│              → Consider restricted spatial regression             │\n")
-  cat("│              → Or simulation study to validate slope recovery     │\n")
-  cat("│                                                                    │\n")
-  cat("│  0.5 < |r| ≤ 0.7:  MODERATE risk                                  │\n")
-  cat("│              → Recommend partial R² check (next step)             │\n")
-  cat("│              → Consider prior sensitivity analysis                │\n")
-  cat("│                                                                    │\n")
-  cat("│  0.3 < |r| ≤ 0.5:  LOW-MODERATE correlation                       │\n")
-  cat("│              → Some shared variance but likely acceptable         │\n")
-  cat("│              → Document in supplement                             │\n")
-  cat("│                                                                    │\n")
-  cat("│  |r| ≤ 0.3:   LOW confounding risk                                │\n")
-  cat("│              → Spatial term is largely independent                │\n")
-  cat("│              → Brief mention in methods sufficient                │\n")
-  cat("│                                                                    │\n")
-  cat("└────────────────────────────────────────────────────────────────────┘\n")
+  cat("INTERPRETATION GUIDE\n")
+  cat("  |r| > 0.7:        HIGH confounding risk\n")
+  cat("  0.5 < |r| <= 0.7: MODERATE risk\n")
+  cat("  0.3 < |r| <= 0.5: LOW-MODERATE correlation\n")
+  cat("  |r| <= 0.3:       LOW confounding risk\n")
   
 } else {
   cat("\n⚠ No results to summarize - check model files\n")

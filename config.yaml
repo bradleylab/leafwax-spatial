@@ -1,7 +1,6 @@
-# Configuration file — FINAL RUN (April 2026)
-# All 14 manuscript models + baseline_veg_sp_fixed_range
-# MCMC settings verified against most recent successful run chain CSV headers
-# Dataset: global_data_c29.csv (1131 sites, final verified)
+# Configuration for leafwax spatial d2H calibration pipeline
+# 14 manuscript models (see model_configs below)
+# MCMC settings from most recent successful run chain CSV headers
 
 # scripts
 scripts:
@@ -96,10 +95,8 @@ ppc_settings:
   checks: ["density_overlay", "intervals", "stat_mean", "stat_sd", "spatial_residuals"]
 
 # ─── Models to run ───
-# 14 manuscript comparison models + 1 fixed-range variant = 15 total
-# MCMC settings below are from the ACTUAL chain CSV headers of the most recent
-# successful run (Sep 24, 2025 for _veg models; Aug 30, 2025 for others).
-# Note: iter = total iterations (warmup + sampling). warmup_ratio = 0.5 applies.
+# 14 manuscript comparison models
+# iter = total iterations (warmup + sampling); warmup_ratio = 0.5 applies
 #
 # Non-spatial models: iter=2000, adapt_delta=0.95, max_treedepth=15
 # Spatial _veg models: iter=3000, adapt_delta=0.95, max_treedepth=14
