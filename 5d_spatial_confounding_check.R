@@ -15,7 +15,7 @@ cat(strrep("=", 50), "\n\n")
 
 # Setup directories
 model_dir <- "model_output"
-data_dir <- "prepared_data_consolidated"
+data_dir <- "prepared_data"
 output_dir <- "model_analysis/spatial_confounding"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
