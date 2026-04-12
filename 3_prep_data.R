@@ -15,7 +15,7 @@ library(tidyverse)
 library(sf)
 library(terra)
 
-cat("Prep data for Bayesian modeling (OPTIMIZED VERSION WITH CLIMATE)\n")
+cat("Prep data for Bayesian spatial modeling\n")
 cat("================================================================\n\n")
 
 #───────────────────────────────────────────────────────────────────────────────
@@ -99,7 +99,9 @@ cat("  PFT source grid:  ", paste(dim(modis_pft)[1:2], collapse = " × "),
 c4_rast <- terra::resample(c4_rast, d2h_ann, method = "bilinear")
 cat("  ✓ C4 resampled to", paste(dim(c4_rast)[1:2], collapse = " × "), "\n")
 
-# Clamp and renormalize PFT fractions (bilinear can push values outside [0,1])
+# PFT raster from 2d_downsample_modis.R is in 0-100 percentages; convert to 0-1
+# fractions, resample to OIPC grid, then clamp and renormalize
+modis_pft <- modis_pft / 100
 modis_pft <- terra::resample(modis_pft, d2h_ann, method = "bilinear")
 modis_pft <- terra::clamp(modis_pft, lower = 0, upper = 1, values = TRUE)
 pft_rowsum <- modis_pft[[1]] + modis_pft[[2]] + modis_pft[[3]]
@@ -361,15 +363,6 @@ for (i in 1:n_points) {
   distances <- distances[valid_rows]
   pft_data <- pft_data[valid_rows, ]
   
-  # Downsample if needed
-  if (FALSE) {    # rm if (nrow(pft_data) > MAX_OIPC_PIXELS) {
-    weights <- 1 / (distances + 0.01)^2
-    sampled_idx <- sample(1:nrow(pft_data), MAX_OIPC_PIXELS,
-                          prob = weights, replace = FALSE)
-    distances <- distances[sampled_idx]
-    pft_data <- pft_data[sampled_idx, ]
-  }
-  
   pft_extractions[[i]] <- list(
     n_pixels = length(distances),
     distances = distances,
@@ -623,10 +616,7 @@ sediment_ready <- sediment %>%
     !is.na(oipc_d2h20),
     !is.na(oipc_se20),
     !is.na(elevation_gmted),
-    !is.na(annual_precip),
-    !is.na(soil_moisture),
-    !is.na(max_temp),
-    !is.na(vpd)
+    !is.na(annual_precip)
   )
 
 cat("  Final dataset ready for modeling\n")
