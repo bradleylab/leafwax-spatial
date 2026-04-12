@@ -35,14 +35,14 @@ if [ ! -f "config.yaml" ]; then
     exit 1
 fi
 
-# yq preferred; grep fallback for simple key: value lines
+# Requires yq for YAML parsing (nested keys like scripts.prep_script)
+if ! command -v yq &>/dev/null; then
+    echo "ERROR: yq not found. Install yq or add to PATH." >&2
+    exit 1
+fi
+
 get_config() {
-    local key="$1"
-    if command -v yq &>/dev/null; then
-        yq ".${key}" config.yaml 2>/dev/null | tr -d '"'
-    else
-        grep "${key}:" config.yaml | head -1 | awk '{print $2}' | tr -d '"'
-    fi
+    yq ".${1}" config.yaml 2>/dev/null | tr -d '"'
 }
 
 PREP_SCRIPT=$(get_config 'scripts.prep_script')
@@ -64,12 +64,8 @@ if [ $# -gt 0 ]; then
     MODELS=("$@")
     echo "Single-model mode: ${MODELS[*]}"
 else
-    # All models from config
-    if command -v yq &>/dev/null; then
-        MODELS=($(yq '.model_configs | keys | .[]' config.yaml 2>/dev/null))
-    else
-        MODELS=($(grep "^  [a-z]" config.yaml | grep -v "^  #" | awk -F: '{print $1}' | tr -d ' '))
-    fi
+    # All models from config (yq required, checked above)
+    MODELS=($(yq '.model_configs | keys | .[]' config.yaml 2>/dev/null))
     echo "Full pipeline: ${#MODELS[@]} models"
 fi
 

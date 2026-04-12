@@ -101,6 +101,7 @@ for (model_name in model_names) {
   if (file.exists(fit_file)) {
     cat("✓ Model already fit - loading existing results\n")
     fit <- readRDS(fit_file)
+    status <- "completed"
     # Load runtime info if available
     runtime_file <- file.path(output_dir, "runtime_info.rds")
     if (file.exists(runtime_file)) {
