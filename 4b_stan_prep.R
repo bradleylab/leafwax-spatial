@@ -31,20 +31,8 @@ required_coord_cols <- c("c4_lon", "c4_lat", "oipc_lon", "oipc_lat",
 missing_coords <- required_coord_cols[!required_coord_cols %in% names(sediment)]
 
 if (length(missing_coords) > 0) {
-  cat("\nWARNING: Missing coordinate columns:", paste(missing_coords, collapse = ", "), "\n")
-  cat("         Attempting to compute distances from pixel arrays...\n")
-  
-  # If coordinates are missing, we need to extract them from the data
-  # This assumes each pixel array has associated coordinates
-  # Modify based on actual data structure if needed
-  
-  # Example: If coordinates are stored within the list columns
-  if (!"c4_lon" %in% names(sediment) && "c4_values_filled" %in% names(sediment)) {
-    cat("  Extracting C4 coordinates from data...\n")
-    # This is a placeholder - adjust based on your actual data structure
-    # sediment$c4_lon <- lapply(sediment$c4_values_filled, function(x) attr(x, "lon"))
-    # sediment$c4_lat <- lapply(sediment$c4_values_filled, function(x) attr(x, "lat"))
-  }
+  stop("Missing coordinate columns: ", paste(missing_coords, collapse = ", "),
+       "\n  3_prep_data.R should produce these. Re-run data preparation.")
 }
 
 # Check for climate data columns

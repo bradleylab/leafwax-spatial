@@ -997,14 +997,9 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     oipc_x_grass_matrix_std <- matrix(0, N, n_scales)
   }
   
-  # Handle missing values by interpolating across scales.
-  # For each site-scale cell with NA, fill with the site's mean across other
-  # scales. If all scales are NA, fill with `default` (0 on standardized scale
-  # = population mean; 0.33 for PFT fractions = equal-split default; 0.1 for
-  # OIPC SE = small positive value for numerical stability).
+  # Fill NA cells with site mean across scales, or `default` if all NA
   cat("\nHandling missing values...\n")
 
-  # Helper: fill NA cells in row i of a matrix with the row mean, or a default.
   fill_na_row <- function(mat, i, default = 0) {
     if (any(is.na(mat[i, ]))) {
       non_na <- mat[i, !is.na(mat[i, ])]
@@ -1014,7 +1009,7 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     mat
   }
 
-  # Diagnostic: count NAs per matrix before filling (Fix 7).
+  # Diagnostic: count NAs per matrix before filling
   count_na <- function(mat, name) {
     n <- sum(is.na(mat))
     if (n > 0) cat("  NA fill:", name, "—", n, "cells (",
@@ -1153,14 +1148,13 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     stop("Matrices contain NaN/NA/Inf values after zero-fill — cannot proceed")
   }
 
-  # Assertion (Fix 7): interaction matrices must have non-zero variance.
-  # If they're uniformly zero, it means the P0-1 grid-alignment fix did not
-  # take effect and all models with interactions will be scientifically invalid.
+  # Interaction matrices must have non-zero variance (uniformly-zero
+  # interactions indicate failed grid alignment in 3_prep_data.R)
   if (include_c4) {
     interaction_var <- var(as.vector(oipc_x_c4_matrix_std))
     cat("  OIPC×C4 interaction variance:", signif(interaction_var, 4), "\n")
     stopifnot(
-      "OIPC×C4 interaction matrix has zero variance — grid alignment fix may have failed" =
+      "OIPC×C4 interaction matrix has zero variance — check raster grid alignment" =
         interaction_var > 0
     )
   }
@@ -1173,7 +1167,7 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
       pft_var <- var(as.vector(pft_mat))
       cat("  OIPC×", pft_name, " interaction variance: ", signif(pft_var, 4), "\n", sep = "")
       if (pft_var == 0) {
-        stop("OIPC×", pft_name, " interaction matrix has zero variance — grid alignment fix may have failed")
+        stop("OIPC×", pft_name, " interaction matrix has zero variance — check raster grid alignment")
       }
     }
   }

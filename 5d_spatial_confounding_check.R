@@ -10,9 +10,8 @@ library(cmdstanr)
 library(posterior)
 library(patchwork)  # For combining plots with / operator
 
-cat("\n╔══════════════════════════════════════════════════════════════╗\n")
-cat("║     SPATIAL CONFOUNDING DIAGNOSTIC (Quick Check)             ║\n")
-cat("╚══════════════════════════════════════════════════════════════╝\n\n")
+cat("\nSPATIAL CONFOUNDING DIAGNOSTIC (Quick Check)\n")
+cat(strrep("=", 50), "\n\n")
 
 # Setup directories
 model_dir <- "model_output"
