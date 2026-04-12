@@ -91,7 +91,7 @@ for (i in 1:N) {
 K_obs <- K_obs + diag(1e-4, N)
 cat("Covariance matrix computed.\n\n")
 
-# ─── FIX #2: Generate z_indep ONCE, reuse across scenarios ───
+# ─── Generate z_indep ONCE, reuse across scenarios ───
 cat("Drawing independent GP (shared across all scenarios)...\n")
 set.seed(42)
 z_indep <- mvrnorm(1, mu = rep(0, N), Sigma = sigma_int_std^2 * K_obs)
@@ -108,13 +108,13 @@ generate_confounding_intercept <- function(oipc, z_indep, rho, sigma_z) {
   return(z_confound)
 }
 
-# ─── Fit helper with FIX #1: re-standardize synthetic d2H_wax ───
+# ─── Fit helper: re-standardize synthetic d2H_wax ───
 fit_and_save <- function(stan_data_orig, d2h_sim, scenario_name,
                          true_beta_unstd, metadata, model, config) {
   outdir <- file.path("model_output", paste0("confounding_v2_", scenario_name))
   dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
 
-  # FIX #1: re-standardize simulated d2H_wax
+  # Re-standardize simulated d2H_wax to mean=0, sd=1
   sim_mean <- mean(d2h_sim)
   sim_sd <- sd(d2h_sim)
   d2h_std <- (d2h_sim - sim_mean) / sim_sd
@@ -131,7 +131,7 @@ fit_and_save <- function(stan_data_orig, d2h_sim, scenario_name,
   sd_sim <- stan_data_orig
   sd_sim$d2H_wax <- as.numeric(d2h_std)
 
-  # FIX #3: rescale measurement errors to new standardization
+  # Rescale measurement errors to new standardization
   # Original d2H_wax_err is in units of (original permil / d2H_wax_sd_original)
   # New standardization divides by sim_sd additionally
   sd_sim$d2H_wax_err <- stan_data_orig$d2H_wax_err / sim_sd

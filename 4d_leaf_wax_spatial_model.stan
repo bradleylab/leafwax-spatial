@@ -120,7 +120,8 @@ data {
   real lambda_prior_mean_log;
   real<lower=0> lambda_prior_sd_log;
   
-  // PC prior parameters for spatial effects
+  // PC prior parameters for spatial effects (flags passed but always TRUE;
+  // exponential PC priors are applied unconditionally in the model block)
   int<lower=0, upper=1> use_pc_prior_intercept;
   real<lower=0> pc_prior_intercept_u;
   real<lower=0, upper=1> pc_prior_intercept_alpha;
@@ -138,7 +139,7 @@ transformed data {
   // Number of B-spline coefficients
   int n_bspline_coef = n_basis_knots + spline_degree + 1;
   
-  // Average coordinate scaling for length scale conversion (MOVED UP)
+  // Average coordinate scaling for length scale conversion
   real coord_scale_km = mean(coord_scaling) * 111.0;  // Approx km per degree
   
   // Pre-compute density-based regularization factors
