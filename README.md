@@ -114,6 +114,43 @@ These scripts require completed model fits in `model_output/`.
 
 All hyperparameters, model definitions, and MCMC settings are in `config.yaml`.
 
+## Repository layout
+
+| Path | Contents |
+|------|----------|
+| `*.R`, `*.py`, `*.stan`, `*.sh` (root) | Pipeline code (steps 0-5, post-hoc analysis, launcher) |
+| `config.yaml` | MCMC settings + 14 model specifications |
+| `input_data/` | Canonical model input (1131-site d2H CSV; rasters fetched separately) |
+| `slurm/` | SLURM submission scripts for WashU Compute2 |
+| `data/compilation/` | Data-prep pipeline that builds `global_data_c29.csv` (Python, source supplements, Hren-Brandon cross-check) |
+| `data/HrenBrandon/` | Hren & Brandon (2013) supplementary tables used in cross-check |
+| `results/` | Local copy of C2 model output (git-ignored; mirror of `s3://bradleylab-public/tmp/leafwax_run/`) |
+| `manuscript/figure_code/` | R scripts that render main text figures from fitted models |
+| `manuscript/figures/` | Rendered main + supplementary figures |
+| `manuscript/tables/` | `.tex` and `.md` sources for main + supplement tables |
+| `manuscript/submission/` | GCA submission package (text, supplement, checklist, reviewers) |
+| `archive/` | Superseded drafts, figures, validation scripts, and prior methods docs |
+
+The data → code → run → results → manuscript flow:
+
+```
+data/compilation/*.py  -->  input_data/global_data_c29.csv
+                                     |
+                          Rscript 1_extract_c4_raster.R  (+ 2c/2d/2f rasters)
+                                     |
+                          Rscript 3_prep_data.R
+                                     |
+                          ./launch_pipeline.sh  (or slurm/submit.sh)
+                                     |
+                                results/<run>/*/fit.rds
+                                     |
+                          manuscript/figure_code/*.R  + 5a-5d_*.R, extract_*.R
+                                     |
+                   manuscript/figures/*  +  manuscript/tables/*
+                                     |
+                          manuscript/submission/
+```
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
