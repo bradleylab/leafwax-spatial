@@ -1,12 +1,8 @@
-# Ignore everything
-*
-*/
+# Ignore everything at root
+/*
+/*/
 
-#Add input_data
-!input_data/
-!input_data/global_data_c29.csv
-
-# But not these files
+# Allowlist top-level code / config / infra
 !*.R
 !*.stan
 !*.py
@@ -19,8 +15,29 @@
 !.github/
 !.github/**
 
-# Still ignore these even if they match above
-.Rhistory
-.RData
-.DS_Store
+# Allowlist canonical input dataset
+!input_data/
+!input_data/global_data_c29.csv
+
+# Allowlist new project subtrees
+!manuscript/
+!manuscript/**
+!data/
+!data/**
+!archive/
+!archive/**
+
+# Within those subtrees, still exclude junk
+**/.DS_Store
+**/.Rhistory
+**/.RData
+**/.claude/
+**/.ruff_cache/
+**/__pycache__/
+**/*.bak
+**/*.bak_*
+**/scheduled_tasks.lock
+
+# Root-level working files to keep out
 check_all_knots.R
+results/
