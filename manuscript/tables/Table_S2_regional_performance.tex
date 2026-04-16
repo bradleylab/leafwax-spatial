@@ -1,0 +1,119 @@
+\documentclass[8pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[margin=0.6in]{geometry}
+\usepackage{xcolor,colortbl}
+\usepackage{array}
+\definecolor{lightgray}{gray}{0.9}
+\setlength{\parindent}{0pt}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{0.95}
+\pagestyle{empty}
+
+\begin{document}
+
+\footnotesize
+\begin{longtable}{@{}l>{\raggedright\arraybackslash}p{2cm}rrr@{}}
+\caption*{\textbf{Table S2.} Regional model performance across all model variants. RMSE values in \textperthousand\ and R² for each region. Overall performance shown in highlighted rows, followed by regional breakdowns. Models with '\_sp' suffix use spatial GP.} \\
+\toprule
+\textbf{Model} & \textbf{Region} & \textbf{N} & \textbf{RMSE} & \textbf{R²} \\
+\midrule
+\endfirsthead
+
+\multicolumn{5}{c}{Table S2 (continued)} \\
+\toprule
+\textbf{Model} & \textbf{Region} & \textbf{N} & \textbf{RMSE} & \textbf{R²} \\
+\midrule
+\endhead
+
+\bottomrule
+\endlastfoot
+
+\rowcolor{lightgray} \textbf{baseline} & \textbf{Overall} & \textbf{818} & \textbf{21.1} & \textbf{0.703} \\
+ & Africa & 133 & 20.2 & 0.013 \\
+ & Americas & 221 & 14.9 & 0.902 \\
+ & Asia & 391 & 22.0 & 0.343 \\
+ & Europe & 32 & 15.6 & 0.700 \\
+ & Oceania & 41 & 39.8 & 0.676 \\
+\rowcolor{lightgray} \textbf{baseline\_sp} & \textbf{Overall} & \textbf{818} & \textbf{15.5} & \textbf{0.840} \\
+ & Africa & 133 & 11.7 & 0.594 \\
+ & Americas & 221 & 10.0 & 0.954 \\
+ & Asia & 391 & 19.1 & 0.467 \\
+ & Europe & 32 & 12.2 & 0.753 \\
+ & Oceania & 41 & 13.6 & 0.816 \\
+\rowcolor{lightgray} \textbf{baseline\_env} & \textbf{Overall} & \textbf{818} & \textbf{19.6} & \textbf{0.743} \\
+ & Africa & 133 & 19.2 & 0.057 \\
+ & Americas & 221 & 15.2 & 0.896 \\
+ & Asia & 391 & 20.9 & 0.373 \\
+ & Europe & 32 & 13.6 & 0.730 \\
+ & Oceania & 41 & 30.3 & 0.691 \\
+\rowcolor{lightgray} \textbf{baseline\_env\_sp} & \textbf{Overall} & \textbf{818} & \textbf{14.8} & \textbf{0.854} \\
+ & Africa & 133 & 11.3 & 0.627 \\
+ & Americas & 221 & 10.2 & 0.952 \\
+ & Asia & 391 & 18.1 & 0.524 \\
+ & Europe & 32 & 12.0 & 0.763 \\
+ & Oceania & 41 & 13.4 & 0.813 \\
+\rowcolor{lightgray} \textbf{baseline\_veg} & \textbf{Overall} & \textbf{818} & \textbf{20.4} & \textbf{0.721} \\
+ & Africa & 133 & 16.2 & 0.251 \\
+ & Americas & 221 & 17.1 & 0.873 \\
+ & Asia & 391 & 21.5 & 0.374 \\
+ & Europe & 32 & 17.2 & 0.662 \\
+ & Oceania & 41 & 35.5 & 0.679 \\
+\rowcolor{lightgray} \textbf{baseline\_veg\_sp} & \textbf{Overall} & \textbf{818} & \textbf{15.1} & \textbf{0.848} \\
+ & Africa & 133 & 10.7 & 0.663 \\
+ & Americas & 221 & 10.0 & 0.954 \\
+ & Asia & 391 & 18.8 & 0.489 \\
+ & Europe & 32 & 12.7 & 0.730 \\
+ & Oceania & 41 & 13.0 & 0.821 \\
+\rowcolor{lightgray} \textbf{full} & \textbf{Overall} & \textbf{818} & \textbf{19.3} & \textbf{0.751} \\
+ & Africa & 133 & 16.1 & 0.244 \\
+ & Americas & 221 & 16.8 & 0.873 \\
+ & Asia & 391 & 20.6 & 0.392 \\
+ & Europe & 32 & 14.2 & 0.709 \\
+ & Oceania & 41 & 29.4 & 0.648 \\
+\rowcolor{lightgray} \textbf{full\_sp} & \textbf{Overall} & \textbf{818} & \textbf{14.6} & \textbf{0.858} \\
+ & Africa & 133 & 10.3 & 0.689 \\
+ & Americas & 221 & 10.0 & 0.953 \\
+ & Asia & 391 & 17.9 & 0.533 \\
+ & Europe & 32 & 12.5 & 0.740 \\
+ & Oceania & 41 & 13.0 & 0.820 \\
+\rowcolor{lightgray} \textbf{full\_interact} & \textbf{Overall} & \textbf{818} & \textbf{19.3} & \textbf{0.751} \\
+ & Africa & 133 & 16.2 & 0.242 \\
+ & Americas & 221 & 16.8 & 0.873 \\
+ & Asia & 391 & 20.6 & 0.391 \\
+ & Europe & 32 & 14.3 & 0.708 \\
+ & Oceania & 41 & 29.4 & 0.645 \\
+\rowcolor{lightgray} \textbf{full\_interact\_sp} & \textbf{Overall} & \textbf{818} & \textbf{14.6} & \textbf{0.858} \\
+ & Africa & 133 & 10.3 & 0.689 \\
+ & Americas & 221 & 10.1 & 0.953 \\
+ & Asia & 391 & 17.9 & 0.533 \\
+ & Europe & 32 & 12.6 & 0.738 \\
+ & Oceania & 41 & 13.0 & 0.819 \\
+\rowcolor{lightgray} \textbf{elevation\_only\_sp} & \textbf{Overall} & \textbf{818} & \textbf{14.8} & \textbf{0.853} \\
+ & Africa & 133 & 11.3 & 0.627 \\
+ & Americas & 221 & 10.2 & 0.952 \\
+ & Asia & 391 & 18.1 & 0.523 \\
+ & Europe & 32 & 12.0 & 0.762 \\
+ & Oceania & 41 & 13.4 & 0.814 \\
+\rowcolor{lightgray} \textbf{elevation\_c4\_sp} & \textbf{Overall} & \textbf{818} & \textbf{14.8} & \textbf{0.854} \\
+ & Africa & 133 & 11.3 & 0.625 \\
+ & Americas & 221 & 10.1 & 0.952 \\
+ & Asia & 391 & 18.1 & 0.524 \\
+ & Europe & 32 & 12.0 & 0.761 \\
+ & Oceania & 41 & 13.2 & 0.816 \\
+\rowcolor{lightgray} \textbf{c4\_only\_sp} & \textbf{Overall} & \textbf{818} & \textbf{15.5} & \textbf{0.839} \\
+ & Africa & 133 & 12.0 & 0.574 \\
+ & Americas & 221 & 10.1 & 0.953 \\
+ & Asia & 391 & 19.2 & 0.466 \\
+ & Europe & 32 & 12.3 & 0.750 \\
+ & Oceania & 41 & 13.4 & 0.822 \\
+\rowcolor{lightgray} \textbf{elevation\_c4\_interact\_sp} & \textbf{Overall} & \textbf{818} & \textbf{14.8} & \textbf{0.853} \\
+ & Africa & 133 & 11.3 & 0.622 \\
+ & Americas & 221 & 10.1 & 0.952 \\
+ & Asia & 391 & 18.1 & 0.523 \\
+ & Europe & 32 & 12.0 & 0.761 \\
+ & Oceania & 41 & 13.3 & 0.816 \\
+\end{longtable}
+
+\end{document}

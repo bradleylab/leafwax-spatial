@@ -1,0 +1,52 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[margin=0.6in,landscape]{geometry}
+\usepackage{xcolor,colortbl}
+\usepackage{array}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.1}
+
+\begin{document}
+
+\small
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{4.8cm}@{}}
+\caption*{\textbf{Table S1.} Prior distributions used in the geospatial Bayesian leaf wax model} \\
+\toprule
+\textbf{Parameter} & \textbf{Description} & \textbf{Prior} & \textbf{Informativeness} & \textbf{Justification} \\
+\midrule
+\endfirsthead
+
+\multicolumn{5}{c}{Table S1 (continued)} \\
+\toprule
+\textbf{Parameter} & \textbf{Description} & \textbf{Prior} & \textbf{Informativeness} & \textbf{Justification} \\
+\midrule
+\endhead
+
+\bottomrule
+\endlastfoot
+
+$\beta_0$ & Global intercept for $\delta^2\mathrm{H}_{\text{wax}}$ & normal(0, 5) & Weakly informative & Wide SD allows intercept to adapt to data; centered at 0 for standardized $\delta^2\mathrm{H}_{\text{wax}}$ \\
+$\beta_{\text{OIPC}}$ & Global coefficient for $\delta^2\mathrm{H}_{\text{precip}}$ & normal(0.8, 0.3) & Informative & Prior based on OLS; SD of 0.3 allows 0.2--1.4 range \\
+$\lambda_{\text{decay}}$ & Exponential decay for spatial scale weighting & lognormal(2.5, 0.5) & Weakly informative & Centers at $\sim$12~km based on preliminary analysis; allows flexibility \\
+$\beta_{\text{C4}}$ & C$_4$ fraction coefficient & normal(0, 2) & Weakly informative & Centered at 0 with wide SD \\
+$\beta_{\text{tree}}$ & Tree fraction coefficient & normal(0, 2) & Weakly informative & Centered at 0 with wide SD \\
+$\beta_{\text{shrub}}$ & Shrub fraction coefficient & normal(0, 2) & Weakly informative & Centered at 0 with wide SD \\
+$\beta_{\text{grass}}$ & Grass fraction coefficient & normal(0, 2) & Weakly informative & Centered at 0 with wide SD \\
+$\beta_{\text{precip}}$ & Precipitation coefficient & normal(0, 0.5) & Moderately informative & Matches interaction prior scale; allows moderate effect while regularizing \\
+$\beta_{\text{elev}}[k]$ & B-spline coefficients & $\beta_{\text{elev}}[1] \sim$ Normal(0, $\tau_{\text{elev}}$); $\beta_{\text{elev}}[k] \sim$ Normal($\beta_{\text{elev}}[k-1]$, $\tau_{\text{elev}}$) for $k > 1$ & Moderately informative & Encourages smooth elevation response \\
+$\tau_{\text{elev}}$ & Elevation spline smoothness & normal(0, 1) & Moderately informative & Controls smoothness between knots \\
+$\sigma_{\text{intercept}}$ & SD of spatial intercept GP & exponential($\lambda_{\text{intercept}}$) where $\lambda_{\text{intercept}} = -\log(0.05)/20$ & PC prior & P($\sigma > u$) = $\alpha$; with $u = 20$\textperthousand, $\alpha = 0.05$ \\
+$\sigma_{\text{slope}}$ & SD of spatial slope GP & exponential($\lambda_{\text{slope}}$) where $\lambda_{\text{slope}} = -\log(0.05)/0.3$ & PC prior & P($\sigma > u$) = $\alpha$; with $u = 0.3$, $\alpha = 0.05$ \\
+$\log(\rho_{\text{spatial}})$ & Log length scale for GP & normal($-1.0$, 0.4) & Moderately informative & Centered on $\sim$1850~km scale for regional climate variations \\
+$z_{\text{intercept}}[k]$, $z_{\text{slope}}[k]$ & Standardized spatial effects at knots & normal(0, $\tau_k$); $\tau \in [0.5, 0.8] \times$ range\_factor (slopes only) & Density/range-adaptive & Adaptive regularization to data density and OIPC range; prevents unrealistic values \\
+$\sigma$ & Residual SD (includes nugget) & normal(0, 2) & Weakly informative & Determined by data \\
+$\beta_{\text{OIPC} \times \text{C4}}$ & OIPC $\times$ C$_4$ interaction & normal(0, 0.5) & Moderately informative & Moderate interactions expected \\
+$\beta_{\text{OIPC} \times \text{PFT}}$ & OIPC $\times$ PFT interactions & normal(0, 0.5) & Moderately informative & Moderate interactions expected \\
+\end{longtable}
+
+\end{document}
