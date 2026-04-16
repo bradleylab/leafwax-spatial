@@ -1,0 +1,33 @@
+\begin{landscape}
+\begin{table}[htbp]
+\centering
+\caption{Model performance metrics for all candidate models}
+\label{tab:model_performance}
+\footnotesize
+\begin{tabular}{@{}lp{4.5cm}cccccccc@{}}
+\toprule
+Model & Predictors & Max $\hat{R}$ & Min ESS & LOOIC & SE & $\Delta$LOOIC & SE & $p_{\text{eff}}$ & $n_{\text{hi-k}}$ \\
+\midrule
+baseline & $\delta^2$H$_p$ & 1.004 & 3474 & 1336.7 & 53.0 & 493.5 & 54.8 & 3.6 & 0 \\
+baseline$\_{\text{sp}}$ & $\delta^2$H$_p$ + GP & 1.008 & 1428 & 913.9 & 73.3 & 70.7 & 22.9 & 43.5 & 3 \\
+baseline\_env & $\delta^2$H$_p$, elev, precip & 1.004 & 1000 & 1235.7 & 58.1 & 392.5 & 44.7 & 14.0 & 0 \\
+baseline\_env$\_{\text{sp}}$ & $\delta^2$H$_p$, elev, precip + GP & 1.003 & 1428 & 860.6 & 81.5 & 17.4 & 7.5 & 52.8 & 2 \\
+baseline\_veg & $\delta^2$H$_p$, PFT, C4 & 1.003 & 3473 & 1290.7 & 51.0 & 447.5 & 54.8 & 8.2 & 0 \\
+baseline\_veg$\_{\text{sp}}$ & $\delta^2$H$_p$, PFT, C4 + GP & 1.005 & 928 & 885.0 & 74.6 & 41.8 & 20.0 & 48.5 & 2 \\
+full & $\delta^2$H$_p$, PFT, C4, elev, precip & 1.006 & 1129 & 1217.8 & 57.5 & 374.6 & 44.4 & 17.7 & 0 \\
+full$\_{\text{sp}}$ & $\delta^2$H$_p$, PFT, C4, elev, precip + GP & 1.004 & 1581 & 843.2 & 80.4 & 0.0 & 0.5 & 55.9 & 2 \\
+full\_interact & $\delta^2$H$_p$, PFT $\times$ $\delta^2$H$_p$, C4 $\times$ $\delta^2$H$_p$, elev, precip & 1.010 & 971 & 1218.2 & 57.6 & 375.0 & 44.3 & 17.9 & 0 \\
+full\_interact$\_{\text{sp}}$ & $\delta^2$H$_p$, PFT $\times$ $\delta^2$H$_p$, C4 $\times$ $\delta^2$H$_p$, elev, precip + GP & 1.006 & 1743 & 843.2 & 80.3 & 0.0 & 0.0 & 56.0 & 2 \\
+elevation\_only$\_{\text{sp}}$ & $\delta^2$H$_p$, elev + GP & 1.005 & 1484 & 860.7 & 81.1 & 17.5 & 7.3 & 52.7 & 2 \\
+elevation\_c4$\_{\text{sp}}$ & $\delta^2$H$_p$, elev, C4 + GP & 1.003 & 1458 & 862.5 & 80.7 & 19.3 & 7.0 & 52.6 & 3 \\
+c4\_only$\_{\text{sp}}$ & $\delta^2$H$_p$, C4 + GP & 1.007 & 1703 & 916.1 & 72.4 & 72.9 & 23.9 & 41.7 & 2 \\
+elevation\_c4\_interact$\_{\text{sp}}$ & $\delta^2$H$_p$, C4 $\times$ $\delta^2$H$_p$, elev + GP & 1.010 & 1440 & 862.7 & 80.9 & 19.5 & 7.1 & 52.4 & 2 \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}
+\vspace{2mm}
+\footnotesize
+\textit{Note:} $\hat{R}$ = Gelman-Rubin convergence diagnostic; ESS = effective sample size; LOOIC = leave-one-out information criterion; SE = standard error; $p_{\text{eff}}$ = effective number of parameters; $n_{\text{hi-k}}$ = number of high Pareto-$k$ values; GP = Gaussian process; $\delta^2$H$_p$ = $\delta^2$H$_{\text{precip}}$; elev = elevation.
+\end{minipage}
+\end{table}
+\end{landscape}

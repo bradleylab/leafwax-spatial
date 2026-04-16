@@ -1,0 +1,33 @@
+\begin{landscape}
+\begin{table}[htbp]
+\centering
+\caption{Environmental covariate coefficients}
+\label{tab:environmental}
+\scriptsize
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Model & $\beta_{\text{C4}}$ & $\beta_{\text{tree}}$ & $\beta_{\text{shrub}}$ & $\beta_{\text{grass}}$ & $\beta_{\text{precip}}$ \\
+\midrule
+baseline & - & - & - & - & - \\
+baseline$\_{\text{sp}}$ & - & - & - & - & - \\
+baseline\_env & - & - & - & - & -0.053 [-0.078, -0.028] \\
+baseline\_env$\_{\text{sp}}$ & - & - & - & - & 0.009 [-0.023, 0.042] \\
+baseline\_veg & -0.037 [-0.121, 0.047] & -0.005 [-0.007, -0.003] & 0.001 [-0.001, 0.003] & -0.002 [-0.003, -0.001] & - \\
+baseline\_veg$\_{\text{sp}}$ & 0.132 [0.030, 0.232] & -0.001 [-0.003, 0.001] & 0.002 [-0.000, 0.004] & -0.002 [-0.004, -0.001] & - \\
+full & -0.069 [-0.160, 0.022] & -0.003 [-0.005, -0.001] & 0.001 [-0.001, 0.003] & -0.002 [-0.004, -0.001] & -0.027 [-0.055, 0.002] \\
+full$\_{\text{sp}}$ & 0.049 [-0.058, 0.157] & -0.002 [-0.004, 0.001] & 0.002 [-0.001, 0.004] & -0.002 [-0.003, -0.001] & 0.017 [-0.016, 0.050] \\
+full\_interact & -0.069 [-0.160, 0.024] & -0.003 [-0.005, -0.001] & 0.001 [-0.001, 0.003] & -0.002 [-0.004, -0.001] & -0.027 [-0.055, 0.002] \\
+full\_interact$\_{\text{sp}}$ & 0.049 [-0.057, 0.156] & -0.002 [-0.004, 0.001] & 0.002 [-0.001, 0.004] & -0.002 [-0.003, -0.001] & 0.017 [-0.017, 0.050] \\
+elevation\_only$\_{\text{sp}}$ & - & - & - & - & - \\
+elevation\_c4$\_{\text{sp}}$ & 0.032 [-0.066, 0.129] & - & - & - & - \\
+c4\_only$\_{\text{sp}}$ & 0.111 [0.014, 0.203] & - & - & - & - \\
+elevation\_c4\_interact$\_{\text{sp}}$ & 0.032 [-0.067, 0.131] & - & - & - & - \\
+\bottomrule
+\end{tabular}
+\begin{minipage}{\linewidth}
+\vspace{2mm}
+\scriptsize
+\textit{Note:} Coefficient estimates shown as mean [95\% credible interval]. $\beta_{\text{C4}}$ = C4 grass fraction effect; $\beta_{\text{tree}}$, $\beta_{\text{shrub}}$, $\beta_{\text{grass}}$ = plant functional type effects; $\beta_{\text{precip}}$ = precipitation effect. Dashes indicate parameters not included in model.
+\end{minipage}
+\end{table}
+\end{landscape}
