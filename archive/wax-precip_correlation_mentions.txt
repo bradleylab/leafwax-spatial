@@ -1,0 +1,28 @@
+Hou2008:
+D/H ratios of aquatic lipids in lake sediments have been
+shown to track D/H ratios of lake water and precipitation
+in regions with high precipitation/evaporation (P/E) ratios
+(Sauer et al., 2001; Huang et al., 2002, 2004; Hou et al.,
+2006).
+
+Berke2019: 
+A strong relationship between mean annual precipita-
+tion d2H and plant wax d2 H values has been observed from sedimentary reconstructions (e.g. Sauer et al., 2001; Huang
+et al., 2004; Sachse et al., 2004; Hou et al., 2007b).
+Although we know that there is temporal and spatial aver-
+aging of plant species isotopic composition into the sedi-
+ments, this correlation often leads to the interpretation
+that waxes integrate the isotopic ratios of the annual precip-
+itation in a given region, paving the way for their use as a
+proxy for mean annual precipitation in paleoreconstruc-
+tions. 
+
+McFarlin2019-APPLICATIONS:
+this seemingly
+reliable relationship allows for the reconstruction of precipitation d2H values using some plant wax d2H values from sedimentary archives 
+(Contreras-Rosales et al., 2014; Feakins et al., 2012; Hepp et al., 2014; Pagani et al., 2006; Tierney et al., 2011, 2008).
+
+
+
+leafwax package - in standardized units????
+check this

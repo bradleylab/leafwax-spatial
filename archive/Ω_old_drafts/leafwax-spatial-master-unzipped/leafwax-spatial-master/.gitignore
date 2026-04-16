@@ -1,0 +1,21 @@
+# Ignore everything
+*
+*/
+
+#Add input_data
+!input_data/
+!input_data/global_data_c29.csv
+
+# But not these files
+!*.R
+!*.stan
+!*.py
+!.gitignore
+!README.md
+!config.yaml
+
+# Still ignore these even if they match above
+.Rhistory
+.RData
+.DS_Store
+check_all_knots.R
