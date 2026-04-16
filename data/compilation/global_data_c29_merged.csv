@@ -1,0 +1,1093 @@
+source,compilation,location,latitude,longitude,elevation,d2H_precip,d2H_precip_err,d2H_precip_year,chain,d2H_wax,d2H_wax_err,data_source,Sample Type,Functional Type,MAP (mm/yr),MAT (°C),DOI,Audit Flags
+Aichner et al 2010,McFarlin,SET 16 (Er Hai),25.92,100.12,1967.0,-73.0,2.0,2018.0,29,-172.0,1.0,original,,,,,,
+Aichner et al 2010,McFarlin,Qai-07 (Xiao Qaidam),37.46,95.58,3174.0,-43.0,4.0,2018.0,29,-156.0,2.0,original,,,,,,
+Aichner et al 2010,McFarlin,Qai-02 (Ga Hai),37.036,100.576,3205.0,-57.0,6.0,2018.0,29,-150.0,6.0,original,,,,,,
+Aichner et al 2010,McFarlin,LC 05 (Cuo More),29.813,94.433,4050.0,-126.0,4.0,2018.0,29,-230.0,2.0,original,,,,,,
+Aichner et al 2010,McFarlin,Donggi Cona,35.227,98.65,4095.0,-76.0,5.0,2018.0,29,-162.0,12.0,original,,,,,,
+Aichner et al 2010,McFarlin,LC 06 (Cuo Ang),29.825,94.456,4132.0,-127.0,4.0,2018.0,29,-232.0,0.0,original,,,,,,
+Aichner et al 2010,McFarlin,MiY 46,34.679,98.064,4233.0,-97.0,4.0,2018.0,29,-169.0,4.0,original,,,,,,
+Aichner et al 2010,McFarlin,LC 10,29.654,96.716,4431.0,-122.0,7.0,2018.0,29,-193.0,2.0,original,,,,,,
+Aichner et al 2010,McFarlin,Koucha,34.024,97.22,4541.0,-111.0,4.0,2018.0,29,-180.0,5.0,original,,,,,,
+Aichner et al 2010,McFarlin,MiY 39,33.99,97.455,4581.0,-112.0,4.0,2018.0,29,-205.0,4.0,original,,,,,,
+Aichner et al 2010,McFarlin,MiY 42,34.03,97.545,4617.0,-112.0,5.0,2018.0,29,-189.0,13.0,original,,,,,,
+Aichner et al 2010,McFarlin,CTP 35,34.158,95.977,4701.0,-113.0,5.0,2018.0,29,-188.0,5.0,original,,,,,,
+Aichner et al 2010,McFarlin,CTP 20,32.098,89.528,4724.0,-135.0,5.0,2018.0,29,-194.0,1.0,original,,,,,,
+Aichner et al 2019,McFarlin,"Karakul, Tajikistan",39.018,73.233,3915.0,-126.0,5.0,2019.0,29,-161.0,3.3,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.63,80.75,1900.0,-49.0,,,29,-190.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.23,81.67,2450.0,-57.0,,,29,-189.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.22,81.23,2900.0,-64.0,,,29,-186.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.22,81.22,3000.0,-65.0,,,29,-183.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.2,81.2,3200.0,-68.0,,,29,-190.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.65,77.12,3836.0,-76.0,,,29,-183.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.55,77.13,4450.0,-85.0,,,29,-190.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.55,77.08,4550.0,-86.0,,,29,-192.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.55,77.05,4650.0,-88.0,,,29,-194.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.58,77.01,4760.0,-89.0,,,29,-198.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.57,77.0,4850.0,-91.0,,,29,-197.0,,original,,,,,,
+"Bai et al., 2011",Liu,Mt Kunlun,36.57,77.0,4993.0,-93.0,,,29,-198.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,38.02,102.38,1755.0,-42.0,,,29,-159.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,38.0,102.35,1793.0,-42.0,,,29,-174.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.94,102.3,1924.0,-42.0,,,29,-155.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.92,102.22,2059.0,-46.0,,,29,-157.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.83,104.08,2060.0,-42.0,,,29,-215.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.89,102.17,2098.0,-46.0,,,29,-161.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.89,102.12,2143.0,-46.0,,,29,-169.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.88,102.07,2184.0,-46.0,,,29,-167.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.88,102.07,2184.0,-46.0,,,29,-164.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.78,104.04,2350.0,-46.0,,,29,-212.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.8,102.0,2363.0,-50.0,,,29,-147.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.75,101.95,2514.0,-53.0,,,29,-142.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.79,104.0,2550.0,-49.0,,,29,-206.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.73,101.93,2568.0,-53.0,,,29,-156.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.71,101.92,2637.0,-53.0,,,29,-160.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.62,101.9,2690.0,-53.0,,,29,-148.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.78,103.98,2720.0,-52.0,,,29,-241.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.69,101.88,2765.0,-54.0,,,29,-161.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.22,97.978,2779.0,-54.0,,,29,-166.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.66,101.86,2885.0,-54.0,,,29,-148.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.77,103.96,2960.0,-58.0,,,29,-199.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.65,101.86,2967.0,-55.0,,,29,-157.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.32,97.85,2970.0,-54.0,,,29,-162.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.64,101.85,3035.0,-60.0,,,29,-163.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.64,101.85,3058.0,-60.0,,,29,-176.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.77,103.95,3060.0,-58.0,,,29,-201.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.33,97.84,3076.0,-54.0,,,29,-162.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.47,103.57,3100.0,-58.0,,,29,-214.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.63,101.83,3168.0,-62.0,,,29,-166.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.14,98.13,3177.0,-54.0,,,29,-163.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.78,103.95,3200.0,-59.0,,,29,-217.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.34,97.79,3221.0,-54.0,,,29,-165.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.61,101.83,3250.0,-62.0,,,29,-171.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.78,103.95,3330.0,-62.0,,,29,-216.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.33,97.74,3420.0,-64.0,,,29,-158.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.77,103.95,3430.0,-62.0,,,29,-210.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.56,101.85,3495.0,-66.0,,,29,-181.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.31,97.72,3514.0,-64.0,,,29,-168.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.74,103.96,3590.0,-66.0,,,29,-235.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,35.73,103.98,3640.0,-66.0,,,29,-217.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.54,101.83,3727.0,-71.0,,,29,-170.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.34,97.79,3754.0,-64.0,,,29,-169.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.53,101.83,3790.0,-71.0,,,29,-163.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.53,101.83,3835.0,-71.0,,,29,-158.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,37.53,101.83,3869.0,-71.0,,,29,-163.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.33,97.74,3874.0,-64.0,,,29,-166.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.31,97.72,3945.0,-64.0,,,29,-161.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.34,97.79,4005.0,-64.0,,,29,-166.0,,original,,,,,,
+"Bai et al., 2014",Liu,Mt Qilian,39.33,97.74,4040.0,-64.0,,,29,-168.0,,original,,,,,,
+"Chikaraishi and Naraoka, 2006",Liu,Gunma Prefecture,36.47,138.87,70.0,-60.0,,,29,-166.0,,original,,,,,,
+"Chikaraishi and Naraoka, 2006",Liu,Gunma Prefecture,36.47,138.87,70.0,-60.0,,,29,-168.0,,original,,,,,,
+"Chikaraishi and Naraoka, 2006",Liu,Gunma Prefecture,36.47,138.87,70.0,-60.0,,,29,-167.0,,original,,,,,,
+Daniels et al 2017,McFarlin,N1,68.64,-149.6,730.0,-149.0,6.0,2018.0,29,-255.0,,original,,,,,,
+Daniels et al 2017,McFarlin,N2,68.64,-149.62,732.0,-149.0,6.0,2018.0,29,-253.0,,original,,,,,,
+Daniels et al 2017,McFarlin,S6,68.63,-149.64,736.0,-150.0,6.0,2018.0,29,-261.0,,original,,,,,,
+Daniels et al 2017,McFarlin,ISWAMP,68.61,-149.6,741.0,-150.0,6.0,2018.0,29,-273.0,,original,,,,,,
+Daniels et al 2017,McFarlin,S7,68.63,-149.64,742.0,-150.0,6.0,2018.0,29,-261.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I7,68.6,-149.59,748.0,-150.0,6.0,2018.0,29,-269.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I8,68.61,-149.58,748.0,-150.0,6.0,2018.0,29,-260.0,,original,,,,,,
+Daniels et al 2017,McFarlin,FOG4,68.68,-149.07,760.0,-151.0,6.0,2018.0,29,-264.0,,original,,,,,,
+Daniels et al 2017,McFarlin,FOG1,68.68,-149.08,773.0,-151.0,6.0,2018.0,29,-257.0,,original,,,,,,
+Daniels et al 2017,McFarlin,FOG2,68.68,-149.09,776.0,-151.0,6.0,2018.0,29,-259.0,,original,,,,,,
+Daniels et al 2017,McFarlin,E1,68.63,-149.55,777.0,-150.0,6.0,2018.0,29,-259.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I3,68.58,-149.58,778.0,-151.0,6.0,2018.0,29,-265.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I4,68.58,-149.58,778.0,-151.0,6.0,2018.0,29,-264.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I5,68.59,-149.59,778.0,-151.0,6.0,2018.0,29,-268.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I1,68.57,-149.59,792.5,-151.0,6.0,2018.0,29,-260.0,,original,,,,,,
+Daniels et al 2017,McFarlin,E6,68.64,-149.44,794.0,-151.0,6.0,2018.0,29,-266.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I6,68.6,-149.59,800.0,-151.0,6.0,2018.0,29,-265.0,,original,,,,,,
+Daniels et al 2017,McFarlin,E5,68.64,-149.46,800.0,-151.0,7.0,2018.0,29,-261.0,,original,,,,,,
+Daniels et al 2017,McFarlin,I6HW,68.58,-149.62,808.0,-151.0,6.0,2018.0,29,-263.0,,original,,,,,,
+Douglas et al 2012,McFarlin,El Golfete,15.72,-88.89,0.0,-24.0,4.0,2018.0,29,-151.1,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Izabal Rio Oscuro,15.38,-89.33,4.0,-25.0,4.0,2018.0,29,-154.0,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Izabal Centro,15.52,-89.15,4.0,-24.0,4.0,2018.0,29,-165.2,,original,,,,,,
+Douglas et al 2012,McFarlin,Dzitya,21.07,-89.69,5.0,-18.0,4.0,2018.0,29,-128.5,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Yaalchak [e],20.6,-89.71,6.0,-20.0,7.0,2018.0,29,-142.9,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Chichancanab,19.88,-88.77,10.0,-20.0,8.0,2018.0,29,-128.5,2.0,original,,,,,,
+Douglas et al 2012,McFarlin,Ticul,20.35,-89.5,10.0,-20.0,8.0,2018.0,29,-143.0,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Chumayel,20.49,-89.19,13.0,-18.0,6.0,2018.0,29,-110.7,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Canana,20.49,-89.17,13.0,-18.0,5.0,2018.0,29,-137.7,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Xoche [e],20.66,-89.37,16.0,-18.0,5.0,2018.0,29,-153.0,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Hobonil,20.0,-89.03,44.0,-21.0,8.0,2018.0,29,-126.5,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Cepeda Peraza,20.16,-89.24,50.0,-21.0,8.0,2018.0,29,-136.7,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,La Barca,15.12,-87.94,56.0,-24.0,4.0,2018.0,29,-155.3,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Puente Cienega,15.74,-89.07,75.0,-25.0,4.0,2018.0,29,-155.0,2.0,original,,,,,,
+Douglas et al 2012,McFarlin,Naco,15.41,-88.14,97.0,-25.0,4.0,2018.0,29,-148.3,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Salpeten,16.98,-89.68,105.0,-25.0,7.0,2018.0,29,-144.0,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Peten Itza,16.93,-89.89,109.0,-25.0,7.0,2018.0,29,-159.5,4.0,original,,,,,,
+Douglas et al 2012,McFarlin,Cuerpo Uno [e],17.49,-90.39,115.0,-26.0,8.0,2018.0,29,-147.9,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Sacpuy,16.99,-90.05,123.0,-26.0,7.0,2018.0,29,-144.2,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Yaxha,17.07,-89.41,130.0,-25.0,7.0,2018.0,29,-142.9,3.0,original,,,,,,
+Douglas et al 2012,McFarlin,Quexil,16.92,-89.82,133.0,-26.0,6.0,2018.0,29,-141.7,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,La Corona [e],17.52,-90.37,151.0,-26.0,8.0,2018.0,29,-148.0,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,El Juleque,16.91,-89.77,158.0,-26.0,6.0,2018.0,29,-137.6,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Macanche,16.97,-89.64,169.0,-26.0,7.0,2018.0,29,-139.2,3.0,original,,,,,,
+Douglas et al 2012,McFarlin,La Entrada,15.1,-88.71,426.0,-31.0,2.0,2018.0,29,-147.9,2.0,original,,,,,,
+Douglas et al 2012,McFarlin,Taulabe,14.71,-87.97,557.0,-32.0,2.0,2018.0,29,-152.7,2.0,original,,,,,,
+Douglas et al 2012,McFarlin,Comayagua,14.45,-87.65,563.0,-32.0,2.0,2018.0,29,-166.8,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Copan,14.84,-89.15,613.0,-34.0,1.0,2018.0,29,-156.4,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Pena Blanca,14.94,-88.03,655.0,-33.0,1.0,2018.0,29,-160.0,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Rio Blanco,14.89,-89.03,707.0,-36.0,1.0,2018.0,29,-160.5,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Rio Jalan,14.45,-86.81,765.0,-33.0,2.0,2018.0,29,-157.9,2.0,original,,,,,,
+Douglas et al 2012,McFarlin,Gaungolo,14.26,-87.24,829.0,-35.0,1.0,2018.0,29,-165.8,1.0,original,,,,,,
+Douglas et al 2012,McFarlin,Rio Rosario,14.48,-86.98,891.0,-36.0,2.0,2018.0,29,-153.7,2.0,original,,,,,,
+Douglas et al 2012,McFarlin,El Chile,14.35,-86.85,1380.0,-43.0,4.0,2018.0,29,-158.1,4.0,original,,,,,,
+Douglas et al 2012,McFarlin,Santa Lucia,14.12,-87.09,1405.0,-43.0,3.0,2018.0,29,-135.1,1.0,original,,,,,,
+Duan et al 2011,McFarlin,Lake Qinghai,37.0,100.0,3193.0,-53.0,5.0,2018.0,29,-157.0,8.8,original,,,,,,
+"Feng et al., 2019",Ladd,JS13,26.4786,100.4194,1246.0,-73.08368901,,,29,-202.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS12,26.5017,100.4082,1309.0,-73.94167809,,,29,-169.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS8,26.487,100.371,1701.0,-75.34407937,,,29,-204.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS7,26.489,100.353,1794.0,-76.81151062,,,29,-177.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS6,26.486,100.348,1906.0,-77.04747416,,,29,-166.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS5,26.485,100.345,2000.0,-77.21626809,,,29,-177.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS4,26.489,100.346,2092.0,-77.36349671,,,29,-185.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS3,26.485,100.338,2190.0,-77.73325233,,,29,-197.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH1,26.54,99.958,2263.0,-82.67067436,,,29,-205.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS2,26.487,100.323,2290.0,-79.00912049,,,29,-203.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ1,26.63,99.915,2305.0,-83.51214892,,,29,-197.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH2,26.549,99.961,2319.0,-82.88445762,,,29,-198.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JS1,26.494,100.312,2386.0,-80.53343762,,,29,-204.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ2,26.639,99.879,2400.0,-84.87555156,,,29,-211.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH3,26.555,99.968,2412.0,-83.49885263,,,29,-210.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH4,26.56,99.975,2505.0,-84.09134305,,,29,-210.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ3,26.64,99.85,2509.0,-86.49041781,,,29,-214.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH5,26.558,99.982,2600.0,-84.75390737,,,29,-206.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ4,26.635,99.836,2615.0,-87.32545894,,,29,-214.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH6,26.54,99.992,2701.0,-86.00246992,,,29,-209.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ6,26.643,99.821,2800.0,-88.10394643,,,29,-213.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH8,26.547,100.0,2901.0,-86.63155468,,,29,-221.0,,original,,,,,,
+"Feng et al., 2019",Ladd,JH9,26.537,100.003,3007.0,-87.17789898,,,29,-218.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ8,26.654,99.805,3011.0,-88.48044349,,,29,-216.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ9,26.658,99.794,3125.0,-88.68375622,,,29,-207.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ10,26.659,99.788,3224.0,-89.07249616,,,29,-242.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ11,26.658,99.783,3303.0,-89.65413298,,,29,-237.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ12,26.655,99.779,3403.0,-90.27554597,,,29,-239.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ13,26.648,99.776,3504.0,-91.08674407,,,29,-226.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ14,26.637,99.752,3608.0,-94.63215983,,,29,-242.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ15,26.648,99.74,3789.0,-95.01479408,,,29,-242.0,,original,,,,,,
+"Feng et al., 2019",Ladd,TCS2017,26.631,99.718,3886.0,-99.17123059,,,29,-220.0,,original,,,,,,
+"Feng et al., 2019",Ladd,LJ17,26.628,99.722,3918.0,-98.99984446,,,29,-217.0,,original,,,,,,
+Freimuth et al 2019a,McFarlin,BLB,40.68,-82.06,291.0,-50.0,2.0,2019.0,29,-176.0,3.0,original,,,,,,
+Freimuth et al 2019b,McFarlin,Sucker,44.18,-75.12,426.0,-74.0,1.0,2019.0,29,-197.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Chazy,44.73,-73.82,466.0,-76.0,1.0,2019.0,29,-188.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Raquette,44.23,-74.47,470.0,-74.0,1.0,2019.0,29,-186.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Moose,44.37,-74.06,475.0,-74.0,1.0,2019.0,29,-190.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Debar,44.62,-74.19,483.0,-76.0,1.0,2019.0,29,-196.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,East Pine,44.34,-74.41,513.0,-75.0,1.0,2019.0,29,-193.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Little Green,44.36,-74.3,521.0,-75.0,1.0,2019.0,29,-190.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Hope,44.51,-74.13,523.0,-76.0,1.0,2019.0,29,-190.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Horseshoe,44.14,-74.62,524.0,-74.0,1.0,2019.0,29,-188.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Quiver,43.74,-74.87,539.0,-72.0,1.0,2019.0,29,-179.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Wolf,44.02,-74.22,558.0,-73.0,1.0,2019.0,29,-179.0,,original,,,,,,
+Freimuth et al 2019b,McFarlin,Heart,44.18,-73.97,665.0,-75.0,1.0,2019.0,29,-186.0,,original,,,,,,
+Garcin et al 2012,McFarlin,OSSA,3.77,10.0,17.0,-14.0,1.0,2018.0,29,-147.0,4.0,original,,,,,,
+Garcin et al 2012,McFarlin,DEBU,4.1,8.98,70.0,-14.0,0.0,2018.0,29,-153.0,5.0,original,,,,,,
+Garcin et al 2012,McFarlin,BARO,4.65,9.41,304.0,-17.0,3.0,2018.0,29,-164.0,1.0,original,,,,,,
+Garcin et al 2012,McFarlin,MAMG,8.39,13.71,322.0,-22.0,10.0,2018.0,29,-156.0,8.0,original,,,,,,
+Garcin et al 2012,McFarlin,MORA,11.05,14.15,438.0,-23.0,3.0,2018.0,29,-170.0,3.0,original,,,,,,
+Garcin et al 2012,McFarlin,ASSO,6.62,12.98,896.0,-22.0,8.0,2018.0,29,-154.0,3.0,original,,,,,,
+Garcin et al 2012,McFarlin,RHUM,10.51,13.58,1028.0,-33.0,5.0,2018.0,29,-167.0,3.0,original,,,,,,
+Garcin et al 2012,McFarlin,TIZO,7.25,13.58,1155.0,-27.0,4.0,2018.0,29,-155.0,1.0,original,,,,,,
+Garcin et al 2012,McFarlin,TABE,7.13,13.69,1161.0,-26.0,5.0,2018.0,29,-167.0,1.0,original,,,,,,
+Garcin et al 2012,McFarlin,BALE,5.55,10.42,1376.0,-32.0,9.0,2018.0,29,-150.0,1.0,original,,,,,,
+Garcin et al 2012,McFarlin,MANE,5.04,9.83,1911.0,-41.0,10.0,2018.0,29,-185.0,4.0,original,,,,,,
+"Garcin et al., 2012",Ladd,MANE,5.03,9.83,1911.0,-36.60037978,,,29,-184.83,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Beit Dagan,31.96735,34.90578,50.0,-19.49291137,,,29,-143.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Haifa,32.79204,34.97167,102.0,-21.18987319,,,29,-140.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Michmanim,32.88376,35.38066,157.0,-25.0968886,,,29,-157.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Alon,31.80058,35.33009,290.0,-22.32261622,,,29,-142.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Beer Sheva,31.24406,34.89974,353.0,-21.50985936,,,29,-142.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Soreq,31.75327,35.02987,400.0,-24.80081936,,,29,-149.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Arad,31.23727,35.21481,558.0,-22.58181337,,,29,-146.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Peki'in,32.98272,35.3158,650.0,-30.15367082,,,29,-145.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Jerusalem,31.7857,35.17076,815.0,-28.82531605,,,29,-142.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Mitzpe ramon,30.6199,34.7867,828.0,-24.95636271,,,29,-116.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Har Canaan,33.02356,35.49748,858.0,-29.10968503,,,29,-151.0,,original,,,,,,
+"Goldsmith et al., 2019",Ladd,Hermon,33.27398,35.75821,1337.0,-42.711369,,,29,-155.0,,original,,,,,,
+Guenther et al 2013,McFarlin,TRC,30.75,86.38,4549.0,-112.0,6.0,2018.0,29,-211.2,8.8,original,,,,,,
+Guenther et al 2013,McFarlin,TC,31.05,83.92,4570.0,-103.0,3.0,2018.0,29,-219.1,6.6,original,,,,,,
+Guenther et al 2013,McFarlin,NC,30.5,90.6,4718.0,-139.0,4.0,2018.0,29,-221.4,12.7,original,,,,,,
+Guenther et al 2013,McFarlin,KYC,30.6,82.05,4798.0,-109.0,10.0,2018.0,29,-238.7,9.7,original,,,,,,
+Guenther et al 2013,McFarlin,LMC,34.58,80.35,5030.0,-97.0,19.0,2018.0,29,-209.2,4.6,original,,,,,,
+Guenther et al 2013,McFarlin,SXC,34.58,80.2,5070.0,-98.0,19.0,2018.0,29,-196.5,10.8,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-33.51,20.35,,-23.0,,,29,-110.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.87,18.39,,-15.0,,,29,-131.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.86,18.53,,-17.0,,,29,-130.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.86,18.53,,-18.0,,,29,-132.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.79,19.22,,-18.0,,,29,-137.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.79,19.22,,-18.0,,,29,-121.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.72,18.25,,-13.0,,,29,-131.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.72,18.25,,-13.0,,,29,-146.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-32.33,20.34,,-25.0,,,29,-103.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.3,19.14,,-22.0,,,29,-141.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.22,18.22,,-14.0,,,29,-138.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.22,18.22,,-13.0,,,29,-141.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-32.21,20.39,,-26.0,,,29,-123.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-32.21,20.39,,-26.0,,,29,-136.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.18,18.24,,-12.0,,,29,-130.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.13,18.6,,-20.0,,,29,-134.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.13,18.6,,-20.0,,,29,-126.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-32.13,19.05,,-20.0,,,29,-132.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.56,19.89,,-16.0,,,29,-124.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.34,18.32,,-11.0,,,29,-124.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.34,18.32,,-11.0,,,29,-119.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.28,19.5,,-20.0,,,29,-131.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.26,18.36,,-10.0,,,29,-112.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.26,18.42,,-11.0,,,29,-108.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.23,19.17,,-17.0,,,29,-113.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.23,19.17,,-16.0,,,29,-104.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.18,20.9,,-19.0,,,29,-117.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.18,20.9,,-19.0,,,29,-107.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-31.08,18.15,,-12.0,,,29,-114.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-30.5,19.46,,-13.0,,,29,-114.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-30.46,18.29,,-15.0,,,29,-109.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-30.46,18.29,,-15.0,,,29,-142.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-30.4,20.24,,-26.0,,,29,-114.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-30.26,18.46,,-15.0,,,29,-95.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,WRZ,-30.24,18.46,,-16.0,,,29,-82.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.87,26.4,,-31.0,,,29,-112.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.8,25.33,,-33.0,,,29,-127.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.62,23.44,,-26.0,,,29,-117.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.57,22.2,,-24.0,,,29,-101.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.46,20.47,,-24.0,,,29,-75.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.46,20.47,,-24.0,,,29,-116.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.4,22.55,,-28.0,,,29,-88.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-29.31,19.26,,-27.0,,,29,-95.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.29,22.45,,-27.0,,,29,-104.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.23,21.7,,-23.0,,,29,-111.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.22,23.2,,-27.0,,,29,-113.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-29.22,23.2,,-27.0,,,29,-111.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.58,25.3,,-29.0,,,29,-111.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,YRZ,-28.57,19.23,,-25.0,,,29,-110.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.57,27.5,,-32.0,,,29,-117.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.56,24.13,,-24.0,,,29,-116.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.5,26.36,,-30.0,,,29,-126.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.5,26.36,,-30.0,,,29,-133.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.45,24.42,,-26.0,,,29,-109.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.45,24.42,,-25.0,,,29,-119.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.44,22.31,,-30.0,,,29,-112.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-28.38,22.15,,-29.0,,,29,-103.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-27.55,28.23,,-30.0,,,29,-148.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-27.55,28.23,,-29.0,,,29,-151.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-27.55,28.23,,-29.0,,,29,-134.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-27.25,28.3,,-26.0,,,29,-149.0,,original,,,,,,
+"Herrmann et al., 2017",Liu,SRZ,-27.05,28.35,,-25.0,,,29,-128.0,,original,,,,,,
+"Huang et al., 2016",Liu,Yichun,68.52,129.53,272.0,-88.0,,,29,-209.0,,original,,,,,,
+"Huang et al., 2016",Liu,Hani,42.22,126.52,902.0,-77.0,,,29,-222.0,,original,,,,,,
+"Huang et al., 2016",Liu,Tiandouyang,25.9,117.47,1196.0,-55.0,,,29,-192.0,,original,,,,,,
+"Huang et al., 2016",Liu,Wangdongyang,27.67,119.63,1398.0,-59.0,,,29,-203.0,,original,,,,,,
+"Huang et al., 2016",Liu,Shiwangutian,26.08,110.37,1688.0,-62.0,,,29,-208.0,,original,,,,,,
+"Huang et al., 2016",Liu,Dajiuhu,31.47,110.0,1700.0,-64.0,,,29,-204.0,,original,,,,,,
+"Huang et al., 2016",Liu,Zoige,33.82,102.73,3500.0,-87.0,,,29,-204.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,VI-Cropland,7.593,36.8544,1769.0,6.281825171,,,29,-131.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,VI-Forest,7.593,36.8544,1769.0,6.281825171,,,29,-134.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,VI-Grassland,7.593,36.8544,1769.0,6.281825171,,,29,-133.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,IV-Cropland,7.4782,36.8814,2099.0,0.672390959,,,29,-127.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,IV-Forest,7.4782,36.8814,2099.0,0.672390959,,,29,-132.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,IV-Grassland,7.4782,36.8814,2099.0,0.672390959,,,29,-130.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,V-Grassland,7.5176,36.8758,2109.0,3.473166985,,,29,-125.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,V-Forest,7.5176,36.8758,2109.0,3.473166985,,,29,-134.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,V-Cropland,7.5176,36.8758,2109.0,3.473166985,,,29,-128.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,III-Forest,7.4609,36.8687,2402.0,-1.199190527,,,29,-132.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,III-Cropland,7.4609,36.8687,2402.0,-1.199190527,,,29,-130.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,III-Grassland,7.4609,36.8687,2402.0,-1.199190527,,,29,-129.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,II-Forest,7.4527,36.8704,2545.0,-1.059381222,,,29,-140.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,II-Cropland,7.4527,36.8704,2545.0,-1.059381222,,,29,-133.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,II-Grassland,7.4527,36.8704,2545.0,-1.059381222,,,29,-135.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,I-Forest,7.4452,36.8768,2650.0,-0.422700005,,,29,-130.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,I-Grassland,7.4452,36.8768,2650.0,-0.422700005,,,29,-129.0,,original,,,,,,
+"Jaeschke et al., 2018",Ladd,I-Cropland,7.4452,36.8768,2650.0,-0.422700005,,,29,-131.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1180.0,-56.0,,,29,-178.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1220.0,-57.0,,,29,-195.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1320.0,-58.0,,,29,-180.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1375.0,-59.0,,,29,-169.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1440.0,-60.0,,,29,-195.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1470.0,-60.0,,,29,-184.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1515.0,-60.0,,,29,-178.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1550.0,-61.0,,,29,-183.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1610.0,-62.0,,,29,-192.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1645.0,-62.0,,,29,-181.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1700.0,-63.0,,,29,-193.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1740.0,-63.0,,,29,-178.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1800.0,-64.0,,,29,-202.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1850.0,-65.0,,,29,-195.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1915.0,-66.0,,,29,-188.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,1973.0,-66.0,,,29,-201.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2005.0,-67.0,,,29,-199.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2085.0,-68.0,,,29,-206.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2115.0,-68.0,,,29,-185.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2160.0,-69.0,,,29,-214.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2220.0,-70.0,,,29,-203.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2300.0,-71.0,,,29,-195.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2350.0,-72.0,,,29,-189.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2420.0,-73.0,,,29,-197.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2540.0,-75.0,,,29,-200.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2540.0,-75.0,,,29,-200.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2620.0,-76.0,,,29,-199.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2620.0,-76.0,,,29,-199.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2742.0,-78.0,,,29,-206.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2742.0,-78.0,,,29,-206.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2764.0,-78.0,,,29,-207.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2808.0,-79.0,,,29,-193.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2846.0,-79.0,,,29,-196.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2920.0,-81.0,,,29,-197.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,2960.0,-81.0,,,29,-198.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3015.0,-82.0,,,29,-196.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3049.0,-83.0,,,29,-207.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3065.0,-83.0,,,29,-207.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3119.0,-84.0,,,29,-207.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3145.0,-85.0,,,29,-195.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3188.0,-85.0,,,29,-220.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3209.0,-86.0,,,29,-200.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3518.0,-92.0,,,29,-224.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3596.0,-93.0,,,29,-219.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3676.0,-95.0,,,29,-241.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3767.0,-97.0,,,29,-237.0,,original,,,,,,
+"Jia et al., 2008",Liu,Mt Gongga,30.0,102.0,3819.0,-98.0,,,29,-240.0,,original,,,,,,
+"Krull et al., 2006",Liu,Queensland,-23.22,143.95,191.0,-23.0,,,29,,,original,,,,,,
+"Krull et al., 2006",Liu,Queensland,-23.22,143.95,191.0,-23.0,,,29,-88.0,,original,,,,,,
+"Krull et al., 2006",Liu,Queensland,-23.22,143.95,191.0,-23.0,,,29,,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Lake Hut, Grande Terre, New Caledonia",-22.2609,166.9526,,-17.27508758,,,29,-160.9349123,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Emaotul Lake, Efate, Vanuatu",-17.7342,168.4151,,,,,29,-152.1114336,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Otas Lake, Efate, Vanuatu",-17.6945,168.585,,,,,29,-153.905817,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Lake Dranoniveilomo, Vanua Balavu, Fiji",-17.1976,-178.9559,,,,,29,-150.7738408,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Rimatu'u Pond, Tetiaroa, French Polynesia",-17.0249,-149.5583,,,,,29,-177.1739601,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Onetahi Pond, Tetiaroa, French Polynesia",-17.0207,-149.5919,,,,,29,-138.5723108,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Oroatera Pond, Tetiaroa, French Polynesia",-16.9958,-149.5409,,,,,29,-173.4873843,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Lake Tagamaucia, Teveuni, Fiji",-16.8163,-179.9399,,-27.55525576,,,29,-170.0839323,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Nopovois Pond, Espiritu Santo, Vanuatu",-15.497,166.7357,,-22.99123572,,,29,-154.0,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Vesalea Pond, Espiritu Santo, Vanuatu",-15.1589,166.6549,,-22.50132045,,,29,-157.0,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"White Lake, Thion, Vanuatu",-15.041,167.0892,,-21.3855943,,,29,-173.9224813,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Lake Lanoto'o, Upolu, Samoa",-13.9109,-171.8274,,,,,29,-159.1378214,,original,,,,,,
+"Ladd et al., SPCZ in prep",Ladd,"Lake Tavara, Tetepare, Solomon Islands",-8.7029,157.4503,,,,,29,-162.4586096,,original,,,,,,
+"Ladd, Maloney et al (UW)",Ladd,PoSap,6.88,158.3,0.0,-34.48175753,,,29,-150.0,,original,,,,,,
+"Ladd, Maloney et al (UW)",Ladd,ChuTol,7.35,151.604,0.0,,,,29,-153.0,,original,,,,,,
+"Ladd, Maloney et al (UW)",Ladd,YapGal,9.49,138.088,0.0,,,,29,-151.0,,original,,,,,,
+"Ladd, Maloney et al (UW)",Ladd,GuSasa,13.44,144.683,0.0,-29.34673356,,,29,-145.0,,original,,,,,,
+Leider et al 2013,McFarlin,Lago Aimini Grande,40.2,18.45,0.0,-36.0,2.0,2018.0,29,-159.0,2.6,original,,,,,,
+Leider et al 2013,McFarlin,Lago di Bomba,42.01,14.36,269.0,-38.0,1.0,2018.0,29,-156.0,3.9,original,,,,,,
+Leider et al 2013,McFarlin,Lago di Monticchio,40.93,15.6,659.0,-48.0,1.0,2018.0,29,-170.0,0.7,original,,,,,,
+"Leider et al., 2013",Liu,Porto Cesareo,40.24,17.91,0.0,-33.0,,,29,-134.0,,original,,,,,,
+"Leider et al., 2013",Liu,Cervaro river,41.57,15.89,0.0,-35.0,,,29,-175.0,,original,,,,,,
+"Leider et al., 2013",Liu,Manfredonia Lido,41.62,15.9,0.0,-35.0,,,29,-159.0,,original,,,,,,
+"Leider et al., 2013",Liu,Potenza river,43.42,13.65,0.0,-39.0,,,29,-164.0,,original,,,,,,
+"Leider et al., 2013",Liu,Po di Goro,44.84,12.34,0.0,-43.0,,,29,-182.0,,original,,,,,,
+"Leider et al., 2013",Liu,Po della Donzella,44.84,12.38,0.0,-43.0,,,29,-170.0,,original,,,,,,
+"Leider et al., 2013",Liu,Reno river,44.55,12.14,2.0,-42.0,,,29,-172.0,,original,,,,,,
+"Leider et al., 2013",Liu,Vomano river,42.65,13.99,15.0,-38.0,,,29,-152.0,,original,,,,,,
+"Leider et al., 2013",Liu,Foflia river,43.87,12.81,25.0,-41.0,,,29,-167.0,,original,,,,,,
+"Li et al., 2019",Ladd,S10,26.81,112.58,80.0,-32.65942573,,,29,-169.017,,original,,,,,,
+"Li et al., 2019",Ladd,S6,24.6,113.65,137.0,-45.91662253,,,29,-170.322,,original,,,,,,
+"Li et al., 2019",Ladd,S5,24.28,113.55,164.0,-47.08838428,,,29,-168.956,,original,,,,,,
+"Li et al., 2019",Ladd,S11,27.11,112.1,165.0,-34.89353581,,,29,-164.676,,original,,,,,,
+"Li et al., 2019",Ladd,S8,25.29,112.99,186.0,-42.33824987,,,29,-170.322,,original,,,,,,
+"Li et al., 2019",Ladd,S1,22.57,114.23,197.0,-43.19637707,,,29,-173.54,,original,,,,,,
+"Li et al., 2019",Ladd,XY,34.94,113.38,222.0,-52.57658507,,,29,-169.1,,original,,,,,,
+"Li et al., 2019",Ladd,S9,25.64,113.04,280.0,-43.63132719,,,29,-170.62,,original,,,,,,
+"Li et al., 2019",Ladd,S7,25.1,113.52,302.0,-45.1583678,,,29,-170.628,,original,,,,,,
+"Li et al., 2019",Ladd,JYX,35.05,112.46,367.0,-54.63813107,,,29,-170.4,,original,,,,,,
+"Li et al., 2019",Ladd,S3,23.3,113.46,451.0,-43.93505445,,,29,-169.91,,original,,,,,,
+"Li et al., 2019",Ladd,XF,35.84,111.44,455.0,-57.08910904,,,29,-175.3,,original,,,,,,
+"Li et al., 2019",Ladd,S4,23.63,113.87,531.0,-51.0302718,,,29,-170.991,,original,,,,,,
+"Li et al., 2019",Ladd,X'A,34.3,108.61,588.0,-52.01051603,,,29,-172.9,,original,,,,,,
+"Li et al., 2019",Ladd,S2,23.27,114.03,600.0,-45.72623261,,,29,-179.348,,original,,,,,,
+"Li et al., 2019",Ladd,N02,35.89485,108.97625,622.0,-65.70227258,,,29,-170.776,,original,,,,,,
+"Li et al., 2019",Ladd,SE01,27.88,117.74,749.0,-62.07799197,,,29,-191.955,,original,,,,,,
+"Li et al., 2019",Ladd,HLS,36.0,110.15,897.0,-65.07269539,,,29,-195.7,,original,,,,,,
+"Li et al., 2019",Ladd,S13,31.3,110.38,900.0,-64.53586429,,,29,-174.048,,original,,,,,,
+"Li et al., 2019",Ladd,CZ,36.2,113.28,1028.0,-66.86627971,,,29,-170.6,,original,,,,,,
+"Li et al., 2019",Ladd,SEQ,40.59,110.44,1068.0,-55.78645038,,,29,-163.2,,original,,,,,,
+"Li et al., 2019",Ladd,N03,36.57676667,109.4143667,1077.0,-63.75345383,,,29,-173.863,,original,,,,,,
+"Li et al., 2019",Ladd,DK,40.8,107.5,1078.0,-51.08561927,,,29,-148.5,,original,,,,,,
+"Li et al., 2019",Ladd,N01,35.87908333,109.4126667,1106.0,-63.78562589,,,29,-191.199,,original,,,,,,
+"Li et al., 2019",Ladd,N05,38.37526667,109.69765,1117.0,-57.57441247,,,29,-162.4,,original,,,,,,
+"Li et al., 2019",Ladd,ALS,40.3,107.6,1142.0,-51.18082291,,,29,-160.1,,original,,,,,,
+"Li et al., 2019",Ladd,ZWL,36.09,107.6,1148.0,-66.48662756,,,29,-160.0,,original,,,,,,
+"Li et al., 2019",Ladd,N07,39.27311667,106.7305333,1160.0,-47.65770088,,,29,-149.355,,original,,,,,,
+"Li et al., 2019",Ladd,ALSM2,39.4,105.69,1174.0,-44.47562552,,,29,-152.0,,original,,,,,,
+"Li et al., 2019",Ladd,TC,35.21,109.0,1222.0,-67.27110532,,,29,-176.7,,original,,,,,,
+"Li et al., 2019",Ladd,YA,36.37,109.56,1245.0,-67.27678925,,,29,-166.0,,original,,,,,,
+"Li et al., 2019",Ladd,FX,35.96,109.73,1270.0,-68.38883632,,,29,-161.3,,original,,,,,,
+"Li et al., 2019",Ladd,QY,36.08,107.82,1285.0,-65.30353845,,,29,-178.8,,original,,,,,,
+"Li et al., 2019",Ladd,SE02,27.83,117.73,1337.0,-62.11388593,,,29,-205.621,,original,,,,,,
+"Li et al., 2019",Ladd,S15,31.47,110.38,1339.0,-70.89351378,,,29,-180.05,,original,,,,,,
+"Li et al., 2019",Ladd,N06,39.37438333,108.2947333,1390.0,-54.45343806,,,29,-163.408,,original,,,,,,
+"Li et al., 2019",Ladd,S14,31.33,110.42,1400.0,-68.29715815,,,29,-178.101,,original,,,,,,
+"Li et al., 2019",Ladd,N04,37.29825,108.9454667,1427.0,-63.03882758,,,29,-167.054,,original,,,,,,
+"Li et al., 2019",Ladd,ALSYQ7,39.21,102.62,1443.0,-26.78352269,,,29,-129.5,,original,,,,,,
+"Li et al., 2019",Ladd,ALSM1,38.97,105.66,1464.0,-49.69323915,,,29,-148.8,,original,,,,,,
+"Li et al., 2019",Ladd,SE03,27.84,117.74,1514.0,-62.10199458,,,29,-205.342,,original,,,,,,
+"Li et al., 2019",Ladd,LC,40.92,112.9,1549.0,-70.76047953,,,29,-172.2,,original,,,,,,
+"Li et al., 2019",Ladd,ZY2,39.09,100.07,1604.0,-35.15936398,,,29,-140.9,,original,,,,,,
+"Li et al., 2019",Ladd,ZW3,37.36,104.1,1635.0,-38.57636507,,,29,-152.1,,original,,,,,,
+"Li et al., 2019",Ladd,JQ8,39.27,99.34,1683.0,-36.64066075,,,29,-128.1,,original,,,,,,
+"Li et al., 2019",Ladd,JY,36.46,104.6,1720.0,-40.60502204,,,29,-160.0,,original,,,,,,
+"Li et al., 2019",Ladd,JT,36.95,104.83,1743.0,-46.32421625,,,29,-170.0,,original,,,,,,
+"Li et al., 2019",Ladd,ZW1,37.64,103.14,1745.0,-34.71422074,,,29,-155.9,,original,,,,,,
+"Li et al., 2019",Ladd,JQ1,39.81,97.99,1749.0,-37.67734024,,,29,-147.2,,original,,,,,,
+"Li et al., 2019",Ladd,S12,31.05,110.92,1760.0,-62.97288598,,,29,-196.253,,original,,,,,,
+"Li et al., 2019",Ladd,SE04,27.84,117.76,1765.0,-61.96346716,,,29,-211.941,,original,,,,,,
+"Li et al., 2019",Ladd,ALSYQ1,39.01,101.2,1789.0,-34.5970514,,,29,-147.9,,original,,,,,,
+"Li et al., 2019",Ladd,ZW2,37.52,103.64,1850.0,-39.45589201,,,29,-153.8,,original,,,,,,
+"Li et al., 2019",Ladd,GLS,36.02,103.84,1999.0,-35.87063231,,,29,-149.0,,original,,,,,,
+"Lu et al., 2020",Ladd,SP-01,43.208,124.136,135.0,-57.02831035,,,29,-179.0,,original,,,,,,
+"Lu et al., 2020",Ladd,SP-02,43.209,124.136,136.0,-57.03069318,,,29,-173.0,,original,,,,,,
+"Lu et al., 2020",Ladd,TL-01,43.751,122.602,162.0,-60.87010546,,,29,-176.0,,original,,,,,,
+"Lu et al., 2020",Ladd,TL-03,43.624,121.786,198.0,-63.28225257,,,29,-178.0,,original,,,,,,
+"Lu et al., 2020",Ladd,TL-07,43.624,121.787,200.0,-63.27871232,,,29,-171.0,,original,,,,,,
+"Lu et al., 2020",Ladd,TL-09,43.547,121.709,208.0,-63.59874045,,,29,-177.0,,original,,,,,,
+"Lu et al., 2020",Ladd,LY-02,42.967,124.886,255.0,-58.05882285,,,29,-192.0,,original,,,,,,
+"Lu et al., 2020",Ladd,KL-01,43.647,120.94,259.0,-66.02544336,,,29,-177.0,,original,,,,,,
+"Lu et al., 2020",Ladd,KL-04,43.642,120.887,262.0,-66.19085801,,,29,-184.0,,original,,,,,,
+"Lu et al., 2020",Ladd,PS-02,43.335,125.976,298.0,-59.55776953,,,29,-190.0,,original,,,,,,
+"Lu et al., 2020",Ladd,LY-05,43.092,124.728,301.0,-58.754536,,,29,-190.0,,original,,,,,,
+"Lu et al., 2020",Ladd,HN-01,42.627,126.253,340.0,-58.59387833,,,29,-192.0,,original,,,,,,
+"Lu et al., 2020",Ladd,HN-03,42.636,126.253,344.0,-58.55790471,,,29,-184.0,,original,,,,,,
+"Lu et al., 2020",Ladd,AQ-01,43.838,119.959,525.0,-71.00646727,,,29,-202.0,,original,,,,,,
+"Lu et al., 2020",Ladd,AQ-02,43.839,119.959,525.0,-71.00837778,,,29,-172.0,,original,,,,,,
+"Lu et al., 2020",Ladd,AQ-05,43.839,119.959,526.0,-71.00837778,,,29,-212.0,,original,,,,,,
+"Lu et al., 2020",Ladd,AQ-03,43.839,119.959,527.0,-71.00837778,,,29,-185.0,,original,,,,,,
+"Lu et al., 2020",Ladd,JY-04,42.418,126.676,592.0,-62.62232344,,,29,-194.0,,original,,,,,,
+"Lu et al., 2020",Ladd,JY-05,42.409,126.683,599.0,-62.52318849,,,29,-195.0,,original,,,,,,
+"Lu et al., 2020",Ladd,JY-01,42.373,126.859,601.0,-61.88210517,,,29,-190.0,,original,,,,,,
+"Lu et al., 2020",Ladd,BYQ-01,43.299,118.302,691.0,-74.73296858,,,29,-196.0,,original,,,,,,
+"Lu et al., 2020",Ladd,BYQ-05,42.3,118.304,696.0,-76.57092441,,,29,-191.0,,original,,,,,,
+"Lu et al., 2020",Ladd,FS-01,42.228,127.403,701.0,-63.8964936,,,29,-196.0,,original,,,,,,
+"Lu et al., 2020",Ladd,FS-03,42.228,127.403,703.0,-63.8964936,,,29,-197.0,,original,,,,,,
+"Lu et al., 2020",Ladd,CB-01,42.05,127.684,882.0,-66.59191784,,,29,-195.0,,original,,,,,,
+"Lu et al., 2020",Ladd,CB-50,42.05,127.685,882.0,-66.60176672,,,29,-190.0,,original,,,,,,
+"Lu et al., 2020",Ladd,CB-02,42.05,127.685,883.0,-66.60176672,,,29,-191.0,,original,,,,,,
+"Lu et al., 2020",Ladd,ET-02,43.64,112.298,969.0,-67.25821614,,,29,-177.0,,original,,,,,,
+"Lu et al., 2020",Ladd,ET-03,43.64,112.297,972.0,-67.25458222,,,29,-178.0,,original,,,,,,
+"Lu et al., 2020",Ladd,ABQ-03,43.989,114.843,1118.0,-77.6292877,,,29,-174.0,,original,,,,,,
+"Lu et al., 2020",Ladd,ABQ-05,43.989,114.843,1122.0,-77.6292877,,,29,-172.0,,original,,,,,,
+"Lu et al., 2020",Ladd,KQ-02,43.241,117.378,1135.0,-82.01902481,,,29,-192.0,,original,,,,,,
+"Lu et al., 2020",Ladd,KQ-01,43.241,117.377,1136.0,-82.02655303,,,29,-177.0,,original,,,,,,
+"Lu et al., 2020",Ladd,KQ-05,43.241,117.377,1137.0,-82.02655303,,,29,-186.0,,original,,,,,,
+"Lu et al., 2020",Ladd,SNQ-02,43.843,113.79,1161.0,-74.61761066,,,29,-184.0,,original,,,,,,
+"Lu et al., 2020",Ladd,SNQ-01,43.843,113.789,1162.0,-74.60947591,,,29,-183.0,,original,,,,,,
+"Lu et al., 2020",Ladd,XM-02,43.676,116.643,1181.0,-80.46404627,,,29,-188.0,,original,,,,,,
+"Lu et al., 2020",Ladd,XM-01,43.677,116.643,1183.0,-80.46190723,,,29,-189.0,,original,,,,,,
+McFarlin et al 2019,McFarlin,T3,63.75,-51.35,30.0,-106.0,7.0,2018.0,29,-215.5,3.9,original,,,,,,
+McFarlin et al 2019,McFarlin,T2,63.76,-51.37,57.0,-106.0,7.0,2018.0,29,-218.3,3.8,original,,,,,,
+McFarlin et al 2019,McFarlin,RTL5,66.98,-50.92,65.0,-135.0,14.0,2018.0,29,-250.6,3.7,original,,,,,,
+McFarlin et al 2019,McFarlin,T1,63.76,-51.36,75.0,-107.0,7.0,2018.0,29,-203.4,3.8,original,,,,,,
+McFarlin et al 2019,McFarlin,PLK,63.8,-51.19,76.0,-107.0,7.0,2018.0,29,-206.1,3.6,original,,,,,,
+McFarlin et al 2019,McFarlin,RTL4,67.01,-50.67,112.0,-137.0,13.0,2018.0,29,-254.9,3.8,original,,,,,,
+McFarlin et al 2019,McFarlin,LSL,67.05,-50.52,124.0,-139.0,13.0,2018.0,29,-236.6,5.5,original,,,,,,
+McFarlin et al 2019,McFarlin,TUP,60.38,-44.3,145.0,-89.0,2.0,2018.0,29,-215.0,3.8,original,,,,,,
+McFarlin et al 2019,McFarlin,RTL3,67.06,-50.45,170.0,-140.0,13.0,2018.0,29,-232.4,6.4,original,,,,,,
+McFarlin et al 2019,McFarlin,STR,76.67,-67.94,224.0,-181.0,1.0,2018.0,29,-247.5,6.0,original,,,,,,
+McFarlin et al 2019,McFarlin,SEC,76.58,-68.66,248.0,-181.0,1.0,2018.0,29,-246.3,3.6,original,,,,,,
+McFarlin et al 2019,McFarlin,SHL,67.15,-50.13,335.0,-146.0,11.0,2018.0,29,-250.7,3.6,original,,,,,,
+McFarlin et al 2019,McFarlin,USHL,67.15,-50.13,340.0,-147.0,11.0,2018.0,29,-256.7,4.1,original,,,,,,
+McFarlin et al 2019,McFarlin,RTL1,67.15,-50.08,443.0,-148.0,11.0,2018.0,29,-239.5,3.7,original,,,,,,
+McFarlin et al 2019,McFarlin,RTL2,67.14,-50.08,449.0,-148.0,11.0,2018.0,29,-224.3,6.1,original,,,,,,
+McFarlin et al 2019,McFarlin,NS1,76.82,-67.05,455.0,-186.0,2.0,2018.0,29,-234.7,3.8,original,,,,,,
+McFarlin et al 2019,McFarlin,SCP,60.7,-45.42,475.0,-96.0,2.0,2018.0,29,-210.7,3.9,original,,,,,,
+McFarlin et al 2019,McFarlin,PIN,60.7,-45.1,480.0,-96.0,2.0,2018.0,29,-215.7,5.5,original,,,,,,
+McFarlin et al 2019,McFarlin,WLL,76.85,-66.96,517.0,-187.0,2.0,2018.0,29,-264.1,7.1,original,,,,,,
+McFarlin et al 2019,McFarlin,LNR,60.87,-45.72,751.0,-101.0,3.0,2018.0,29,-202.8,5.8,original,,,,,,
+McFarlin et al 2019,McFarlin,NAR,60.87,-45.72,766.0,-101.0,3.0,2018.0,29,-209.8,4.2,original,,,,,,
+Mugler et al 2008,McFarlin,HZM,50.12,6.88,425.0,-56.0,2.0,2018.0,29,-198.0,1.0,original,,,,,,
+Mugler et al 2008,McFarlin,Tibet_ave (NC),30.64,90.6,4718.0,-139.0,4.0,2018.0,29,-246.0,36.4,original,,,,,,
+Mugler et al 2008,McFarlin,Tibet 4 (CJ),30.9,90.87,4718.0,-139.0,4.0,2018.0,29,-255.0,3.0,original,,,,,,
+Nelson et al 2018,McFarlin,Rot,47.07,8.31,419.0,-65.0,2.0,2018.0,29,-200.0,,original,,,,,,
+Nelson et al 2018,McFarlin,Greifen,47.35,8.67,439.0,-66.0,2.0,2018.0,29,-193.2,,original,,,,,,
+Nelson et al 2018,McFarlin,Baldegg,47.2,8.26,463.0,-66.0,2.0,2018.0,29,-199.7,,original,,,,,,
+Nelson et al 2018,McFarlin,Sarnen,46.87,8.22,469.0,-66.0,3.0,2018.0,29,-142.4,,original,,,,,,
+Nelson et al 2018,McFarlin,Mauen,47.17,8.08,504.0,-67.0,1.0,2018.0,29,-200.2,,original,,,,,,
+Nelson et al 2018,McFarlin,Soppen,47.09,8.08,596.0,-68.0,1.0,2018.0,29,-200.6,,original,,,,,,
+"Pautler et al., 2014",Liu,"Christie Mine, Dominion Creek",63.65,-138.63,581.0,-163.0,,,29,-275.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Christie Mine, Dominion Creek",63.65,-138.63,581.0,-163.0,,,29,-275.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Christie Mine, Dominion Creek",63.65,-138.63,581.0,-163.0,,,29,-285.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Christie Mine, Dominion Creek",63.65,-138.63,581.0,-163.0,,,29,-269.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Christie Mine, Dominion Creek",63.65,-138.63,581.0,-163.0,,,29,-274.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,581.0,-163.0,,,29,-259.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,581.0,-163.0,,,29,-270.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,581.0,-163.0,,,29,-278.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,581.0,-163.0,,,29,-274.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-246.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-261.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-257.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-262.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-266.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-263.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-265.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-268.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-270.0,,original,,,,,,
+"Pautler et al., 2014",Liu,"Tatlow Camp, Quartz Creek",63.82,-139.02,582.0,-163.0,,,29,-268.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Goldbottom Creek,63.93,-138.97,689.0,-165.0,,,29,-279.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Goldbottom Creek,63.93,-138.97,689.0,-165.0,,,29,-274.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Goldbottom Creek,63.93,-138.97,689.0,-165.0,,,29,-273.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Goldbottom Creek,63.93,-138.97,689.0,-165.0,,,29,-266.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Kluane Lake,61.15,-138.45,748.0,-164.0,,,29,-259.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Kluane Lake,61.15,-138.45,748.0,-164.0,,,29,-241.0,,original,,,,,,
+"Pautler et al., 2014",Liu,Kluane Lake,61.15,-138.45,748.0,-164.0,,,29,-260.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,1727.0,-23.0,,,29,-114.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,1822.0,-24.0,,,29,-135.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,1967.0,-27.0,,,29,-156.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2068.0,-28.0,,,29,-152.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2124.0,-29.0,,,29,-140.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2239.0,-30.0,,,29,-136.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2346.0,-32.0,,,29,-144.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2464.0,-34.0,,,29,-147.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2578.0,-35.0,,,29,-139.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2652.0,-36.0,,,29,-144.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2764.0,-38.0,,,29,-149.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2885.0,-40.0,,,29,-138.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,2999.0,-41.0,,,29,-144.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,3070.0,-42.0,,,29,-154.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,3157.0,-43.0,,,29,-143.0,,original,,,,,,
+"Peterse et al., 2009",Liu,Mt. Kilimanjaro,-3.0,37.0,3245.0,-45.0,,,29,-151.0,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Zapatera,11.77,-85.85,32.0,-32.0,2.0,2018.0,29,-159.2,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Bear Meadows,40.73,-77.76,552.0,-65.0,2.0,2018.0,29,-191.3,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Owens Lake,36.49,-117.89,1147.0,-85.0,4.0,2018.0,29,-191.2,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Rainy Lake,48.5,-120.74,1460.0,-111.0,5.0,2018.0,29,-209.7,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Waddell Lake,48.44,-120.82,1499.616,-109.0,5.0,2018.0,29,-216.2,2.8,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Berdeen Lake,48.71,-121.47,1560.576,-105.0,6.0,2018.0,29,-200.4,3.7,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Mono Lake,37.94,-119.03,1899.0,-99.0,2.0,2018.0,29,-194.0,0.9,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Lake Crowley,37.58,-118.74,2058.0,-103.0,2.0,2018.0,29,-238.0,3.0,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Los Lirios,8.31,-71.83,2305.1,-67.0,5.0,2018.0,29,-164.3,1.2,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Blue (Eagle) Lake,39.75,-106.76,2536.0,-98.0,1.0,2018.0,29,-207.3,1.4,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Emerald Lake,39.07,-111.5,3093.0,-120.0,5.0,2018.0,29,-204.3,1.8,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Victoria,8.81,-70.8,3210.9,-78.0,10.0,2018.0,29,-191.1,1.6,original,,,,,,
+Polissar and Freeman 2010,McFarlin,S. Grizzly Lake,39.69,-107.33,3239.0,-111.0,4.0,2018.0,29,-205.4,4.5,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Bison Lake,39.76,-107.35,3276.0,-112.0,4.0,2018.0,29,-205.2,2.6,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Negra,8.79,-70.81,3459.9,-82.0,11.0,2018.0,29,-177.5,3.3,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Mucubaji,8.8,-70.83,3570.2,-84.0,11.0,2018.0,29,-192.3,2.2,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Michurao Alto,8.73,-70.86,3738.0,-87.0,12.0,2018.0,29,-187.6,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,"Laguna Royal ""D""",8.73,-70.87,3763.7,-87.0,12.0,2018.0,29,-199.2,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Misteque,8.72,-70.88,3803.8,-88.0,12.0,2018.0,29,-195.8,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,"Laguna Royal ""C""",8.72,-70.87,3830.2,-88.0,12.0,2018.0,29,-194.0,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna de La Pata,8.65,-70.93,3980.2,-91.0,13.0,2018.0,29,-188.5,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Arenales Alta,8.73,-71.19,4005.0,-93.0,12.0,2018.0,29,-185.9,3.7,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Verdes Baja,8.86,-70.87,4169.8,-94.0,14.0,2018.0,29,-184.3,3.5,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Grande de los Patos,8.81,-70.95,4189.8,-95.0,14.0,2018.0,29,-190.5,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Verdes Medio,8.86,-70.87,4191.7,-94.0,14.0,2018.0,29,-180.1,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna La Cura,8.81,-70.95,4230.1,-95.0,14.0,2018.0,29,-187.2,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Lago Taypi Chaka Kkota,-16.2,-68.35,4300.0,-105.0,5.0,2018.0,29,-224.6,,original,,,,,,
+Polissar and Freeman 2010,McFarlin,Laguna Potosi,-19.64,-65.7,4640.0,-112.0,4.0,2018.0,29,-205.6,11.4,original,,,,,,
+Sachse et al 2004,McFarlin,MAS,43.83,10.31,18.0,-36.0,2.0,2018.0,29,-159.0,7.0,original,,,,,,
+Sachse et al 2004,McFarlin,SOR,55.55,11.7,30.0,-65.0,1.0,2018.0,29,-201.0,2.0,original,,,,,,
+Sachse et al 2004,McFarlin,HYY,61.85,24.28,149.0,-89.0,1.0,2018.0,29,-205.0,4.0,original,,,,,,
+Sachse et al 2004,McFarlin,LAM,61.06,25.1,151.0,-88.0,1.0,2018.0,29,-205.0,4.0,original,,,,,,
+Sachse et al 2004,McFarlin,SYR,61.19,25.14,156.0,-88.0,1.0,2018.0,29,-207.0,2.0,original,,,,,,
+Sachse et al 2004,McFarlin,SOD003,67.38,26.85,178.0,-98.0,1.0,2018.0,29,-215.0,9.0,original,,,,,,
+Sachse et al 2004,McFarlin,SOD007,67.36,27.17,293.0,-99.0,1.0,2018.0,29,-227.0,5.0,original,,,,,,
+Sachse et al 2004,McFarlin,KEI,68.67,21.52,428.0,-114.0,2.0,2018.0,29,-230.0,5.0,original,,,,,,
+Sachse et al 2004,McFarlin,HZM,50.12,6.88,436.0,-56.0,2.0,2018.0,29,-198.0,1.0,original,,,,,,
+Sachse et al 2004,McFarlin,NAI,68.85,21.18,463.0,-115.0,2.0,2018.0,29,-221.0,2.0,original,,,,,,
+Sachse et al 2004,McFarlin,MEZ,42.61,11.77,466.0,-41.0,1.0,2018.0,29,-167.0,3.0,original,,,,,,
+Sachse et al 2004,McFarlin,LGM,40.93,15.6,674.0,-48.0,1.0,2018.0,29,-180.0,3.0,original,,,,,,
+Sachse et al 2004,McFarlin,LPM,40.93,15.61,685.0,-48.0,1.0,2018.0,29,-169.0,2.0,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,3.77,,,-8.0,,,29,-152.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,4.1,,,-13.0,,,29,-166.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,4.65,,,-15.0,,,29,-148.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,5.03,,,-16.0,,,29,-152.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,6.62,,,-18.0,,,29,-163.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,7.13,,,-16.0,,,29,-170.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,7.25,,,-28.0,,,29,-181.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,8.39,,,-16.0,,,29,-147.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,10.51,,,-26.0,,,29,-184.0,,original,,,,,,
+"Schwab et al., 2015",Liu,Cameroon,11.05,,,-39.0,,,29,-188.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-203.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-198.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-195.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-211.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-203.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-212.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-208.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-210.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-195.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-213.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-213.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-213.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-203.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-205.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-203.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-186.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-207.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-199.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-216.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-224.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-208.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-218.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-222.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-217.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-225.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-220.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-221.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-222.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-227.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-244.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-240.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-219.0,,original,,,,,,
+"Seki et al., 2010",Liu,"Hokkaido, Japan",44.2,142.1,560.0,-60.0,,,29,-229.0,,original,,,,,,
+"Struck et al., 2020",Ladd,P13,44.51,105.35,1314.0,-64.16998851,,,29,-154.1,,original,,,,,,
+"Struck et al., 2020",Ladd,UGC3,47.76,102.81,1333.0,-81.3180184,,,29,-184.7,,original,,,,,,
+"Struck et al., 2020",Ladd,UGC12,47.75,102.77,1337.0,-81.21882759,,,29,-184.7,,original,,,,,,
+"Struck et al., 2020",Ladd,P9,45.36,105.69,1342.0,-78.46364119,,,29,-204.8,,original,,,,,,
+"Struck et al., 2020",Ladd,UGC7,47.75,102.8,1343.0,-81.31726361,,,29,-186.1,,original,,,,,,
+"Struck et al., 2020",Ladd,P15,44.11,105.05,1358.0,-57.67930632,,,29,-172.7,,original,,,,,,
+"Struck et al., 2020",Ladd,UGC15,47.74,102.74,1366.0,-81.01477017,,,29,-203.1,,original,,,,,,
+"Struck et al., 2020",Ladd,P6,46.86,106.64,1376.0,-77.13973617,,,29,-183.2,,original,,,,,,
+"Struck et al., 2020",Ladd,P7,45.71,106.12,1406.0,-82.33930859,,,29,-178.8,,original,,,,,,
+"Struck et al., 2020",Ladd,P23,43.59,103.04,1443.0,-56.40793184,,,29,-142.6,,original,,,,,,
+"Struck et al., 2020",Ladd,P19,43.19,104.87,1453.0,-52.95603384,,,29,-152.2,,original,,,,,,
+"Struck et al., 2020",Ladd,P5,47.42,106.77,1611.0,-78.64194287,,,29,-182.3,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC2,48.79,97.3,1792.0,-101.6527473,,,29,-189.0,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC1,48.79,97.3,1796.0,-101.6527473,,,29,-193.7,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC3,48.79,97.3,1797.0,-101.6527473,,,29,-190.9,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC10,48.79,97.33,1797.0,-101.7950614,,,29,-195.8,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC12,48.78,97.33,1799.0,-101.9754658,,,29,-190.7,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC5,48.79,97.34,1802.0,-101.8424994,,,29,-190.7,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC8,48.8,97.38,1808.0,-102.0363412,,,29,-189.0,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC9,48.79,97.33,1811.0,-101.7950614,,,29,-184.2,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC11,48.79,97.34,1814.0,-101.8424994,,,29,-193.5,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC6,48.8,97.35,1841.0,-101.9163979,,,29,-175.1,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC7,48.8,97.37,1852.0,-102.0005823,,,29,-183.0,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC13,48.77,97.3,1859.0,-102.0389575,,,29,-184.9,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC15,48.76,97.25,1895.0,-102.0265012,,,29,-200.4,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC4,48.76,97.3,1942.0,-102.2320626,,,29,-166.5,,original,,,,,,
+"Struck et al., 2020",Ladd,T11,48.42,98.9,1948.0,-101.974667,,,29,-203.6,,original,,,,,,
+"Struck et al., 2020",Ladd,TLC14,48.75,97.22,1952.0,-102.0181629,,,29,-189.9,,original,,,,,,
+"Struck et al., 2020",Ladd,TSC5,48.15,99.75,2054.0,-100.319291,,,29,-203.2,,original,,,,,,
+"Struck et al., 2020",Ladd,TSC3,48.15,99.72,2065.0,-99.76146772,,,29,-198.3,,original,,,,,,
+"Struck et al., 2020",Ladd,T10,48.35,98.92,2133.0,-104.731544,,,29,-200.9,,original,,,,,,
+"Struck et al., 2020",Ladd,T1,48.24,99.02,2235.0,-105.7638403,,,29,-199.1,,original,,,,,,
+"Struck et al., 2020",Ladd,T2,48.25,99.01,2284.0,-106.4289757,,,29,-214.9,,original,,,,,,
+"Struck et al., 2020",Ladd,T7b,48.31,98.92,2343.0,-106.9573758,,,29,-199.8,,original,,,,,,
+"Struck et al., 2020",Ladd,T7a,48.31,98.92,2343.0,-106.9573758,,,29,-195.8,,original,,,,,,
+"Struck et al., 2020",Ladd,T3,48.26,98.99,2382.0,-107.1106057,,,29,-203.3,,original,,,,,,
+"Struck et al., 2020",Ladd,T6,48.3,98.94,2441.0,-107.7793474,,,29,-205.0,,original,,,,,,
+"Struck et al., 2020",Ladd,T4,48.28,98.98,2475.0,-108.1100583,,,29,-206.7,,original,,,,,,
+"Struck et al., 2020",Ladd,T5,48.29,98.95,2528.0,-108.4263134,,,29,-201.8,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11106SoA,26.81,87.22,225.0,-48.72088159,,,29,-148.45,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11004So,27.35,87.19,315.0,-58.92584394,,,29,-115.67,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11011So,27.39,87.13,412.0,-61.10278364,,,29,-128.18,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11014So,27.43,87.12,435.0,-63.79419903,,,29,-144.44,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11020So,27.47,87.15,448.0,-68.62481158,,,29,-147.24,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S127 sp1,31.39,76.88,475.0,-50.62259697,,,29,-147.38,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S127 sp2,31.39,76.88,475.0,-50.62259697,,,29,-146.51,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11060So,27.49,87.17,566.0,-71.581459,,,29,-146.32,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK8,30.24,78.86,635.0,-57.88725563,,,29,-167.05,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU11034SoA,27.52,87.2,708.0,-71.91111014,,,29,-159.31,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S5,31.36,77.38,729.0,-57.67687769,,,29,-140.84,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK25,30.31,79.32,927.0,-58.826943,,,29,-127.13,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S9,31.4,77.64,937.0,-61.7583051,,,29,-157.64,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU12037So,27.67,87.36,1080.0,-81.72490813,,,29,-173.53,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S14,31.45,77.55,1170.0,-62.24257167,,,29,-179.02,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK20,30.14,79.37,1175.0,-61.93234753,,,29,-166.86,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK18,30.1,79.44,1176.0,-67.24840598,,,29,-157.2,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S22,31.52,77.7,1228.0,-70.0844068,,,29,-163.75,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S26,31.51,77.76,1238.0,-69.49462609,,,29,-140.58,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S41,31.55,77.91,1521.0,-73.82017871,,,29,-157.15,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK22,30.29,79.5,1635.0,-73.53100443,,,29,-150.78,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU12136So,27.62,87.24,2006.0,-85.7823513,,,29,-173.26,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU12068So,27.75,87.41,2091.0,-92.41431198,,,29,-178.62,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU12099So,27.84,87.4,2196.0,-99.88505688,,,29,-176.45,,original,,,,,,
+"van der Veen et al., 2020",Ladd,J9,28.31,84.3,2500.0,-78.24801277,,,29,-179.45,,original,,,,,,
+"van der Veen et al., 2020",Ladd,ARU12090So,27.81,87.42,2578.0,-98.46847637,,,29,-182.55,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK29,30.62,79.82,2628.0,-93.43976761,,,29,-173.15,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S60,31.43,78.28,2770.0,-94.81420598,,,29,-174.62,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK28,30.69,79.89,2897.0,-95.49989809,,,29,-227.97,,original,,,,,,
+"van der Veen et al., 2020",Ladd,S55,31.4,78.35,3120.0,-99.92249538,,,29,-156.05,,original,,,,,,
+"van der Veen et al., 2020",Ladd,AK32/33,30.77,79.49,3155.0,-100.9423092,,,29,-175.95,,original,,,,,,
+"van der Veen et al., 2020",Ladd,J8,28.4,84.26,3930.0,-102.4602958,,,29,-209.4,,original,,,,,,
+"van der Veen et al., 2020",Ladd,J11,28.4,84.15,4000.0,-99.50814792,,,29,-228.93,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-27.95,14.0,,-18.0,,,29,-123.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-24.3,13.0,,-28.0,,,29,-131.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-22.72,12.6,,-26.0,,,29,-130.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-18.96,11.06,,-24.0,,,29,-129.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-15.63,11.58,,-30.0,,,29,-133.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-11.9,13.07,,-38.0,,,29,-133.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-10.17,12.69,,-35.0,,,29,-129.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-7.75,11.87,,-30.0,,,29,-131.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-5.5,11.07,,-22.0,,,29,-131.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-3.73,9.79,,-23.0,,,29,-127.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-2.07,8.63,,-31.0,,,29,-127.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,-0.69,8.38,,-20.0,,,29,-127.0,,original,,,,,,
+"Vogts et al., 2016",Liu,Southwest Africa,0.96,8.88,,-24.0,,,29,-133.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,22.3,101.3,931.0,-56.0,,,29,-213.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,22.7,101.3,956.0,-57.0,,,29,-288.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,25.6,100.1,1265.0,-61.0,,,29,-161.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,22.2,100.5,1400.0,-63.0,,,29,-210.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,25.9,99.3,1745.0,-68.0,,,29,-172.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,26.9,100.0,1881.0,-70.0,,,29,-196.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.2,100.0,1971.0,-71.0,,,29,-204.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.5,101.3,2233.0,-75.0,,,29,-195.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,28.2,99.3,2248.0,-75.0,,,29,-221.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,26.5,99.8,2357.0,-77.0,,,29,-166.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.6,101.0,2362.0,-77.0,,,29,-186.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,26.7,99.9,2459.0,-78.0,,,29,-168.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,26.6,99.8,2463.0,-78.0,,,29,-183.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,26.9,100.0,2500.0,-79.0,,,29,-189.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.4,100.8,2538.0,-80.0,,,29,-169.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.1,99.6,2549.0,-80.0,,,29,-190.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,,,2600.0,-80.0,,,29,-178.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,26.5,99.7,2635.0,-81.0,,,29,-213.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.5,101.3,2754.0,-83.0,,,29,-181.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.7,100.8,2764.0,-83.0,,,29,-205.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,30.7,97.4,3060.0,-87.0,,,29,-219.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.1,100.7,3075.0,-87.0,,,29,-215.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,28.5,98.9,3300.0,-91.0,,,29,-231.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,27.6,100.8,3340.0,-91.0,,,29,-191.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,28.4,98.4,3516.0,-94.0,,,29,-243.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,29.4,98.7,3590.0,-95.0,,,29,-221.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,28.4,99.0,3750.0,-97.0,,,29,-240.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,29.9,97.7,3818.0,-98.0,,,29,-247.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,31.4,96.4,3969.0,-100.0,,,29,-240.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,32.4,95.4,3970.0,-100.0,,,29,-234.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,31.8,97.7,3978.0,-100.0,,,29,-202.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,33.1,95.2,4146.0,-103.0,,,29,-208.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,31.3,98.0,4147.0,-103.0,,,29,-240.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,32.7,95.1,4154.0,-103.0,,,29,-234.0,,original,,,,,,
+"Wang et al., 2017",Liu,Tibetan plateau,32.3,96.0,4226.0,-104.0,,,29,-241.0,,original,,,,,,
+"Wu et al., 2019",Ladd,Los Amigos,-12.5588,-70.0993,286.0,-60.83551799,,,29,-173.0,,original,,,,,,
+"Wu et al., 2019",Ladd,Villa Carmne,-12.8961,-71.4183,614.0,-76.25779185,,,29,-184.0,,original,,,,,,
+"Wu et al., 2019",Ladd,San Pedro,-13.049,-71.537,1500.0,-90.68214874,,,29,-181.0,,original,,,,,,
+"Wu et al., 2019",Ladd,Wayquecha,-13.19255,-71.58795,3015.0,-115.7223326,,,29,-203.0,,original,,,,,,
+Xia et al 2008,McFarlin,KLK,37.28,96.88,2812.0,-36.0,1.0,2018.0,29,-126.0,8.0,original,,,,,,
+Xia et al 2008,McFarlin,XQ,37.47,95.49,3163.0,-43.0,4.0,2018.0,29,-139.0,7.0,original,,,,,,
+Xia et al 2008,McFarlin,YZY,29.03,90.47,4445.0,-129.0,0.0,2018.0,29,-187.0,6.0,original,,,,,,
+Xia et al 2008,McFarlin,NC,30.64,90.6,4718.0,-139.0,4.0,2018.0,29,-246.0,9.0,original,,,,,,
+Xia et al 2008,McFarlin,QY,28.89,90.22,4855.0,-135.0,2.0,2018.0,29,-199.0,9.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Quebrada Salitrosa,-26.1116,-70.5561,,-29.1,2.6,,29,-89.9,0.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Pan de Azucar,-26.1487,-70.6527,,-50.8,3.2,,29,-126.2,2.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Salado,-26.3366,-70.5699,,-47.8,3.1,,29,-138.8,0.5,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Quebrada Pto Flamenco,-26.5626,-70.6589,,-40.2,2.9,,29,-118.7,0.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Copiapo,-27.3281,-70.9136,,-62.6,5.0,,29,-148.9,5.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Quebrada Totoral,-27.8321,-71.0816,,-48.9,3.3,,29,-151.5,2.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Huasco,-28.4873,-71.1486,,-69.5,5.2,,29,-158.2,7.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Quebrada Los Choros,-29.3302,-71.2364,,-54.7,2.8,,29,-151.6,6.5,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Elqui,-29.9459,-71.1293,,-70.2,5.2,,29,-154.7,8.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Limari,-30.6585,-71.5072,,-59.7,3.4,,29,-165.4,2.8,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Choapa,-31.5922,-71.5382,,-59.7,2.9,,29,-158.7,2.3,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Quebrada La Campana,-32.9082,-71.0994,,-53.4,1.3,,29,-170.0,1.7,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Aconcagua,-32.9196,-71.3959,,-65.4,3.2,,29,-168.6,4.5,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Maipo,-33.7738,-71.5272,,-63.3,2.8,,29,-167.2,6.8,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Maule,-35.3882,-72.2978,,-51.5,1.8,,29,-155.2,0.7,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Chovellen,-35.9254,-72.623,,-42.7,0.9,,29,-158.0,3.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Itata,-36.3999,-72.7762,,-47.3,1.2,,29,-175.4,0.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio BioBio,-37.1131,-72.9647,,-54.9,1.7,,29,-158.1,1.8,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Estero Los Gringos,-37.8035,-72.9371,,-57.4,2.3,,29,-173.6,0.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Imperial,-38.7287,-73.1267,,-54.5,0.9,,29,-163.4,1.4,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Tolten,-39.0747,-73.1397,,-61.8,1.2,,29,-179.1,0.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Cruces,-39.5493,-72.8419,,-57.3,0.5,,29,-160.4,6.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio CalleCalle,-39.7902,-73.1749,,-63.5,1.0,,29,-170.0,2.3,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Bueno,-40.29,-73.5354,,-61.1,1.0,,29,-165.1,0.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Llico,-41.2269,-73.753,,-54.8,1.6,,29,-171.2,5.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rio Maullin,-41.474,-73.2726,,-53.8,1.4,,29,-168.4,9.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Choros,-29.3332,-71.2311,,-40.2,1.0,,29,-103.0,1.7,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Talca A,-30.0545,-71.094,,-42.6,0.9,,29,-160.9,0.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Talca B,-30.0548,-71.0894,,-42.6,0.9,,29,-153.5,2.4,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Cajon del Maipo,-33.5814,-70.3586,,-69.7,2.6,,29,-164.7,0.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,SanAntonio-Maipo,-33.7736,-71.5246,,-44.1,0.6,,29,-182.7,1.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Rapel,-34.5693,-71.6361,,-44.0,0.8,,29,-170.0,0.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,BioBio A,-37.1126,-72.9619,,-34.3,1.4,,29,-178.7,1.3,original,,,,,,
+"Gaviria-Lugo et al., 2023",,BioBio B,-37.3473,-72.885,,-38.7,1.4,,29,-164.2,2.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,CalleCalle,-39.7885,-72.9681,,-55.0,0.4,,29,-160.8,1.9,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Bueno,-40.3326,-73.4128,,-57.8,0.8,,29,-163.8,3.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Maullin A,-41.474,-73.2726,,-50.0,1.5,,29,-173.9,7.9,original,,,,,,
+"Gaviria-Lugo et al., 2023",,Maullin B,-41.4787,-73.2756,,-50.0,1.5,,29,-185.2,0.7,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7118-1_1-2 cm,-25.9997,-70.8092,,,,,29,-108.5,3.5,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7116-1_1-2 cm,-26.0002,-70.9998,,,,,29,-118.9,2.7,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7123-2_1-2 cm,-27.29,-71.05,,,,,29,-150.9,5.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3377-1_1-2 cm,-27.4667,-71.525,,,,,29,-146.2,13.4,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3376-2_1-2 cm,-27.4667,-71.3617,,,,,29,-144.7,14.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3374-1_1-2 cm,-27.4733,-71.1717,,,,,29,-144.9,9.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7127-1_1-2 cm,-28.3837,-71.4712,,,,,29,-151.6,1.4,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7129-1_1-2 cm,-28.4168,-71.33,,,,,29,-155.8,10.8,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7130-1_1-2 cm,-28.42,-71.613,,,,,29,-152.1,5.5,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7135-1_1-2 cm,-29.6667,-71.6758,,,,,29,-155.6,1.3,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7134-1_1-2 cm,-29.72,-71.77,,,,,29,-153.2,3.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7138-1_1-2 cm,-30.13,-71.87,,,,,29,-154.6,5.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7144-1_1-2 cm,-31.16,-71.97,,,,,29,-151.9,0.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3304-3_1-2 cm,-32.89,-72.1933,,,,,29,-153.8,2.9,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3303-1_1-2 cm,-33.2067,-72.2,,,,,29,-158.0,5.0,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3311-2_1-2 cm,-33.6067,-72.0467,,,,,29,-157.3,4.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7152-1_1-2 cm,-33.8,-72.1102,,,,,29,-167.8,0.4,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3352-2_1-2 cm,-35.2167,-73.3167,,,,,29,-166.3,0.5,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB3355-4_1-2 cm,-35.2183,-73.1167,,,,,29,-162.8,1.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7157-1_1-2 cm,-35.78,-73.59,,,,,29,-164.2,3.3,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7160-4_1-2 cm,-36.0385,-73.0735,,,,,29,-168.0,2.2,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7167-4_1-2 cm,-36.45,-73.91,,,,,29,-149.8,2.7,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7162-4_1-2 cm,-36.5427,-73.6672,,,,,29,-164.8,0.3,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7198-1_1-2 cm,-38.17,-74.39,,,,,29,-150.6,2.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7209-2_1-2 cm,-38.9913,-74.1642,,,,,29,-161.5,5.9,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7207-1_1-2 cm,-39.07,-74.37,,,,,29,-166.3,4.1,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7212-1_1-2 cm,-39.7,-74.38,,,,,29,-153.8,2.9,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7214-1_1-2 cm,-39.875,-74.1672,,,,,29,-155.9,1.6,original,,,,,,
+"Gaviria-Lugo et al., 2023",,GeoB7194-1_1-2 cm,-41.4175,-74.4337,,,,,29,-164.1,4.5,original,,,,,,
+"Wang et al., 2023",,Gaoqiao G1,21.58,109.75,,,,,29,-165.0,,original,,,,,,
+"Wang et al., 2023",,Gaoqiao G2,21.57,109.75,,,,,29,-146.0,,original,,,,,,
+"Wang et al., 2023",,Gaoqiao G3,21.57,109.75,,,,,29,-160.0,,original,,,,,,
+"Wang et al., 2023",,Gaoqiao G4,21.57,109.75,,,,,29,-178.0,,original,,,,,,
+"Wang et al., 2023",,Gaoqiao G6,21.57,109.76,,,,,29,-169.0,,original,,,,,,
+"Wang et al., 2023",,Huguang H1,21.11,110.31,,,,,29,-186.0,,original,,,,,,
+"Wang et al., 2023",,Huguang H2,21.1,110.31,,,,,29,-154.0,,original,,,,,,
+"Wang et al., 2023",,Huguang H3,21.1,110.3,,,,,29,-157.0,,original,,,,,,
+"Wang et al., 2023",,Techeng T1,21.15,110.44,,,,,29,-131.0,,original,,,,,,
+"Wang et al., 2023",,Techeng T2,21.15,110.44,,,,,29,-131.0,,original,,,,,,
+"Wang et al., 2023",,Techeng T3,21.15,110.44,,,,,29,-182.0,,original,,,,,,
+"Wang et al., 2023",,Techeng T4,21.15,110.44,,,,,29,-135.0,,original,,,,,,
+"Wang et al., 2023",,Techeng T5,21.15,110.44,,,,,29,-149.0,,original,,,,,,
+"Wang et al., 2023",,Techeng T6,21.16,110.44,,,,,29,-135.0,,original,,,,,,
+"Corcoran et al., 2022",,Tarn 2,-51.6959,-58.8276,,,,,29,-165.0,,original,,,,,,
+"Corcoran et al., 2022",,Tarn 2,-51.6959,-58.8276,,,,,29,-161.0,,original,,,,,,
+"Corcoran et al., 2022",,Tarn 4,-51.7022,-58.8276,,,,,29,-168.0,,original,,,,,,
+"Corcoran et al., 2022",,Tarn 4,-51.7022,-58.8276,,,,,29,-165.0,,original,,,,,,
+"Corcoran et al., 2022",,Tarn 4,-51.7022,-58.8276,,,,,29,-163.0,,original,,,,,,
+Freimuth et al. 2019,Manual extraction,"Adirondack lakes, NY, USA (12-lake mean)",44.0,-74.5,,,,,29,-188.0,6.0,v7_new,Lake sediment,Temperate forest,,,10.1016/j.gca.2019.08.026,"Missing: elevation, d2H_precip"
+Gaviria-Lugo et al. 2023,Manual extraction,"Chile, humid zone (mean)",-38.0,-73.0,,,,,29,-185.0,,v7_new,Soil/river sediment,Temperate forest,,,10.5194/bg-20-4433-2023,"Missing: elevation, d2H_precip"
+Gaviria-Lugo et al. 2023,Manual extraction,"Chile, semiarid zone (mean)",-32.0,-71.0,,,,,29,-140.0,,v7_new,Soil/river sediment,Mediterranean scrub,,,10.5194/bg-20-4433-2023,"Missing: elevation, d2H_precip"
+Gaviria-Lugo et al. 2023,Manual extraction,"Chile, hyperarid zone (mean)",-24.0,-70.0,,,,,29,-90.0,,v7_new,Soil/river sediment,Desert,,,10.5194/bg-20-4433-2023,"Missing: elevation, d2H_precip"
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.6314,85.9625,1660.0,-53.157,,,29,-161.0,2.475,v7_new,Soil,soil,,8.99,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.6397,84.1091,160.0,-42.018,,,29,-157.0,2.021,v7_new,Soil,soil,,19.71,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.8,85.0,416.0,-53.502,,,29,-151.0,2.021,v7_new,Soil,soil,,18.33,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9656,85.9669,1960.0,-78.225,,,29,-190.0,2.475,v7_new,Soil,soil,,9.82,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9658,85.9792,1690.0,-76.582,,,29,-162.0,2.475,v7_new,Soil,soil,,6.92,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9664,85.9653,1770.0,-78.468,,,29,-174.0,2.475,v7_new,Soil,soil,,10.29,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9744,85.9717,1850.0,-78.878,,,29,-166.0,2.475,v7_new,Soil,soil,,10.14,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9747,85.9761,2130.0,-78.482,,,29,-189.0,2.475,v7_new,Soil,soil,,9.02,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9767,85.9764,2060.0,-78.765,,,29,-156.0,2.475,v7_new,Soil,soil,,9.17,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9831,85.9686,2210.0,-79.522,,,29,-183.0,2.475,v7_new,Soil,soil,,9.57,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",27.9942,85.9819,2330.0,-80.206,,,29,-205.0,2.475,v7_new,Soil,soil,,9.18,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.0042,85.9775,2570.0,-80.386,,,29,-190.0,2.475,v7_new,Soil,soil,,7.79,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.0294,85.9853,2800.0,-81.789,,,29,-193.0,2.475,v7_new,Soil,soil,,5.81,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.0378,85.9892,3090.0,-82.276,,,29,-214.0,2.475,v7_new,Soil,soil,,5.29,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.0403,85.9881,2920.0,-82.432,,,29,-211.0,2.475,v7_new,Soil,soil,,5.3,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.0653,86.0025,3280.0,-82.781,,,29,-219.0,2.475,v7_new,Soil,soil,,2.65,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.0881,86.0008,3360.0,-85.738,,,29,-216.0,2.475,v7_new,Soil,soil,,3.13,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.1194,85.9923,3485.0,-87.951,,,29,-183.0,2.021,v7_new,Soil,soil,,1.12,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.1256,85.9889,3607.0,-88.92,,,29,-210.0,2.475,v7_new,Soil,soil,,1.62,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.1431,85.9831,3795.0,-89.777,,,29,-210.0,2.475,v7_new,Soil,soil,,0.41,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.1778,85.9847,3820.0,-91.725,,,29,-199.0,2.475,v7_new,Soil,soil,,-0.62,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.22,86.0011,3920.0,-96.641,,,29,-197.0,2.475,v7_new,Soil,soil,,0.07,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.2639,83.7339,850.0,-69.135,,,29,-177.0,2.021,v7_new,Soil,soil,,15.71,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.3028,86.0367,4150.0,-103.536,,,29,-226.0,2.475,v7_new,Soil,soil,,-1.68,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.3675,86.0983,4340.0,-107.145,,,29,-217.0,2.475,v7_new,Soil,soil,,-2.83,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.4386,86.1561,4497.0,-110.476,,,29,-228.0,2.475,v7_new,Soil,soil,,-4.03,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.4677,97.0338,1514.0,-107.258,,,29,-179.0,2.475,v7_new,Soil,soil,,12.93,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.4756,86.1639,4658.0,-112.504,,,29,-216.0,2.475,v7_new,Soil,soil,,-4.71,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.485,86.1572,4758.0,-112.066,,,29,-224.0,2.475,v7_new,Soil,soil,,-5.23,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.4889,86.1481,4852.0,-112.712,,,29,-239.0,2.475,v7_new,Soil,soil,,-5.3,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.5114,97.0788,1468.0,-107.562,,,29,-186.0,2.475,v7_new,Soil,soil,,11.89,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.5164,86.1672,5145.0,-114.989,,,29,-218.0,2.475,v7_new,Soil,soil,,-7.23,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.5725,97.0924,1628.0,-109.72,,,29,-171.0,2.475,v7_new,Soil,soil,,11.26,10.1029/2025PA005167,NOTE: ε outside typical range (-69‰)
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.6009,97.208,1832.0,-109.673,,,29,-181.0,2.475,v7_new,Soil,soil,,10.42,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.6202,97.345,2200.0,-108.783,,,29,-180.0,2.475,v7_new,Soil,soil,,9.02,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.7722,87.2478,4545.0,-121.811,,,29,-240.0,2.475,v7_new,Soil,soil,,-3.98,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.8375,97.4897,2614.0,-115.503,,,29,-195.0,2.475,v7_new,Soil,soil,,6.33,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.8933,90.1672,5046.0,-110.043,,,29,-249.0,2.475,v7_new,Soil,soil,,-7.05,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.9441,97.4256,2758.0,-120.394,,,29,-197.0,2.475,v7_new,Soil,soil,,5.5,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",28.9908,97.402,2891.0,-122.506,,,29,-203.0,2.475,v7_new,Soil,soil,,5.71,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.0378,97.3622,2931.0,-122.978,,,29,-179.0,2.475,v7_new,Soil,soil,,4.58,10.1029/2025PA005167,NOTE: ε outside typical range (-64‰)
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.0952,97.2759,3190.0,-123.144,,,29,-214.0,2.475,v7_new,Soil,soil,,3.99,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.1517,88.595,4040.0,-115.568,,,29,-211.0,2.475,v7_new,Soil,soil,,-0.43,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.1711,97.201,3433.0,-123.007,,,29,-209.0,2.475,v7_new,Soil,soil,,3.02,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.2078,90.6178,4780.0,-113.134,,,29,-264.0,2.475,v7_new,Soil,soil,,-2.91,10.1029/2025PA005167,NOTE: ε outside typical range (-170‰)
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.2289,90.6372,4006.0,-114.624,,,29,-221.0,2.475,v7_new,Soil,soil,,-1.17,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.2667,90.6231,3609.0,-117.405,,,29,-207.0,2.475,v7_new,Soil,soil,,1.66,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3143,96.9948,4616.0,-118.313,,,29,-241.0,2.475,v7_new,Soil,soil,,-4.04,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3176,97.0302,4803.0,-119.126,,,29,-253.0,2.475,v7_new,Soil,soil,,-5.41,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3198,97.1707,3732.0,-123.722,,,29,-190.0,2.475,v7_new,Soil,soil,,0.1,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3255,97.0399,4700.0,-118.503,,,29,-262.0,2.475,v7_new,Soil,soil,,-4.78,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3279,97.1352,3911.0,-122.846,,,29,-194.0,2.475,v7_new,Soil,soil,,-0.9,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3296,97.055,4488.0,-119.989,,,29,-228.0,2.475,v7_new,Soil,soil,,-3.95,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3296,97.055,4488.0,-119.989,,,29,-223.0,2.475,v7_new,Soil,soil,,-3.95,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3326,97.0727,4200.0,-121.001,,,29,-238.0,2.475,v7_new,Soil,soil,,-2.8,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3351,97.0604,4333.0,-121.207,,,29,-223.0,2.475,v7_new,Soil,soil,,-2.65,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3415,96.9256,4590.0,-116.769,,,29,-215.0,2.475,v7_new,Soil,soil,,-3.76,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.3902,96.8516,4196.0,-119.651,,,29,-241.0,2.475,v7_new,Soil,soil,,-1.33,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.4797,96.6523,3922.0,-113.734,,,29,-204.0,2.475,v7_new,Soil,soil,,-0.52,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.5005,96.7307,3921.0,-116.763,,,29,-215.0,2.475,v7_new,Soil,soil,,-0.11,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.5343,96.523,3682.0,-106.223,,,29,-197.0,2.475,v7_new,Soil,soil,,-3.61,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.5363,96.5,3596.0,-109.352,,,29,-200.0,2.475,v7_new,Soil,soil,,0.32,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.5363,96.5,3596.0,-109.352,,,29,-201.0,2.475,v7_new,Soil,soil,,0.32,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.6035,96.3903,3395.0,-107.959,,,29,-200.0,2.475,v7_new,Soil,soil,,-1.68,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.6275,96.2753,3231.0,-110.517,,,29,-181.0,2.475,v7_new,Soil,soil,,3.98,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.6967,92.2256,4348.0,-122.308,,,29,-228.0,2.475,v7_new,Soil,soil,,-3.43,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.7224,96.1323,3075.0,-110.051,,,29,-204.0,2.475,v7_new,Soil,soil,,4.9,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.7368,94.2869,3052.0,-100.836,,,29,-212.0,2.475,v7_new,Soil,soil,,5.16,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.7488,91.9488,3995.0,-126.169,,,29,-230.0,2.475,v7_new,Soil,soil,,-0.81,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.774,92.3269,4713.0,-122.507,,,29,-233.0,2.475,v7_new,Soil,soil,,-4.84,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.804,95.8247,2816.0,-103.884,,,29,-198.0,2.475,v7_new,Soil,soil,,6.26,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.82,93.764,3190.0,-116.107,,,29,-207.0,2.475,v7_new,Soil,soil,,4.25,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.8305,92.3437,4968.0,-125.693,,,29,-233.0,2.475,v7_new,Soil,soil,,-6.71,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.8379,92.3237,4802.0,-125.853,,,29,-244.0,2.475,v7_new,Soil,soil,,-6.13,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.8501,93.6851,3211.0,-116.271,,,29,-217.0,2.475,v7_new,Soil,soil,,4.08,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.871,92.6397,4028.0,-125.156,,,29,-224.0,2.475,v7_new,Soil,soil,,-1.34,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.8734,92.5322,,-125.112,,,29,-220.0,2.475,v7_new,Soil,soil,,-2.41,10.1029/2025PA005167,Missing: elevation
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.8734,92.5322,4186.0,-125.112,,,29,-223.0,2.475,v7_new,Soil,soil,,-2.41,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.8949,93.362,3371.0,-119.204,,,29,-206.0,2.475,v7_new,Soil,soil,,2.63,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.9022,93.188,3439.0,-123.019,,,29,-196.0,2.475,v7_new,Soil,soil,,2.51,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.9044,92.7501,3883.0,-125.877,,,29,-222.0,2.475,v7_new,Soil,soil,,-1.23,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",29.9128,92.364,4437.0,-127.137,,,29,-231.0,2.475,v7_new,Soil,soil,,-3.49,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",30.033,92.9286,3644.0,-128.422,,,29,-223.0,2.475,v7_new,Soil,soil,,1.14,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",30.1066,90.5447,4236.0,-130.345,,,29,-211.0,2.021,v7_new,Soil,soil,,-2.57,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",30.6047,91.5218,4595.0,-131.788,,,29,-241.0,2.021,v7_new,Soil,soil,,-4.17,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",30.9643,91.6556,4731.0,-98.507,,,29,-214.0,2.021,v7_new,Soil,soil,,-4.99,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",31.3265,91.8806,4518.0,-99.618,,,29,-209.0,2.021,v7_new,Soil,soil,,-3.54,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",31.753,91.7813,4690.0,-97.37,,,29,-204.0,2.021,v7_new,Soil,soil,,-4.97,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",32.8828,91.9178,5201.0,-118.5,,,29,-203.0,2.021,v7_new,Soil,soil,,-8.05,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",32.9209,91.9726,5155.0,-117.889,,,29,-194.0,2.021,v7_new,Soil,soil,,-7.37,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",33.01291666666667,91.67001666666668,5085.0,-123.645,,,29,-216.0,2.475,v7_new,Soil,soil,,-7.05,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.014833333333335,91.99106666666668,5123.0,-113.917,,,29,-203.0,2.475,v7_new,Soil,soil,,-7.14,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.02251666666667,91.9948,5117.0,-113.11,,,29,-196.0,2.475,v7_new,Soil,soil,,-7.25,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.03115,92.00521666666668,5143.0,-111.743,,,29,-224.0,2.475,v7_new,Soil,soil,,-7.58,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.040683333333334,92.03295,5233.0,-108.491,,,29,-209.0,2.475,v7_new,Soil,soil,,-8.05,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.0892,91.79065,4951.0,-113.874,,,29,-189.0,2.475,v7_new,Soil,soil,,-6.25,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.1538,91.8597,4869.0,-106.371,,,29,-182.0,2.021,v7_new,Soil,soil,,-5.74,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.323166666666665,91.896,4810.0,-94.275,,,29,-199.0,2.475,v7_new,Soil,soil,,-5.25,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.602,92.0748,4712.0,-92.368,,,29,-175.0,2.021,v7_new,Soil,soil,,-4.9,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",33.78596666666667,92.27781666666668,4624.0,-91.572,,,29,-200.0,2.475,v7_new,Soil,soil,,-4.07,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",34.08755,92.33503333333331,4759.0,-88.091,,,29,-199.0,2.475,v7_new,Soil,soil,,-4.97,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",34.1031,92.3582,4726.0,-87.752,,,29,-194.0,2.021,v7_new,Soil,soil,,-5.08,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",34.29311666666667,92.50926666666666,4582.0,-92.735,,,29,-183.0,2.475,v7_new,Soil,soil,,-3.82,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",34.776783333333334,92.90396666666666,4684.0,-80.819,,,29,-178.0,2.475,v7_new,Soil,soil,,-4.59,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.15221666666667,93.0402,4698.0,-75.961,,,29,-183.0,2.475,v7_new,Soil,soil,,-4.62,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.1699,93.0354,4677.0,-76.023,,,29,-167.0,2.021,v7_new,Soil,soil,,-4.43,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.2536,94.3293,4080.0,-74.767,,,29,-146.0,2.021,v7_new,Soil,soil,,-3.9,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.291066666666666,93.27016666666668,4568.0,-74.939,,,29,-199.0,2.475,v7_new,Soil,soil,,-3.56,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.4681,93.6043,4498.0,-72.567,,,29,-174.0,2.021,v7_new,Soil,soil,,-2.95,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.470283333333334,93.64006666666668,4497.0,-72.337,,,29,-187.0,2.475,v7_new,Soil,soil,,-3.05,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.51555,93.8661,4605.0,-70.493,,,29,-169.0,2.475,v7_new,Soil,soil,,-3.66,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Yangtze",35.5677,94.008,4655.0,-68.85,,,29,-163.0,2.021,v7_new,Soil,soil,,-4.03,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Himalaya, drainage: Brahmaputra",35.6422,94.0686,4750.0,-66.407,,,29,-173.0,2.021,v7_new,Soil,soil,,-4.76,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Ob",35.6968,94.0555,4556.0,-66.107,,,29,-167.0,2.021,v7_new,Soil,soil,,-3.96,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Central Tibet, drainage: Ob",35.7194,94.1258,4446.0,-67.161,,,29,-182.0,2.475,v7_new,Soil,soil,,-2.52,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",36.5478,100.6908,3193.0,-53.332,,,29,-149.0,2.475,v7_new,Soil,soil,,5.97,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",36.6331,100.1164,3193.0,-54.431,,,29,-172.0,2.475,v7_new,Soil,soil,,6.05,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",36.6539,100.2711,3193.0,-53.698,,,29,-155.0,2.475,v7_new,Soil,soil,,6.1,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",36.9017,99.6336,3193.0,-53.32,,,29,-162.0,2.475,v7_new,Soil,soil,,6.63,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.1383,100.3456,3193.0,-48.737,,,29,-156.0,2.475,v7_new,Soil,soil,,7.25,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.1875,100.0772,3093.0,-49.376,,,29,-165.0,2.475,v7_new,Soil,soil,,7.36,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.1875,100.0772,3193.0,-49.376,,,29,-158.0,2.475,v7_new,Lake sediment,lake sed,,7.36,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.1875,100.0772,3193.0,-49.376,,,29,-149.0,2.475,v7_new,Soil,soil,,7.36,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.2,101.53,2840.0,-95.232,,,29,-148.0,2.021,v7_new,Soil,soil,,8.85,10.1029/2025PA005167,NOTE: ε outside typical range (-58‰)
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.2262,102.8335,2819.0,-95.304,,,29,-167.0,2.021,v7_new,Soil,soil,,10.14,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.2357,101.5087,2925.0,-95.375,,,29,-160.0,2.021,v7_new,Soil,soil,,8.94,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.2714,101.4152,3058.0,-94.058,,,29,-152.0,2.021,v7_new,Soil,soil,,7.95,10.1029/2025PA005167,NOTE: ε outside typical range (-64‰)
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.2935,101.4141,3203.0,-93.506,,,29,-155.0,2.021,v7_new,Soil,soil,,7.3,10.1029/2025PA005167,NOTE: ε outside typical range (-68‰)
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.3235,101.4152,3454.0,-92.53,,,29,-159.0,2.021,v7_new,Soil,soil,,6.31,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.3265,101.4058,3713.0,-92.402,,,29,-169.0,2.021,v7_new,Soil,soil,,6.13,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.371,101.4059,3537.0,-43.069,,,29,-160.0,2.021,v7_new,Soil,soil,,6.7,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.6316,102.37035,2959.0,-89.471,,,29,-163.0,2.021,v7_new,Soil,soil,,9.79,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.639,102.3716,2818.0,-89.913,,,29,-170.0,2.021,v7_new,Soil,soil,,10.35,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.8759,101.9279,2847.0,-36.371,,,29,-157.0,2.021,v7_new,Soil,soil,,10.94,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",37.8791,101.9232,2945.0,-36.238,,,29,-161.0,2.021,v7_new,Soil,soil,,10.74,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.233,99.9916,2815.0,-41.665,,,29,-163.0,2.021,v7_new,Soil,soil,,11.34,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.233,99.9916,2904.0,-41.665,,,29,-167.0,2.021,v7_new,Soil,soil,,11.34,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.2467,99.9576,2859.0,-41.33,,,29,-155.0,2.021,v7_new,Soil,soil,,11.0,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.2762,99.8765,2969.0,-41.28,,,29,-156.0,2.021,v7_new,Soil,soil,,10.95,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.3295,99.7389,3084.0,-41.137,,,29,-146.0,2.021,v7_new,Soil,soil,,10.72,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.3804,99.688,3137.0,-40.537,,,29,-163.0,2.021,v7_new,Soil,soil,,10.8,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.4764,99.5819,3398.0,-38.582,,,29,-161.0,2.021,v7_new,Soil,soil,,9.52,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.5744,99.4192,3231.0,-38.91,,,29,-151.0,2.021,v7_new,Soil,soil,,10.79,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.7838,98.7447,4126.0,-37.416,,,29,-153.0,2.021,v7_new,Soil,soil,,9.47,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.793,98.7629,4033.0,-37.326,,,29,-154.0,2.021,v7_new,Soil,soil,,9.61,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.7968,98.8812,3671.0,-37.36,,,29,-163.0,2.021,v7_new,Soil,soil,,10.35,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.8231,98.7986,3906.0,-37.16,,,29,-153.0,2.021,v7_new,Soil,soil,,10.25,10.1029/2025PA005167,OK
+Hren & Brandon 2026,Hren & Brandon 2026 Zenodo: 17209981,"Northeast Tibet, drainage: Yangtze",38.8492,99.035,3774.0,-35.641,,,29,-143.0,2.021,v7_new,Soil,soil,,10.49,10.1029/2025PA005167,OK
+"Ladd 2021 compilation (Douglas et al., 2012)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Yojoa (Soil), North America",14.91,-87.97,662.0,-33.0,,,29,-115.4,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Huang et al., 2016)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Yichun, Asia",48.52,129.53,272.0,-91.0,,,29,-209.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.55,101.97,3767.0,-98.0,,,29,-237.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.55,101.97,3518.0,-94.0,,,29,-224.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.55,101.97,3676.0,-96.0,,,29,-241.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.57,101.98,3209.0,-89.0,,,29,-200.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.58,101.99,3188.0,-89.0,,,29,-220.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.58,102.01,2808.0,-83.0,,,29,-193.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.58,101.99,3119.0,-88.0,,,29,-207.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.58,102.01,2920.0,-84.0,,,29,-197.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.6,102.05,2220.0,-74.0,,,29,-203.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.6,102.06,2160.0,-73.0,,,29,-214.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.6,102.07,2115.0,-72.0,,,29,-185.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.6,102.07,2005.0,-70.0,,,29,-199.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.6,102.07,2085.0,-72.0,,,29,-206.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.6,102.04,2350.0,-76.0,,,29,-189.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.61,102.11,1645.0,-65.0,,,29,-181.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.61,102.17,1220.0,-58.0,,,29,-195.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.61,102.09,1850.0,-68.0,,,29,-195.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.62,102.11,1740.0,-66.0,,,29,-178.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.63,102.14,1375.0,-61.0,,,29,-169.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.64,102.13,1470.0,-62.0,,,29,-184.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+"Ladd 2021 compilation (Jia et al., 2008)",ETH Zurich: doi:10.3929/ethz-b-000412154,"Mt Gonnga, Asia",29.65,102.11,1610.0,-64.0,,,29,-192.0,,v7_new,Sediment/soil,Mixed,,,10.1029/2020JG005891,OK
+Ladd et al. 2021,Manual extraction,"Tol Swamp, Chuuk, Micronesia",7.35,150.6,,-32.0,,,29,-153.0,5.0,v7_new,Swamp sediment,Aquatic/mangrove,,,10.1029/2020JG005891,Missing: elevation
+McFarlin et al. 2019,Manual extraction,"T1, Nuuk area, Greenland",64.0,-51.5,,,,,29,-203.0,4.0,v7_new,Lake sediment,Tundra/Sub-Arctic,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"T2, Nuuk area, Greenland",64.0,-51.5,,,,,29,-218.0,4.0,v7_new,Lake sediment,Tundra/Sub-Arctic,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"RTL3, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-232.0,6.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"RTL2, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-224.0,6.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"LSL, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-237.0,5.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"SHL, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-251.0,4.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"USHL, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-257.0,4.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"RTL1, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-240.0,4.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"SEC, Kangerlussuaq, Greenland",67.0,-51.0,,,,,29,-246.0,4.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"WLL (Wax Lips Lake), Thule, Greenland",76.85,-68.66,,,,,29,-264.0,7.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+McFarlin et al. 2019,Manual extraction,"STR, Thule area, Greenland",76.85,-68.66,,,,,29,-248.0,6.0,v7_new,Lake sediment,Tundra,,,10.1016/j.quascirev.2019.105978,"Missing: elevation, d2H_precip"
+Roy & Sanyal 2022,Roy & Sanyal 2022 Table 2,"Gangetic floodplain, India",25.0,83.0,,-57.0,,,29,-212.03813025,4.8984542791716,v7_new,Soil,Mixed vegetation (soil),,,10.1016/j.quaint.2021.09.004,Missing: elevation
+Roy & Sanyal 2022,Roy & Sanyal 2022 Table 2,"Gangetic floodplain, India",25.0,83.0,,-57.0,,,29,-150.5190408,6.9613931291601,v7_new,Soil,Mixed vegetation (soil),,,10.1016/j.quaint.2021.09.004,Missing: elevation
+Roy & Sanyal 2022,Roy & Sanyal 2022 Table 2,"Gangetic floodplain, India",25.0,83.0,,-57.0,,,29,-170.81701845,10.15054775454974,v7_new,Soil,Mixed vegetation (soil),,,10.1016/j.quaint.2021.09.004,Missing: elevation
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Taylor Road and WA SR10",47.2,-120.8,570.0,-89.2,,,29,-206.2,1.8,v7_new,Soil,Soil,645.3,7.8,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Near Cannon Mine, Methow St, Wenatchee",47.4,-120.3,390.0,-90.4,,,29,-200.4,1.4,v7_new,Soil,Soil,260.2,10.0,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Rockaway Beach Park, Bainbridge Island",47.6,-122.5,1.0,-67.0,,,29,-208.3,3.3,v7_new,Soil,Soil,1022.3,11.5,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Chiwawa River/Chiwawa Basin Trail",48.1,-120.9,1467.4,-102.2,,,29,-221.2,2.7,v7_new,Soil,Soil,1851.7,3.9,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Suiattle River Road",48.3,-121.3,349.2,-84.7,,,29,-193.0,1.8,v7_new,Soil,Soil,2321.6,9.0,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Leader Lake State Park",48.4,-119.7,720.5,-102.4,,,29,-230.0,3.1,v7_new,Soil,Soil,358.4,8.6,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Bowman Bay, Deception Pass State Park",48.4,-122.7,12.0,-72.0,,,29,-162.4,1.8,v7_new,Soil,Soil,596.5,10.3,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Thompson Ridge Road",48.4,-120.3,1170.0,-104.9,,,29,-221.3,1.2,v7_new,Soil,Soil,650.4,6.4,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, FR 42 off Loup Loup Summit",48.4,-119.9,1387.0,-110.4,,,29,-249.9,1.5,v7_new,Soil,Soil,601.5,4.5,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Leader Lake State Park",48.4,-119.7,731.0,-102.4,,,29,-228.3,1.0,v7_new,Soil,Soil,358.4,8.6,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Cascade Pass",48.5,-121.1,1586.5,-106.5,,,29,-202.6,2.3,v7_new,Soil,Soil,2014.3,3.4,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Cedar Creek Trail",48.5,-120.5,1350.0,-106.4,,,29,-258.8,1.1,v7_new,Soil,Soil,1137.5,4.6,10.1016/j.orggeochem.2023.104572,NOTE: ε outside typical range (-170‰)
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Sauk Mountain Road",48.5,-121.6,909.0,-94.4,,,29,-222.8,3.7,v7_new,Soil,Soil,2883.7,6.5,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Lookout Mountain Lookout Trail",48.5,-121.3,1096.0,-94.1,,,29,-208.4,5.5,v7_new,Soil,Soil,2409.7,5.9,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Eightmile Creek",48.6,-120.2,885.0,-103.9,,,29,-229.5,1.0,v7_new,Soil,Soil,609.6,6.4,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Squire's Lake Trail",48.6,-122.4,163.0,-82.7,,,29,-169.8,1.3,v7_new,Soil,Soil,1249.2,9.6,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Hathaway Road (Prairie, WA)",48.6,-122.2,174.0,-79.8,,,29,-179.3,4.3,v7_new,Soil,Soil,1635.4,9.2,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Medford/Scott Paper Road",48.6,-122.0,533.0,-86.6,,,29,-203.0,2.9,v7_new,Soil,Soil,2429.9,8.8,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Easy Pass Trail",48.6,-120.8,1522.0,-104.3,,,29,-207.6,0.0,v7_new,Soil,Soil,1417.3,3.3,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Goat Peak Road",48.6,-120.4,1408.0,-108.4,,,29,-256.9,0.7,v7_new,Soil,Soil,680.9,5.3,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Hagood Cutoff off Pine Creek Road",48.6,-119.6,446.0,-102.7,,,29,-204.1,1.3,v7_new,Soil,Soil,331.1,9.0,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, South Fork Park, Deming",48.7,-122.2,107.2,-79.9,,,29,-210.5,2.9,v7_new,Soil,Soil,1379.0,10.1,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, FR 12 off Baker Lake Road, Elbow Lake Junction",48.7,-121.8,895.7,-93.5,,,29,-201.3,2.6,v7_new,Soil,Soil,3719.3,7.2,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Shannon Creek Campground, N Baker Lake",48.7,-121.6,240.6,-86.4,,,29,-188.5,0.8,v7_new,Soil,Soil,2391.6,8.7,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Salmon Meadows, Conconully",48.7,-119.8,1354.1,-111.7,,,29,-236.6,1.8,v7_new,Soil,Soil,571.3,3.7,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, FR 12 off Baker Lake Road, Elbow Lake Junction",48.7,-121.8,877.0,-93.5,,,29,-196.6,1.3,v7_new,Soil,Soil,3719.3,7.2,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, FR 100 off Chewuch Road",48.7,-120.2,1022.0,-106.1,,,29,-231.5,3.2,v7_new,Soil,Soil,540.5,6.3,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Nugent's Corner River Access",48.8,-122.3,75.0,-79.6,,,29,-183.5,1.1,v7_new,Soil,Soil,1231.9,10.5,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Heliotrope Ridge Trailhead",48.8,-121.9,1118.1,-95.6,,,29,-193.6,1.0,v7_new,Soil,Soil,2948.1,6.1,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, West Chewuch Rd b/n Andrews and Lake Creek",48.8,-120.1,874.0,-106.8,,,29,-207.8,2.1,v7_new,Soil,Soil,539.2,6.2,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Spectacle Lake",48.8,-119.5,421.0,-105.3,,,29,-232.9,3.7,v7_new,Soil,Soil,302.7,9.2,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Fancher Dam Road and Havillah Road",48.8,-119.3,981.4,-111.7,,,29,-224.9,1.9,v7_new,Soil,Soil,435.3,6.0,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Fancher Dam Road and Havillah Road",48.8,-119.3,982.0,-111.7,,,29,-257.3,1.2,v7_new,Soil,Soil,435.3,6.0,10.1016/j.orggeochem.2023.104572,OK
+Sisley & Wolhowe (2023),Supplement Table S1 (soil),"Cascades transect, WA, Big Tree Trail, Bonaparte State Park",48.9,-119.0,1156.4,-114.6,,,29,-244.4,3.0,v7_new,Soil,Soil,450.1,5.1,10.1016/j.orggeochem.2023.104572,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,T1L9 (T1L9),31.38868,-84.39601,54.0,-21.0,,,29,-159.0,,v7_new,Lake surface sediment,Bulk sediment,1300.0,19.2,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Morgan (T2L11),31.66976,-81.81111,11.0,-21.0,,,29,-136.0,,v7_new,Lake surface sediment,Bulk sediment,1229.0,19.5,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,T1L8 (T1L8),32.34999,-86.20918,87.0,-23.0,,,29,-162.0,,v7_new,Lake surface sediment,Bulk sediment,1287.0,18.2,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Turkey Hill (T2L12),33.55354,-80.84634,73.0,-26.0,,,29,-158.0,,v7_new,Lake surface sediment,Bulk sediment,1202.0,17.8,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Lamar (T1L7),33.77759,-88.23522,110.0,-25.0,,,29,-170.0,,v7_new,Lake surface sediment,Bulk sediment,1431.0,16.5,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Bear Creek (T1L6),34.71125,-90.69264,80.0,-29.0,,,29,-153.0,,v7_new,Lake surface sediment,Bulk sediment,1302.0,16.3,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Wheatfield (T2L13),35.17073,-79.67573,169.0,-28.0,,,29,-158.0,,v7_new,Lake surface sediment,Bulk sediment,1170.0,15.9,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Ferguson (T1L5),35.88266,-92.6309,473.0,-35.0,,,29,-169.0,,v7_new,Lake surface sediment,Bulk sediment,1175.0,14.1,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Buffalo (T2L14),36.62386,-78.57864,12.0,-30.0,,,29,-167.0,,v7_new,Lake surface sediment,Bulk sediment,1108.0,14.5,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Spring (T1L4),37.05976,-94.73146,245.0,-36.0,,,29,-168.0,,v7_new,Lake surface sediment,Bulk sediment,1153.0,14.4,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,T1L3 (T1L3),37.76569,-97.31961,405.0,-41.0,,,29,-160.0,,v7_new,Lake surface sediment,Bulk sediment,878.0,13.7,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Locust Shade (T2L15),38.53797,-77.34658,45.0,-38.0,,,29,-173.0,,v7_new,Lake surface sediment,Bulk sediment,1040.0,13.6,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Antelope (T1L2),39.37553,-100.11211,725.0,-56.0,,,29,-178.0,,v7_new,Lake surface sediment,Bulk sediment,392.0,10.2,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Middle Creek (T2L16),40.27465,-76.23239,175.0,-49.0,,,29,-175.0,,v7_new,Lake surface sediment,Bulk sediment,1139.0,11.4,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Overland (T1L1),40.621,-103.182,1200.0,-73.0,,,29,-190.0,,v7_new,Lake surface sediment,Bulk sediment,392.0,10.2,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Cody Pond (T3L29),41.15055,-100.75241,852.0,-65.0,,,29,-165.0,,v7_new,Lake surface sediment,Bulk sediment,523.0,9.6,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Norwalk (T2L24),41.23881,-82.58788,244.0,-52.0,,,29,-189.0,,v7_new,Lake surface sediment,Bulk sediment,966.0,9.9,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,LaPrele Pond (T3L30),41.31952,-105.54942,2181.0,-98.0,,,29,-224.0,,v7_new,Lake surface sediment,Bulk sediment,353.0,5.4,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Libby Flats (LF15),41.32491,-106.28588,3192.0,-118.0,,,29,-226.0,,v7_new,Lake surface sediment,Bulk sediment,1014.0,0.1,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Eagle (T2L25),41.43546,-85.57648,275.0,-47.0,,,29,-164.0,,v7_new,Lake surface sediment,Bulk sediment,954.0,9.8,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Cottonwood (T3L28),41.44972,-96.56627,370.0,-61.0,,,29,-167.0,,v7_new,Lake surface sediment,Bulk sediment,773.0,10.2,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Beaver Meadows (T2L23),41.52093,-79.11079,523.0,-65.0,,,29,-175.0,,v7_new,Lake surface sediment,Bulk sediment,1165.0,7.3,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Mendota (T2L26),41.55853,-89.13097,235.0,-44.0,,,29,-174.0,,v7_new,Lake surface sediment,Bulk sediment,928.0,9.5,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Quarry Spring (T2L27),41.68668,-93.24137,241.0,-41.0,,,29,-180.0,,v7_new,Lake surface sediment,Bulk sediment,908.0,10.1,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,T2L17 (T2L17),41.69247,-74.68755,479.0,-55.0,,,29,-174.0,,v7_new,Lake surface sediment,Bulk sediment,1224.0,7.7,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Batterson (T2L21),41.71002,-72.78982,94.0,-49.0,,,29,-187.0,,v7_new,Lake surface sediment,Bulk sediment,1248.0,10.0,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Blanding (T2L22),41.79835,-75.67582,454.0,-59.0,,,29,-160.0,,v7_new,Lake surface sediment,Bulk sediment,1127.0,7.6,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Arms House (T2L20),41.95139,-70.6655,24.0,-46.0,,,29,-191.0,,v7_new,Lake surface sediment,Bulk sediment,1302.0,10.2,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Carter’s Pond (T2L18),43.16463,-73.42084,151.0,-60.0,,,29,-165.0,,v7_new,Lake surface sediment,Bulk sediment,1056.0,7.9,10.1016/j.gca.2022.11.001,OK
+Stefanescu et al. 2023,Wyoming Data Repository doi:10.15786/20126483,Twin Ponds (T2L19),44.06117,-72.57968,410.0,-69.0,,,29,-191.0,,v7_new,Lake surface sediment,Bulk sediment,1057.0,5.5,10.1016/j.gca.2022.11.001,OK

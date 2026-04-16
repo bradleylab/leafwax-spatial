@@ -1,0 +1,305 @@
+# Configuration file — FINAL RUN (April 2026)
+# All 14 manuscript models + baseline_veg_sp_fixed_range
+# MCMC settings verified against most recent successful run chain CSV headers
+# Dataset: global_data_c29.csv (1131 sites, final verified)
+
+# scripts
+scripts:
+  spatial_functions: "4a_spatial_functions.R"
+  prep_script: "4b_stan_prep.R"
+  fit_script: "4c_fit_models.R"
+  stan_model: "4d_leaf_wax_spatial_model.stan"
+
+# Input/Output paths
+input_data: "results/3_sediment_ready_for_modeling.rds"
+output_dirs:
+  prepared_data: "prepared_data"
+  model_output: "model_output"
+  results: "results"
+  logs: "logs"
+
+# Data source paths
+data_sources:
+  c4_netcdf: "input_data/C4_distribution_NUS_v2.2.nc"
+  oipc_d2h: "input_data/GlobalPrecip/d2h_MA.tif"
+  oipc_se: "input_data/GlobalPrecip/d2h_se_MA.tif"
+  elevation: "input_data/elevation_5KMmn_GMTEDmn.tif"
+  sediment_csv: "input_data/global_data_c29.csv"
+
+# Spatial scale parameters
+spatial_scales: [1, 3, 5, 10, 20, 40, 70, 100, 150]  # km
+
+# Lambda (spatial integration scale) control
+lambda_control:
+  estimate: true
+  fixed_value: 13  # km (not normalized)
+  prior_mean_log: 2.5  # around 12 km
+  prior_sd_log: 0.5    # 95% interval between roughly 4 and 28
+
+# GP regularization parameters
+gp_regularization:
+  density_radius_std: 0.2
+  density_scaling: 10
+
+# Penalized complexity prior for spatial variance
+pc_prior_intercept:
+  use_pc_prior: true
+  u_permil: 20      # Threshold in permil for intercept variation
+  alpha: 0.05       # P(sigma > 20 permil) = 0.05
+
+pc_prior_slope:
+  use_pc_prior: true
+  u_value: 0.3      # Threshold for slope variation (unitless)
+  alpha: 0.05       # P(sigma > 0.3) = 0.05
+
+# Knot selection parameters
+knot_selection_method: "regular_global"
+min_dist_quantile: 0.05
+
+# Elevation b-spline configuration
+n_elevation_knots: 9        # Interior knots for B-splines
+elevation_spline_degree: 3  # Cubic B-splines
+
+# Standardization parameters
+c4_standardization:
+  mean: 20
+  sd: 25
+
+climate_standardization:
+  compute_from_data: true
+
+# Numerical stability parameters
+kernel_jitter: 1e-4
+coordinate_jitter: 0.0001
+max_condition_number: 1e6
+min_eigenvalue: -1e-6
+
+# Stan sampling defaults
+stan_seed: 314
+warmup_ratio: 0.5
+refresh: 100
+
+# Progress reporting
+progress_interval_divisor: 10
+
+# Parallel execution
+max_parallel_models: 4
+
+# Model selection criteria
+model_selection:
+  criteria: ["loo", "waic", "r_squared", "rmse"]
+  best_model_selection: "loo"
+
+# Posterior predictive check settings
+ppc_settings:
+  n_samples: 1000
+  checks: ["density_overlay", "intervals", "stat_mean", "stat_sd", "spatial_residuals"]
+
+# ─── Models to run ───
+# 14 manuscript comparison models + 1 fixed-range variant = 15 total
+# MCMC settings below are from the ACTUAL chain CSV headers of the most recent
+# successful run (Sep 24, 2025 for _veg models; Aug 30, 2025 for others).
+# Note: iter = total iterations (warmup + sampling). warmup_ratio = 0.5 applies.
+#
+# Non-spatial models: iter=2000, adapt_delta=0.95, max_treedepth=15
+# Spatial _veg models: iter=3000, adapt_delta=0.95, max_treedepth=14
+# Spatial _env/full models: iter=3000-4000, adapt_delta=0.99, max_treedepth=12
+
+model_configs:
+  # ── Non-spatial models (fast, ~1-2 hrs each) ──
+  baseline:
+    name: "baseline"
+    include_c4: false
+    include_pft: false
+    include_gp: false
+    include_elevation: false
+    include_precip: false
+    include_veg_interactions: false
+    n_pp_knots: 0
+    chains: 8
+    iter: 2000
+    adapt_delta: 0.95
+    max_treedepth: 15
+
+  baseline_veg:
+    name: "baseline_veg"
+    include_c4: true
+    include_pft: true
+    include_gp: false
+    include_elevation: false
+    include_precip: false
+    include_veg_interactions: true
+    n_pp_knots: 0
+    chains: 8
+    iter: 2000
+    adapt_delta: 0.95
+    max_treedepth: 15
+
+  baseline_env:
+    name: "baseline_env"
+    include_c4: false
+    include_pft: false
+    include_gp: false
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: false
+    n_pp_knots: 0
+    chains: 8
+    iter: 2000
+    adapt_delta: 0.95
+    max_treedepth: 15
+
+  full:
+    name: "full"
+    include_c4: true
+    include_pft: true
+    include_gp: false
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: false
+    n_pp_knots: 0
+    chains: 8
+    iter: 2000
+    adapt_delta: 0.95
+    max_treedepth: 15
+
+  full_interact:
+    name: "full_interact"
+    include_c4: true
+    include_pft: true
+    include_gp: false
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: true
+    n_pp_knots: 0
+    chains: 8
+    iter: 2000
+    adapt_delta: 0.95
+    max_treedepth: 15
+
+  # ── Spatial models (slow, 5-30 hrs each) ──
+  baseline_sp:
+    name: "baseline_sp"
+    include_c4: false
+    include_pft: false
+    include_gp: true
+    include_elevation: false
+    include_precip: false
+    include_veg_interactions: false
+    n_pp_knots: 125
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.99
+    max_treedepth: 15
+
+  baseline_veg_sp:
+    name: "baseline_veg_sp"
+    include_c4: true
+    include_pft: true
+    include_gp: true
+    include_elevation: false
+    include_precip: false
+    include_veg_interactions: true
+    n_pp_knots: 125
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.95
+    max_treedepth: 14
+
+  baseline_env_sp:
+    name: "baseline_env_sp"
+    include_c4: false
+    include_pft: false
+    include_gp: true
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: false
+    n_pp_knots: 125
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.99
+    max_treedepth: 12
+
+  c4_only_sp:
+    name: "c4_only_sp"
+    include_c4: true
+    include_pft: false
+    include_gp: true
+    include_elevation: false
+    include_precip: false
+    include_veg_interactions: false
+    n_pp_knots: 125
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.99
+    max_treedepth: 12
+
+  elevation_only_sp:
+    name: "elevation_only_sp"
+    include_c4: false
+    include_pft: false
+    include_gp: true
+    include_elevation: true
+    include_precip: false
+    include_veg_interactions: false
+    n_pp_knots: 125
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.99
+    max_treedepth: 12
+
+  elevation_c4_sp:
+    name: "elevation_c4_sp"
+    include_c4: true
+    include_pft: false
+    include_gp: true
+    include_elevation: true
+    include_precip: false
+    include_veg_interactions: false
+    n_pp_knots: 125
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.99
+    max_treedepth: 12
+
+  elevation_c4_interact_sp:
+    name: "elevation_c4_interact_sp"
+    include_c4: true
+    include_pft: false
+    include_gp: true
+    include_elevation: true
+    include_precip: false
+    include_veg_interactions: true
+    n_pp_knots: 125
+    chains: 8
+    iter: 4000
+    adapt_delta: 0.99
+    max_treedepth: 12
+
+  full_sp:
+    name: "full_sp"
+    include_c4: true
+    include_pft: true
+    include_gp: true
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: false
+    n_pp_knots: 125
+    chains: 8
+    iter: 4000
+    adapt_delta: 0.99
+    max_treedepth: 12
+
+  full_interact_sp:
+    name: "full_interact_sp"
+    include_c4: true
+    include_pft: true
+    include_gp: true
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: true
+    n_pp_knots: 125
+    chains: 8
+    iter: 4000
+    adapt_delta: 0.99
+    max_treedepth: 12

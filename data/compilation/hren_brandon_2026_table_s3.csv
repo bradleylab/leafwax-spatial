@@ -1,0 +1,280 @@
+Flag,Sample,Longitude,Latitude,d2H C27,d2H C29,d2H C31,Replicates,"SE(d2H, C29)",Type,Record No.,Group,Drainage,Reported Elev (m),Source
+,TS-1,84.1091,27.6397,-158,-157,-170,3.0004983348030736,2.0205581300593116,soil,1,Himalaya,Brahmaputra,160,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2012"
+,TS-2,85,27.8,,-151,-165,3.0004983348030736,2.0205581300593116,soil,2,Himalaya,Brahmaputra,416,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2013"
+,TS-3,83.7339,28.2639,-182,-177,-174,3.0004983348030736,2.0205581300593116,soil,3,Himalaya,Brahmaputra,850,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2014"
+,TS-4,85.9923,28.1194,-174,-183,-186,3.0004983348030736,2.0205581300593116,soil,4,Himalaya,Brahmaputra,3485,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2015"
+,TS-5,94.3293,35.2536,-120,-146,-163,3.0004983348030736,2.0205581300593116,soil,5,Central Tibet,Yangtze,4080,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2016"
+,TS-6,94.0555,35.6968,-161,-167,-171,3.0004983348030736,2.0205581300593116,soil,6,Central Tibet,Ob,4556,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2017"
+,TS-7,94.0686,35.6422,-160,-173,-174,3.0004983348030736,2.0205581300593116,soil,7,Himalaya,Brahmaputra,4750,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2018"
+,TS-8,94.008,35.5677,-170,-163,-175,3.0004983348030736,2.0205581300593116,soil,8,Central Tibet,Yangtze,4655,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2019"
+,TS-9,93.6043,35.4681,-154,-174,-187,3.0004983348030736,2.0205581300593116,soil,9,Central Tibet,Yangtze,4498,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2020"
+,TS-10,93.0354,35.1699,-168,-167,-175,3.0004983348030736,2.0205581300593116,soil,10,Central Tibet,Yangtze,4677,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2021"
+,TS-11,92.3582,34.1031,-179,-194,-200,3.0004983348030736,2.0205581300593116,soil,11,Central Tibet,Yangtze,4726,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2022"
+,TS-12,92.0748,33.602,,-175,-185,3.0004983348030736,2.0205581300593116,soil,12,Central Tibet,Yangtze,4712,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2023"
+,TS-13,91.8597,33.1538,-174,-182,-187,3.0004983348030736,2.0205581300593116,soil,13,Central Tibet,Yangtze,4869,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2024"
+,TS-14,91.9726,32.9209,-182,-194,-209,3.0004983348030736,2.0205581300593116,soil,14,Central Tibet,Yangtze,5155,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2025"
+,TS-15,91.9178,32.8828,-187,-203,-206,3.0004983348030736,2.0205581300593116,soil,15,Central Tibet,Yangtze,5201,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2026"
+,TS-16,91.7813,31.753,-205,-204,-211,3.0004983348030736,2.0205581300593116,soil,16,Himalaya,Brahmaputra,4690,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2027"
+,TS-17,91.8806,31.3265,-189,-209,-222,3.0004983348030736,2.0205581300593116,soil,17,Himalaya,Brahmaputra,4518,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2028"
+,TS-18,91.6556,30.9643,-191,-214,-232,3.0004983348030736,2.0205581300593116,soil,18,Himalaya,Brahmaputra,4731,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2029"
+,TS-19,91.5218,30.6047,-239,-241,-247,3.0004983348030736,2.0205581300593116,soil,19,Himalaya,Brahmaputra,4595,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2030"
+,TS-20,90.5447,30.1066,-213,-211,-221,3.0004983348030736,2.0205581300593116,soil,20,Himalaya,Brahmaputra,4236,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2031"
+% Outside of study area,TS-21,101.53,37.2,-143,-148.5,-154,3.0004983348030736,2.0205581300593116,soil,21,Northeast Tibet,Yangtze,2840,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2032"
+% Outside of study area,TS-22,101.5087,37.2357,-157,-160,-152.9,3.0004983348030736,2.0205581300593116,soil,22,Northeast Tibet,Yangtze,2925,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2033"
+% Outside of study area,TS-23,101.4152,37.2714,-144,-152.5,-157.9,3.0004983348030736,2.0205581300593116,soil,23,Northeast Tibet,Yangtze,3058,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2034"
+% Outside of study area,TS-24,101.4141,37.2935,-145,-155.6,-161.4,3.0004983348030736,2.0205581300593116,soil,24,Northeast Tibet,Yangtze,3203,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2035"
+% Outside of study area,TS-25,101.4152,37.3235,-148,-159.7,-165.7,3.0004983348030736,2.0205581300593116,soil,25,Northeast Tibet,Yangtze,3454,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2036"
+% Outside of study area,TS-26,101.4058,37.3265,-168,-169.5,-175,3.0004983348030736,2.0205581300593116,soil,26,Northeast Tibet,Yangtze,3713,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2037"
+% Outside of study area,TS-27,101.4059,37.371,-147,-160.4,-175,3.0004983348030736,2.0205581300593116,soil,27,Northeast Tibet,Yangtze,3537,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2038"
+% Outside of study area,TS-28,99.9916,38.233,-158,-163.2,-151.1,3.0004983348030736,2.0205581300593116,soil,28,Northeast Tibet,Yangtze,2815,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2039"
+% Outside of study area,TS-29,99.9576,38.2467,-154,-155,-163,3.0004983348030736,2.0205581300593116,soil,29,Northeast Tibet,Yangtze,2859,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2040"
+% Outside of study area,TS-30,99.9916,38.233,-164,-167.8,-149.3,3.0004983348030736,2.0205581300593116,soil,30,Northeast Tibet,Yangtze,2904,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2041"
+% Outside of study area,TS-31,99.8765,38.2762,-161,-156,-164,3.0004983348030736,2.0205581300593116,soil,31,Northeast Tibet,Yangtze,2969,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2042"
+% Outside of study area,TS-32,99.7389,38.3295,-159,-146,-159,3.0004983348030736,2.0205581300593116,soil,32,Northeast Tibet,Yangtze,3084,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2043"
+% Outside of study area,TS-33,99.688,38.3804,-163,-163,-170,3.0004983348030736,2.0205581300593116,soil,33,Northeast Tibet,Yangtze,3137,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2044"
+% Outside of study area,TS-34,99.4192,38.5744,-152,-151,-167,3.0004983348030736,2.0205581300593116,soil,34,Northeast Tibet,Yangtze,3231,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2045"
+% Outside of study area,TS-35,99.5819,38.4764,-168,-161,-165,3.0004983348030736,2.0205581300593116,soil,35,Northeast Tibet,Yangtze,3398,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2046"
+% Outside of study area,TS-36,98.8812,38.7968,-149,-163,-175,3.0004983348030736,2.0205581300593116,soil,36,Northeast Tibet,Yangtze,3671,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2047"
+% Outside of study area,TS-37,99.035,38.8492,,-143,-156,3.0004983348030736,2.0205581300593116,soil,37,Northeast Tibet,Yangtze,3774,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2048"
+% Outside of study area,TS-38,98.7986,38.8231,-146,-153,-161,3.0004983348030736,2.0205581300593116,soil,38,Northeast Tibet,Yangtze,3906,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2049"
+% Outside of study area,TS-39,98.7629,38.793,-148,-154,-166,3.0004983348030736,2.0205581300593116,soil,39,Northeast Tibet,Yangtze,4033,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2050"
+% Outside of study area,TS-40,98.7447,38.7838,-146,-153,-163,3.0004983348030736,2.0205581300593116,soil,40,Northeast Tibet,Yangtze,4126,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2051"
+% Outside of study area,TS-41,101.9279,37.8759,-171,-157.7,-174.9,3.0004983348030736,2.0205581300593116,soil,41,Northeast Tibet,Yangtze,2847,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2052"
+% Outside of study area,TS-42,101.9232,37.8791,-157,-161.7,-183.5,3.0004983348030736,2.0205581300593116,soil,42,Northeast Tibet,Yangtze,2945,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2053"
+% Outside of study area,TS-43,102.8335,37.2262,-170,-167.3,-167.7,3.0004983348030736,2.0205581300593116,soil,43,Northeast Tibet,Yangtze,2819,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2054"
+% outside topo grid,TS-44,98.1334,39.1363,-175,-163,-173,3.0004983348030736,2.0205581300593116,soil,44,Northeast Tibet,Yangtze,3177,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2055"
+% outside topo grid,TS-45,97.8362,39.3322,-174,-162,-168,3.0004983348030736,2.0205581300593116,soil,45,Northeast Tibet,Yangtze,3076,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2056"
+% outside topo grid,TS-46,97.7403,39.2726,-156,-166,-168,3.0004983348030736,2.0205581300593116,soil,46,Northeast Tibet,Yangtze,3874,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2057"
+% outside topo grid,TS-47,97.7912,39.339,-165,-163,-173,3.0004983348030736,2.0205581300593116,soil,47,Northeast Tibet,Yangtze,3221,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2058"
+% outside topo grid,TS-48,102.3716,37.639,-163,-170,-165,3.0004983348030736,2.0205581300593116,soil,48,Northeast Tibet,Yangtze,2818,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2059"
+% outside topo grid,TS-49,102.37035,37.6316,-167,-163,-169,3.0004983348030736,2.0205581300593116,soil,49,Northeast Tibet,Yangtze,2959,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2060"
+"% lake, bad location",Lake Qiangyong Glacier,90.23,28.89,-186,-199,-214,2.0003322232020495,2.4746682071387207,soil,50,,Brahmaputra,4855,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2061"
+% lake,Lake Kongmu Co,90.4704,29.0322,-173,-187,-189,2.0003322232020495,2.4746682071387207,lake sed,51,,Brahmaputra,4445,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2062"
+% lake,Lake Nam Co,90.6372,30.645,-201,-246,-243,2.0003322232020495,2.4746682071387207,lake sed,52,,Brahmaputra,4718,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2063"
+% lake,Lake Keluke,96.8857,37.3019,-126,-126,-131,2.0003322232020495,2.4746682071387207,lake sed,53,,Ob,2812,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2064"
+"% lake, no location",Lake Xiao Qaidam,95.4956,37.4697,-114,-139,-138,2.0003322232020495,2.4746682071387207,lake sed,54,,Ob,3163,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2065"
+% lake,Lake Nam Co,-,-,,-240,,2.0003322232020495,2.4746682071387207,lake sed,55,,X,4718,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2066"
+% lake,Koucha Lake,97.2,34,,-180,-176,2.0003322232020495,2.4746682071387207,lake sed,56,,Yangtze,4540,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2067"
+% lake,Qaidam (Qai-07),95.577,37.463,-151,-156,-148,2.0003322232020495,2.4746682071387207,lake sed,57,,Ob,3174,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2068"
+% lake,MiY-39,97.455,33.99,-199,-205,-212,2.0003322232020495,2.4746682071387207,lake sed,58,,Yangtze,4581,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2069"
+% lake,CTP-20,89.528,32.098,-187,-194,-210,2.0003322232020495,2.4746682071387207,lake sed,59,,Brahmaputra,4724,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2070"
+% lake,MiY-42,97.545,34.03,-176,-189,-186,2.0003322232020495,2.4746682071387207,lake sed,60,,Yangtze,4617,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2071"
+% lake,LC-10,96.716,29.654,-186,-193,-220,2.0003322232020495,2.4746682071387207,lake sed,61,,Brahmaputra,4431,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2072"
+% lake,(Lake Qinghai)QM-1,100.0772,37.1875,-165,-158,-174,2.0003322232020495,2.4746682071387207,lake sed,62,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2073"
+% Outside of study area,QM-2,100.1164,36.6331,-190,-172,-188,2.0003322232020495,2.4746682071387207,soil,63,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2074"
+% Outside of study area,QM-6,100.3456,37.1383,-165,-156,-161,2.0003322232020495,2.4746682071387207,soil,64,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2075"
+% Outside of study area,QM-9,100.0772,37.1875,-158,-165,-155,2.0003322232020495,2.4746682071387207,soil,65,Northeast Tibet,Yangtze,3093,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2076"
+% Outside of study area,QM-13,100.0772,37.1875,-155,-149,-155,2.0003322232020495,2.4746682071387207,soil,66,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2077"
+% Outside of study area,QM-15,100.6908,36.5478,-149,-149,-148,2.0003322232020495,2.4746682071387207,soil,67,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2078"
+% Outside of study area,QM-17,100.2711,36.6539,-172,-155,,2.0003322232020495,2.4746682071387207,soil,68,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2079"
+% Outside of study area,QM-20,99.6336,36.9017,-159,-162,-161,2.0003322232020495,2.4746682071387207,soil,69,Northeast Tibet,Yangtze,3193,"Bai et al. 2012 JOURNAL OF GEOPHYSICAL RESEARCH, VOL. 117, D20113, doi:10.1029/2012JD017803, 2080"
+,XDT-10,94.1258,35.7194,-177,-182,-177,2.0003322232020495,2.4746682071387207,soil,70,Central Tibet,Ob,4446,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,KLS-10,93.8661,35.51555,-158,-169,-165,2.0003322232020495,2.4746682071387207,soil,71,Central Tibet,Yangtze,4605,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,BDQ-10,93.64006666666667,35.470283333333334,-185,-187,-180,2.0003322232020495,2.4746682071387207,soil,72,Central Tibet,Yangtze,4497,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,CME-10,93.27016666666667,35.291066666666666,-193,-199,-202,2.0003322232020495,2.4746682071387207,soil,73,Central Tibet,Yangtze,4568,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,WDL-10,93.0402,35.15221666666667,-172,-183,-180,2.0003322232020495,2.4746682071387207,soil,74,Central Tibet,Yangtze,4698,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,FHS-10,92.90396666666666,34.776783333333334,-166,-178,-177,2.0003322232020495,2.4746682071387207,soil,75,Central Tibet,Yangtze,4684,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,TTH-10,92.50926666666666,34.29311666666667,-165,-183,-204,2.0003322232020495,2.4746682071387207,soil,76,Central Tibet,Yangtze,4582,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,KXL-10,92.33503333333333,34.08755,-200,-199,-197,2.0003322232020495,2.4746682071387207,soil,77,Central Tibet,Yangtze,4759,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,TG-10,92.27781666666667,33.78596666666667,-203,-200,-208,2.0003322232020495,2.4746682071387207,soil,78,Central Tibet,Yangtze,4624,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,WQ-10,91.896,33.323166666666665,-198,-199,-206,2.0003322232020495,2.4746682071387207,soil,79,Central Tibet,Yangtze,4810,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,BZZ-10,91.79065,33.0892,-192,-189,-196,2.0003322232020495,2.4746682071387207,soil,80,Central Tibet,Yangtze,4951,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,TG1-10,91.9948,33.02251666666667,-171,-196,-204,2.0003322232020495,2.4746682071387207,soil,81,Central Tibet,Yangtze,5117,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,TG2-10,92.00521666666667,33.03115,-234,-224,-219,2.0003322232020495,2.4746682071387207,soil,82,Central Tibet,Yangtze,5143,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,TG3-10,92.03295,33.040683333333334,-199,-209,-213,2.0003322232020495,2.4746682071387207,soil,83,Central Tibet,Yangtze,5233,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,DF-10,91.99106666666667,33.014833333333335,-206,-203,-209,2.0003322232020495,2.4746682071387207,soil,84,Central Tibet,Yangtze,5123,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,HCZ-10,91.67001666666667,33.01291666666667,-212,-216,-217,2.0003322232020495,2.4746682071387207,soil,85,Himalaya,Brahmaputra,5085,"n-Alkanes hydrogen isotopes in soil from the northern region, Tibetan Plateau: Implications for sources of organic matter. LI Cun-lin1,2,3, MA Su-ping1,2*, CHANG Fu-xuan4 , HE Xiao-bo1,5, WANG Li-hui1,3,5.  中国环境科学 2019,39(5) China Environmental Sciences：2095~2105 "
+,LC16N,97.0338,28.4677,-187.4,-179.5,-179.6,2.0003322232020495,2.4746682071387207,soil,86,Himalaya,Brahmaputra,1514,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-107"
+,LC17N,97.0788,28.5114,-189,-186,-190,2.0003322232020495,2.4746682071387207,soil,87,Himalaya,Brahmaputra,1468,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-108"
+,LC18N,97.0924,28.5725,-179.2,-171,-176.3,2.0003322232020495,2.4746682071387207,soil,88,Himalaya,Brahmaputra,1628,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-109"
+,LC19N,97.208,28.6009,-178,-181,-186.3,2.0003322232020495,2.4746682071387207,soil,89,Himalaya,Brahmaputra,1832,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-110"
+,LC21N,97.345,28.6202,-179.7,-180.6,-183.3,2.0003322232020495,2.4746682071387207,soil,90,Himalaya,Brahmaputra,2200,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-111"
+,LC22N,97.4897,28.8375,-179.1,-195.6,-200.3,2.0003322232020495,2.4746682071387207,soil,91,Himalaya,Brahmaputra,2614,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-112"
+,LC23N,97.4256,28.9441,-190.9,-197.6,-199.5,2.0003322232020495,2.4746682071387207,soil,92,Himalaya,Brahmaputra,2758,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-113"
+,LC24N,97.402,28.9908,-199.1,-203.6,-214.8,2.0003322232020495,2.4746682071387207,soil,93,Himalaya,Brahmaputra,2891,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-114"
+,LC25N,97.3622,29.0378,-185,-179,-188,2.0003322232020495,2.4746682071387207,soil,94,Himalaya,Brahmaputra,2931,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-115"
+,LC26N,97.2759,29.0952,-207.3,-214.3,-212.4,2.0003322232020495,2.4746682071387207,soil,95,Himalaya,Brahmaputra,3190,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-116"
+,LC27N,97.201,29.1711,-203.3,-209.3,-212.7,2.0003322232020495,2.4746682071387207,soil,96,Himalaya,Brahmaputra,3433,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-117"
+,LC28N,97.1707,29.3198,-195.4,-190.9,-196.3,2.0003322232020495,2.4746682071387207,soil,97,Himalaya,Brahmaputra,3732,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-118"
+,LC29N,97.1352,29.3279,-194.4,-194.7,-197,2.0003322232020495,2.4746682071387207,soil,98,Himalaya,Brahmaputra,3911,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-119"
+,LC31N,97.0727,29.3326,-237.1,-238.7,-223,2.0003322232020495,2.4746682071387207,soil,99,Himalaya,Brahmaputra,4200,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-120"
+,LC32N,97.0604,29.3351,-231.4,-223.4,-221.3,2.0003322232020495,2.4746682071387207,soil,100,Himalaya,Brahmaputra,4333,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-121"
+,LC33N,97.055,29.3296,-221.2,-228.6,-228,2.0003322232020495,2.4746682071387207,soil,101,Himalaya,Brahmaputra,4488,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-122"
+,LC33N,97.055,29.3296,-215,-223.8,-224.1,2.0003322232020495,2.4746682071387207,soil,102,Himalaya,Brahmaputra,4488,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-123"
+,LC34N,97.0399,29.3255,-263.8,-262.6,-266.5,2.0003322232020495,2.4746682071387207,soil,103,Himalaya,Brahmaputra,4700,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-124"
+,LC35N,97.0302,29.3176,-244.4,-253.9,-264.4,2.0003322232020495,2.4746682071387207,soil,104,Himalaya,Brahmaputra,4803,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-125"
+,LC36N,96.9948,29.3143,-236.7,-241.7,-247.5,2.0003322232020495,2.4746682071387207,soil,105,Himalaya,Brahmaputra,4616,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-126"
+,LC37N,96.9256,29.3415,-214.5,-215.8,-230.7,2.0003322232020495,2.4746682071387207,soil,106,Himalaya,Brahmaputra,4590,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-127"
+,LC38N,96.8516,29.3902,-240.5,-241.7,-250.9,2.0003322232020495,2.4746682071387207,soil,107,Himalaya,Brahmaputra,4196,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-128"
+,LC39N,96.7307,29.5005,-210.3,-215.4,-215.1,2.0003322232020495,2.4746682071387207,soil,108,Himalaya,Brahmaputra,3921,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-129"
+,LC14N,96.6523,29.4797,-204.6,-204.2,-202.9,2.0003322232020495,2.4746682071387207,soil,109,Himalaya,Brahmaputra,3922,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-130"
+,LC40N,96.523,29.5343,-176.8,-197,-198.3,2.0003322232020495,2.4746682071387207,soil,110,Himalaya,Brahmaputra,3682,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-131"
+,LC41N,96.5,29.5363,-186,-200.8,-209.6,2.0003322232020495,2.4746682071387207,soil,111,Himalaya,Brahmaputra,3596,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-132"
+,LC41N,96.5,29.5363,-187,-201.6,-211.8,2.0003322232020495,2.4746682071387207,soil,112,Himalaya,Brahmaputra,3596,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-133"
+,LC42N,96.3903,29.6035,-191.5,-200.2,-202.1,2.0003322232020495,2.4746682071387207,soil,113,Himalaya,Brahmaputra,3395,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-134"
+,LC13N,96.2753,29.6275,-187,-181,-184,2.0003322232020495,2.4746682071387207,soil,114,Himalaya,Brahmaputra,3231,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-135"
+,LC43N,96.1323,29.7224,-172.8,-204.5,-184.4,2.0003322232020495,2.4746682071387207,soil,115,Himalaya,Brahmaputra,3075,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-136"
+,LC45N,95.8247,29.804,-179,-198.1,-220.4,2.0003322232020495,2.4746682071387207,soil,116,Himalaya,Brahmaputra,2816,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-137"
+,LC57N,94.2869,29.7368,-192,-212.3,-223.3,2.0003322232020495,2.4746682071387207,soil,117,Himalaya,Brahmaputra,3052,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-138"
+,LC58N,93.764,29.82,-201.6,-207.4,-221.6,2.0003322232020495,2.4746682071387207,soil,118,Himalaya,Brahmaputra,3190,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-139"
+,LC59N,93.6851,29.8501,-216.8,-217.8,-226,2.0003322232020495,2.4746682071387207,soil,119,Himalaya,Brahmaputra,3211,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-140"
+,LC60N,93.362,29.8949,-194.9,-206.1,-216.7,2.0003322232020495,2.4746682071387207,soil,120,Himalaya,Brahmaputra,3371,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-141"
+,LC61N,93.188,29.9022,-190.4,-196.5,-216.2,2.0003322232020495,2.4746682071387207,soil,121,Himalaya,Brahmaputra,3439,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-142"
+,LC62N,92.9286,30.033,-217.3,-223.3,-234,2.0003322232020495,2.4746682071387207,soil,122,Himalaya,Brahmaputra,3644,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-143"
+,LC63N,92.7501,29.9044,-213.5,-222.2,-219.1,2.0003322232020495,2.4746682071387207,soil,123,Himalaya,Brahmaputra,3883,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-144"
+,LC64N,92.6397,29.871,-211.4,-224.8,-225.3,2.0003322232020495,2.4746682071387207,soil,124,Himalaya,Brahmaputra,4028,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-145"
+,LC65N,92.5322,29.8734,-199.8,-223.5,-221.6,2.0003322232020495,2.4746682071387207,soil,125,Himalaya,Brahmaputra,4186,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-146"
+,LC65N,92.5322,29.8734,-197.7,-220.1,-218.9,2.0003322232020495,2.4746682071387207,soil,126,Himalaya,Brahmaputra,,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-147"
+,LC66N,92.364,29.9128,-234.2,-231.7,-258.4,2.0003322232020495,2.4746682071387207,soil,127,Himalaya,Brahmaputra,4437,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-148"
+,LC67N,92.3237,29.8379,-230,-244,-247,2.0003322232020495,2.4746682071387207,soil,128,Himalaya,Brahmaputra,4802,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-149"
+,LC68N,92.3437,29.8305,-235.8,-233.4,-232.9,2.0003322232020495,2.4746682071387207,soil,129,Himalaya,Brahmaputra,4968,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-150"
+,LC69N,92.3269,29.774,-238.8,-233.3,-237.4,2.0003322232020495,2.4746682071387207,soil,130,Himalaya,Brahmaputra,4713,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-151"
+,LC70N,92.2256,29.6967,-220.3,-228,-234.1,2.0003322232020495,2.4746682071387207,soil,131,Himalaya,Brahmaputra,4348,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-152"
+,LC71N,91.9488,29.7488,-223,-230,-239,2.0003322232020495,2.4746682071387207,soil,132,Himalaya,Brahmaputra,3995,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-153"
+,NL-1,90.6231,29.2667,,-207,-230,2.0003322232020495,2.4746682071387207,soil,133,Himalaya,Brahmaputra,3609,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-154"
+,NL-3,90.6372,29.2289,,-221,-246,2.0003322232020495,2.4746682071387207,soil,134,Himalaya,Brahmaputra,4006,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-155"
+,NL-7,90.6178,29.2078,,-264,-264,2.0003322232020495,2.4746682071387207,soil,135,Himalaya,Brahmaputra,4780,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-156"
+,NL-8,90.1672,28.8933,,-249,-246,2.0003322232020495,2.4746682071387207,soil,136,Himalaya,Brahmaputra,5046,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-157"
+,NL-9,88.595,29.1517,,-211,-238,2.0003322232020495,2.4746682071387207,soil,137,Himalaya,Brahmaputra,4040,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-158"
+,NL-10,87.2478,28.7722,,-240,-236,2.0003322232020495,2.4746682071387207,soil,138,Himalaya,Brahmaputra,4545,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-159"
+,NL-11,86.1672,28.5164,,-218,-240,2.0003322232020495,2.4746682071387207,soil,139,Himalaya,Brahmaputra,5145,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-160"
+,NL-13,86.1481,28.4889,,-239,-261,2.0003322232020495,2.4746682071387207,soil,140,Himalaya,Brahmaputra,4852,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-161"
+,NL-14,86.1572,28.485,,-224,-255,2.0003322232020495,2.4746682071387207,soil,141,Himalaya,Brahmaputra,4758,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-162"
+,NL-15,86.1639,28.4756,,-216,-237,2.0003322232020495,2.4746682071387207,soil,142,Himalaya,Brahmaputra,4658,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-163"
+,NL-16,86.1561,28.4386,,-228,-266,2.0003322232020495,2.4746682071387207,soil,143,Himalaya,Brahmaputra,4497,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-164"
+,NL-18,86.0983,28.3675,,-217,-238,2.0003322232020495,2.4746682071387207,soil,144,Himalaya,Brahmaputra,4340,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-165"
+,NL-19,86.0367,28.3028,,-226,-240,2.0003322232020495,2.4746682071387207,soil,145,Himalaya,Brahmaputra,4150,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-166"
+,NL-20,86.0011,28.22,,-197,-226,2.0003322232020495,2.4746682071387207,soil,146,Himalaya,Brahmaputra,3920,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-167"
+,NL-21,85.9847,28.1778,,-199,-203,2.0003322232020495,2.4746682071387207,soil,147,Himalaya,Brahmaputra,3820,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-168"
+,NL-22,85.9831,28.1431,,-210,-219,2.0003322232020495,2.4746682071387207,soil,148,Himalaya,Brahmaputra,3795,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-169"
+,NL-24,85.9889,28.1256,,-210,-209,2.0003322232020495,2.4746682071387207,soil,149,Himalaya,Brahmaputra,3607,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-170"
+,NL-25,86.0008,28.0881,,-216,-242,2.0003322232020495,2.4746682071387207,soil,150,Himalaya,Brahmaputra,3360,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-171"
+,NL-26,86.0025,28.0653,,-219,-227,2.0003322232020495,2.4746682071387207,soil,151,Himalaya,Brahmaputra,3280,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-172"
+,NL-27,85.9892,28.0378,,-214,-208,2.0003322232020495,2.4746682071387207,soil,152,Himalaya,Brahmaputra,3090,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-173"
+,NL-28,85.9881,28.0403,,-211,-208,2.0003322232020495,2.4746682071387207,soil,153,Himalaya,Brahmaputra,2920,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-174"
+,NL-29,85.9853,28.0294,,-193,-187,2.0003322232020495,2.4746682071387207,soil,154,Himalaya,Brahmaputra,2800,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-175"
+,NL-31,85.9775,28.0042,,-190,-191,2.0003322232020495,2.4746682071387207,soil,155,Himalaya,Brahmaputra,2570,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-176"
+,NL-33,85.9819,27.9942,,-205,-204,2.0003322232020495,2.4746682071387207,soil,156,Himalaya,Brahmaputra,2330,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-177"
+,NL-34,85.9686,27.9831,,-183,-188,2.0003322232020495,2.4746682071387207,soil,157,Himalaya,Brahmaputra,2210,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-178"
+,NL-35,85.9761,27.9747,,-189,-178,2.0003322232020495,2.4746682071387207,soil,158,Himalaya,Brahmaputra,2130,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-179"
+,NL-36,85.9764,27.9767,,-156,-148,2.0003322232020495,2.4746682071387207,soil,159,Himalaya,Brahmaputra,2060,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-180"
+,NL-37,85.9669,27.9656,,-190,-178,2.0003322232020495,2.4746682071387207,soil,160,Himalaya,Brahmaputra,1960,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-181"
+,NL-38,85.9717,27.9744,,-166,-174,2.0003322232020495,2.4746682071387207,soil,161,Himalaya,Brahmaputra,1850,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-182"
+,NL-39,85.9653,27.9664,,-174,-176,2.0003322232020495,2.4746682071387207,soil,162,Himalaya,Brahmaputra,1770,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-183"
+,NL-40,85.9625,27.6314,,-161,-148,2.0003322232020495,2.4746682071387207,soil,163,Himalaya,Brahmaputra,1660,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-184"
+,NL-41,85.9792,27.9658,,-162,-155,2.0003322232020495,2.4746682071387207,soil,164,Himalaya,Brahmaputra,1690,"Bai et al. 2015 Geochimica et Cosmochimica Acta
+Volume 170, 1 December 2015, Pages 94-185"
+,TR-1301,95.194417,33.119111,-201.2042115629823,-208.34014625617195,-214.73552531735766,2.0003322232020495,2.4746682071387207,soil,165,Yunnan,Mekong,4145.5,Wang et al. 2017
+,TR-1302,95.139417,32.732306,-253.30243199999998,-234.0022101,-235.82483309999998,2.0003322232020495,2.4746682071387207,soil,166,Yunnan,Mekong,4154,Wang et al. 2017
+,TR-1303,95.42675,32.419278,-223.95144378170295,-234.29061599999997,-243.45675539999996,2.0003322232020495,2.4746682071387207,soil,167,Yunnan,Mekong,3970,Wang et al. 2017
+,TR-1304,95.956167,32.337194,-244.2957622,-240.5586319,-232.4939017,2.0003322232020495,2.4746682071387207,soil,168,Yunnan,Mekong,4226,Wang et al. 2017
+,TR-1306,96.408472,31.448472,-240.50856389999998,-239.5664579,-249.90387599999997,2.0003322232020495,2.4746682071387207,soil,169,Yunnan,Mekong,3969.4,Wang et al. 2017
+,TR-1308,97.435833,30.682583,-233.9509959,-219.0998821,-234.78146930000003,2.0003322232020495,2.4746682071387207,soil,170,Yunnan,Mekong,3060,Wang et al. 2017
+% Outside of study area,TR-1309,97.652389,29.879528,-243.8785171,-246.69881279999998,-242.7819307,2.0003322232020495,2.4746682071387207,soil,171,Himalaya,Brahmaputra,3818,Wang et al. 2017
+% Outside of study area,TR-1310,98.678028,29.37175,-227.45456168198575,-220.60170645338616,-215.4687765541413,2.0003322232020495,2.4746682071387207,soil,172,Yunnan,Yangtze,3589.5,Wang et al. 2017
+% Outside of study area,TR-1311,99.278222,28.239528,-227.45456168198575,-220.60170645338616,-215.4687765541413,2.0003322232020495,2.4746682071387207,soil,173,Yunnan,Yangtze,2247.6,Wang et al. 2017
+% Outside of study area,TR-1312,100.025806,27.223472,-206.6438626937014,-203.98210310447692,-199.44270351029922,2.0003322232020495,2.4746682071387207,soil,174,Yunnan,Yangtze,1970.6,Wang et al. 2017
+% Outside of study area,JD-13-10A,98.034944,31.330972,-222.9846298,-240.3387121,-249.0029497,2.0003322232020495,2.4746682071387207,soil,175,Yunnan,Yangtze,4147,Wang et al. 2017
+% Outside of study area,JD-13-17A,97.741056,31.806583,-209.64351287498764,-202.1145687172162,-209.35602697744343,2.0003322232020495,2.4746682071387207,soil,176,Yunnan,Mekong,3978,Wang et al. 2017
+% Outside of study area,DEQ-13-01,98.869416,28.455253,-215.6402488,-230.8413292,II,2.0003322232020495,2.4746682071387207,soil,177,Yunnan,Mekong,3300,Wang et al. 2017
+% Outside of study area,DEQ-13-02,98.427243,28.442784,-237.64216419999997,-243.4573989,-236.96627969999997,2.0003322232020495,2.4746682071387207,soil,178,Himalaya,Brahmaputra,3516,Wang et al. 2017
+% Outside of study area,DEQ-13-03,98.963267,28.416856,-232.8353297,-240.2568698,-238.59993980000002,2.0003322232020495,2.4746682071387207,soil,179,Yunnan,Mekong,3750,Wang et al. 2017
+% Outside of study area,XIS-13-01,100.527905,22.19287,-201.1066265,-209.77036200000003,-196.84379750000002,2.0003322232020495,2.4746682071387207,soil,180,Yunnan,Mekong,1400,Wang et al. 2017
+% Outside of study area,XIS-13-02,101.270996,22.341296,-205.3051867,-212.5640464,-193.2618161,2.0003322232020495,2.4746682071387207,soil,181,Yunnan,Mekong,931,Wang et al. 2017
+% Outside of study area,XIS-13-03,101.32093,22.71668,-195.7271271,-188.21169429999998,-185.9502359,2.0003322232020495,2.4746682071387207,soil,182,Yunnan,Mekong,956,Wang et al. 2017
+% Outside of study area,CH-11-03,101.2959,27.4581,-170.23395557359999,-181.00941564368003,,1.0001661116010245,3.499709340909091,soil,183,Yunnan,Yangtze,2754,Wang et al. 2017
+% Outside of study area,CH-11-04,101.334,27.4987,-174.79274261749003,-194.73995024329,-184.50689505787,2.0003322232020495,2.4746682071387207,soil,184,Yunnan,Yangtze,2233,Wang et al. 2017
+% Outside of study area,CH-11-06,100.9693,27.64441333,-182.5,-185.5,-192,3.0004983348030736,2.0205581300593116,soil,185,Yunnan,Yangtze,2362,Wang et al. 2017
+% Outside of study area,CH-11-07,100.7687,27.7433,-171.53373377286002,-205.3473264303267,-170,3.0004983348030736,2.0205581300593116,soil,186,Yunnan,Yangtze,2764,Wang et al. 2017
+% Outside of study area,CH-11-08,100.8164,27.6323,-190,-191,,2.0003322232020495,2.4746682071387207,soil,187,Yunnan,Yangtze,3340,Wang et al. 2017
+% Outside of study area,CH-11-09,100.8425,27.399,-148.72231943286,-169.21904273908,-185.04840374416,2.0003322232020495,2.4746682071387207,soil,188,Yunnan,Yangtze,2538,Wang et al. 2017
+% Outside of study area,CH-11-10,100.6678,27.1409,-201.17073853242002,-215.01118251432,-199.94670773478003,1.0001661116010245,3.499709340909091,soil,189,Yunnan,Yangtze,3075,Wang et al. 2017
+% Outside of study area,CH-11-11,100.0371,26.8637,-149.9722604,-188.5104438,-197.7581216,1.0001661116010245,3.499709340909091,soil,190,Yunnan,Yangtze,2500,Wang et al. 2017
+% Outside of study area,CH-11-12,100.0011,26.882,-202.6531790051954,-195.7155728,-202.71336680000002,2.0003322232020495,2.4746682071387207,soil,191,Yunnan,Yangtze,1881,Wang et al. 2017
+"% Missing lon, lat",CH-11-14,-,-,-167.0746176415,-178.47334192627,-184.11939128677,2.0003322232020495,2.4746682071387207,soil,192,,X,2600,Wang et al. 2017
+% Outside of study area,CH-11-15,99.5562,27.073,-177.97383061278106,-190.17149999999998,-195.184,2.0003322232020495,2.4746682071387207,soil,193,Yunnan,Yangtze,2549,Wang et al. 2017
+% Outside of study area,CH-11-16,99.932,26.667,-158.78187148688002,-167.98344711007996,-172.96056450416,1.0001661116010245,3.499709340909091,soil,194,Yunnan,Mekong,2459,Wang et al. 2017
+% Outside of study area,CH-11-17,99.8465,26.595,-178.39980903823997,-183.32450514992001,,1.0001661116010245,3.499709340909091,soil,195,Yunnan,Mekong,2463,Wang et al. 2017
+% Outside of study area,CH-11-18,99.7771,26.524,-162,-166,-168,2.0003322232020495,2.4746682071387207,soil,196,Yunnan,Mekong,2357,Wang et al. 2017
+% Outside of study area,CH-11-19,99.6988,26.486,-209.37582557367455,-212.8235,-216.69799999999998,2.0003322232020495,2.4746682071387207,soil,197,Yunnan,Mekong,2635,Wang et al. 2017
+% Outside of study area,CH-11-20,99.3351,25.937,-174,-172,-177,1.0001661116010245,3.499709340909091,soil,198,Yunnan,Mekong,1745,Wang et al. 2017
+% Outside of study area,CH-11-21,100.0586,25.597,-146.99115154064,-160.82847641696,-163.43948921839998,1.0001661116010245,3.499709340909091,soil,199,Yunnan,Mekong,1265,Wang et al. 2017
+,,,,,,,,,,,,,,

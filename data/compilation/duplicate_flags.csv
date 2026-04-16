@@ -1,0 +1,218 @@
+row_index,cluster_id,action,source,location,latitude,longitude,d2H_wax,d2H_wax_err,data_source
+23,1,KEEP,"Bai et al., 2011",Mt Kunlun,36.58,77.01,-198.0,,original
+24,1,REMOVE,"Bai et al., 2011",Mt Kunlun,36.57,77.0,-197.0,,original
+25,1,REMOVE,"Bai et al., 2011",Mt Kunlun,36.57,77.0,-198.0,,original
+41,2,KEEP,"Bai et al., 2014",Mt Qilian,37.62,101.9,-148.0,,original
+45,2,REMOVE,"Bai et al., 2014",Mt Qilian,37.66,101.86,-148.0,,original
+46,3,KEEP,"Bai et al., 2014",Mt Qilian,35.77,103.96,-199.0,,original
+51,3,REMOVE,"Bai et al., 2014",Mt Qilian,35.77,103.95,-201.0,,original
+48,4,KEEP,"Bai et al., 2014",Mt Qilian,39.32,97.85,-162.0,,original
+52,4,REMOVE,"Bai et al., 2014",Mt Qilian,39.33,97.84,-162.0,,original
+56,5,KEEP,"Bai et al., 2014",Mt Qilian,35.78,103.95,-217.0,,original
+59,5,REMOVE,"Bai et al., 2014",Mt Qilian,35.78,103.95,-216.0,,original
+57,6,KEEP,"Bai et al., 2014",Mt Qilian,39.34,97.79,-165.0,,original
+73,6,REMOVE,"Bai et al., 2014",Mt Qilian,39.34,97.79,-166.0,,original
+63,7,KEEP,"Bai et al., 2014",Mt Qilian,39.31,97.72,-168.0,,original
+71,7,REMOVE,"Bai et al., 2014",Mt Qilian,39.33,97.74,-166.0,,original
+74,7,REMOVE,"Bai et al., 2014",Mt Qilian,39.33,97.74,-168.0,,original
+68,8,KEEP,"Bai et al., 2014",Mt Qilian,37.53,101.83,-163.0,,original
+70,8,REMOVE,"Bai et al., 2014",Mt Qilian,37.53,101.83,-163.0,,original
+75,9,KEEP,"Chikaraishi and Naraoka, 2006",Gunma Prefecture,36.47,138.87,-166.0,,original
+76,9,REMOVE,"Chikaraishi and Naraoka, 2006",Gunma Prefecture,36.47,138.87,-168.0,,original
+77,9,REMOVE,"Chikaraishi and Naraoka, 2006",Gunma Prefecture,36.47,138.87,-167.0,,original
+80,10,KEEP,Daniels et al 2017,S6,68.63,-149.64,-261.0,,original
+82,10,REMOVE,Daniels et al 2017,S7,68.63,-149.64,-261.0,,original
+83,11,KEEP,Daniels et al 2017,I7,68.6,-149.59,-269.0,,original
+91,11,REMOVE,Daniels et al 2017,I5,68.59,-149.59,-268.0,,original
+84,12,KEEP,Daniels et al 2017,I8,68.61,-149.58,-260.0,,original
+92,12,REMOVE,Daniels et al 2017,I1,68.57,-149.59,-260.0,,original
+86,13,KEEP,Daniels et al 2017,FOG1,68.68,-149.08,-257.0,,original
+87,13,REMOVE,Daniels et al 2017,FOG2,68.68,-149.09,-259.0,,original
+89,14,KEEP,Daniels et al 2017,I3,68.58,-149.58,-265.0,,original
+90,14,REMOVE,Daniels et al 2017,I4,68.58,-149.58,-264.0,,original
+94,14,REMOVE,Daniels et al 2017,I6,68.6,-149.59,-265.0,,original
+136,15,KEEP,"Feng et al., 2019",JS7,26.489,100.353,-177.0,,original
+138,15,REMOVE,"Feng et al., 2019",JS5,26.485,100.345,-177.0,,original
+147,16,KEEP,"Feng et al., 2019",JH3,26.555,99.968,-210.0,,original
+148,16,REMOVE,"Feng et al., 2019",JH4,26.56,99.975,-210.0,,original
+149,17,KEEP,"Feng et al., 2019",LJ3,26.64,99.85,-214.0,,original
+151,17,REMOVE,"Feng et al., 2019",LJ4,26.635,99.836,-214.0,,original
+158,18,KEEP,"Feng et al., 2019",LJ10,26.659,99.788,-242.0,,original
+162,18,REMOVE,"Feng et al., 2019",LJ14,26.637,99.752,-242.0,,original
+163,18,REMOVE,"Feng et al., 2019",LJ15,26.648,99.74,-242.0,,original
+159,19,KEEP,"Feng et al., 2019",LJ11,26.658,99.783,-237.0,,original
+160,19,REMOVE,"Feng et al., 2019",LJ12,26.655,99.779,-239.0,,original
+189,20,KEEP,Garcin et al 2012,MANE,5.04,9.83,-185.0,4.0,original
+190,20,REMOVE,"Garcin et al., 2012",MANE,5.03,9.83,-184.83,,original
+211,21,KEEP,"Herrmann et al., 2017",WRZ,-32.86,18.53,-130.0,,original
+212,21,REMOVE,"Herrmann et al., 2017",WRZ,-32.86,18.53,-132.0,,original
+254,22,KEEP,"Herrmann et al., 2017",SRZ,-29.22,23.2,-113.0,,original
+255,22,REMOVE,"Herrmann et al., 2017",SRZ,-29.22,23.2,-111.0,,original
+278,23,KEEP,"Jaeschke et al., 2018",VI-Cropland,7.593,36.8544,-131.0,,original
+279,23,REMOVE,"Jaeschke et al., 2018",VI-Forest,7.593,36.8544,-134.0,,original
+280,23,REMOVE,"Jaeschke et al., 2018",VI-Grassland,7.593,36.8544,-133.0,,original
+282,24,KEEP,"Jaeschke et al., 2018",IV-Forest,7.4782,36.8814,-132.0,,original
+283,24,REMOVE,"Jaeschke et al., 2018",IV-Grassland,7.4782,36.8814,-130.0,,original
+287,24,REMOVE,"Jaeschke et al., 2018",III-Forest,7.4609,36.8687,-132.0,,original
+288,24,REMOVE,"Jaeschke et al., 2018",III-Cropland,7.4609,36.8687,-130.0,,original
+289,24,REMOVE,"Jaeschke et al., 2018",III-Grassland,7.4609,36.8687,-129.0,,original
+291,24,REMOVE,"Jaeschke et al., 2018",II-Cropland,7.4527,36.8704,-133.0,,original
+292,24,REMOVE,"Jaeschke et al., 2018",II-Grassland,7.4527,36.8704,-135.0,,original
+293,24,REMOVE,"Jaeschke et al., 2018",I-Forest,7.4452,36.8768,-130.0,,original
+294,24,REMOVE,"Jaeschke et al., 2018",I-Grassland,7.4452,36.8768,-129.0,,original
+295,24,REMOVE,"Jaeschke et al., 2018",I-Cropland,7.4452,36.8768,-131.0,,original
+296,25,KEEP,"Jia et al., 2008",Mt Gongga,30.0,102.0,-178.0,,original
+298,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-180.0,,original
+301,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-184.0,,original
+302,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-178.0,,original
+303,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-183.0,,original
+305,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-181.0,,original
+307,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-178.0,,original
+314,25,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-185.0,,original
+297,26,KEEP,"Jia et al., 2008",Mt Gongga,30.0,102.0,-195.0,,original
+300,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-195.0,,original
+304,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-192.0,,original
+306,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-193.0,,original
+308,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-202.0,,original
+309,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-195.0,,original
+311,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-201.0,,original
+312,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-199.0,,original
+316,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-203.0,,original
+317,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-195.0,,original
+319,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-197.0,,original
+320,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-200.0,,original
+321,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-200.0,,original
+322,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-199.0,,original
+323,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-199.0,,original
+327,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-193.0,,original
+328,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-196.0,,original
+329,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-197.0,,original
+330,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-198.0,,original
+331,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-196.0,,original
+335,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-195.0,,original
+337,26,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-200.0,,original
+310,27,KEEP,"Jia et al., 2008",Mt Gongga,30.0,102.0,-188.0,,original
+318,27,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-189.0,,original
+313,28,KEEP,"Jia et al., 2008",Mt Gongga,30.0,102.0,-206.0,,original
+324,28,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-206.0,,original
+325,28,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-206.0,,original
+326,28,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-207.0,,original
+332,28,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-207.0,,original
+333,28,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-207.0,,original
+334,28,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-207.0,,original
+336,29,KEEP,"Jia et al., 2008",Mt Gongga,30.0,102.0,-220.0,,original
+339,29,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-219.0,,original
+340,30,KEEP,"Jia et al., 2008",Mt Gongga,30.0,102.0,-241.0,,original
+342,30,REMOVE,"Jia et al., 2008",Mt Gongga,30.0,102.0,-240.0,,original
+365,31,KEEP,Leider et al 2013,Lago di Monticchio,40.93,15.6,-170.0,0.7,original
+579,31,REMOVE,Sachse et al 2004,LPM,40.93,15.61,-169.0,2.0,original
+446,32,KEEP,"Lu et al., 2020",JY-04,42.418,126.676,-194.0,,original
+447,32,REMOVE,"Lu et al., 2020",JY-05,42.409,126.683,-195.0,,original
+451,33,KEEP,"Lu et al., 2020",FS-01,42.228,127.403,-196.0,,original
+452,33,REMOVE,"Lu et al., 2020",FS-03,42.228,127.403,-197.0,,original
+454,34,KEEP,"Lu et al., 2020",CB-50,42.05,127.685,-190.0,,original
+455,34,REMOVE,"Lu et al., 2020",CB-02,42.05,127.685,-191.0,,original
+456,35,KEEP,"Lu et al., 2020",ET-02,43.64,112.298,-177.0,,original
+457,35,REMOVE,"Lu et al., 2020",ET-03,43.64,112.297,-178.0,,original
+458,36,KEEP,"Lu et al., 2020",ABQ-03,43.989,114.843,-174.0,,original
+459,36,REMOVE,"Lu et al., 2020",ABQ-05,43.989,114.843,-172.0,,original
+463,37,KEEP,"Lu et al., 2020",SNQ-02,43.843,113.79,-184.0,,original
+464,37,REMOVE,"Lu et al., 2020",SNQ-01,43.843,113.789,-183.0,,original
+465,38,KEEP,"Lu et al., 2020",XM-02,43.676,116.643,-188.0,,original
+466,38,REMOVE,"Lu et al., 2020",XM-01,43.677,116.643,-189.0,,original
+488,39,KEEP,Mugler et al 2008,HZM,50.12,6.88,-198.0,1.0,original
+575,39,REMOVE,Sachse et al 2004,HZM,50.12,6.88,-198.0,1.0,original
+489,40,KEEP,Mugler et al 2008,Tibet_ave (NC),30.64,90.6,-246.0,36.4,original
+750,40,REMOVE,Xia et al 2008,NC,30.64,90.6,-246.0,9.0,original
+497,41,KEEP,"Pautler et al., 2014","Christie Mine, Dominion Creek",63.65,-138.63,-275.0,,original
+498,41,REMOVE,"Pautler et al., 2014","Christie Mine, Dominion Creek",63.65,-138.63,-275.0,,original
+501,41,REMOVE,"Pautler et al., 2014","Christie Mine, Dominion Creek",63.65,-138.63,-274.0,,original
+502,42,KEEP,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-259.0,,original
+503,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-270.0,,original
+507,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-261.0,,original
+508,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-257.0,,original
+509,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-262.0,,original
+510,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-266.0,,original
+511,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-263.0,,original
+512,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-265.0,,original
+513,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-268.0,,original
+514,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-270.0,,original
+515,42,REMOVE,"Pautler et al., 2014","Tatlow Camp, Quartz Creek",63.82,-139.02,-268.0,,original
+517,43,KEEP,"Pautler et al., 2014",Goldbottom Creek,63.93,-138.97,-274.0,,original
+518,43,REMOVE,"Pautler et al., 2014",Goldbottom Creek,63.93,-138.97,-273.0,,original
+520,44,KEEP,"Pautler et al., 2014",Kluane Lake,61.15,-138.45,-259.0,,original
+522,44,REMOVE,"Pautler et al., 2014",Kluane Lake,61.15,-138.45,-260.0,,original
+524,45,KEEP,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-135.0,,original
+527,45,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-140.0,,original
+528,45,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-136.0,,original
+531,45,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-139.0,,original
+534,45,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-138.0,,original
+525,46,KEEP,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-156.0,,original
+526,46,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-152.0,,original
+530,46,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-147.0,,original
+533,46,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-149.0,,original
+536,46,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-154.0,,original
+538,46,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-151.0,,original
+529,47,KEEP,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-144.0,,original
+532,47,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-144.0,,original
+535,47,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-144.0,,original
+537,47,REMOVE,"Peterse et al., 2009",Mt. Kilimanjaro,-3.0,37.0,-143.0,,original
+557,48,KEEP,Polissar and Freeman 2010,Laguna Misteque,8.72,-70.88,-195.8,,original
+558,48,REMOVE,Polissar and Freeman 2010,"Laguna Royal ""C""",8.72,-70.87,-194.0,,original
+590,49,KEEP,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-203.0,,original
+593,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-211.0,,original
+594,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-203.0,,original
+595,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-212.0,,original
+596,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-208.0,,original
+597,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-210.0,,original
+599,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-213.0,,original
+600,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-213.0,,original
+601,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-213.0,,original
+602,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-203.0,,original
+603,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-205.0,,original
+604,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-203.0,,original
+606,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-207.0,,original
+610,49,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-208.0,,original
+591,50,KEEP,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-198.0,,original
+607,50,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-199.0,,original
+592,51,KEEP,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-195.0,,original
+598,51,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-195.0,,original
+608,52,KEEP,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-216.0,,original
+609,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-224.0,,original
+611,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-218.0,,original
+612,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-222.0,,original
+613,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-217.0,,original
+614,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-225.0,,original
+615,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-220.0,,original
+616,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-221.0,,original
+617,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-222.0,,original
+618,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-227.0,,original
+621,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-219.0,,original
+622,52,REMOVE,"Seki et al., 2010","Hokkaido, Japan",44.2,142.1,-229.0,,original
+624,53,KEEP,"Struck et al., 2020",UGC3,47.76,102.81,-184.7,,original
+625,53,REMOVE,"Struck et al., 2020",UGC12,47.75,102.77,-184.7,,original
+635,54,KEEP,"Struck et al., 2020",TLC2,48.79,97.3,-189.0,,original
+637,54,REMOVE,"Struck et al., 2020",TLC3,48.79,97.3,-190.9,,original
+639,55,KEEP,"Struck et al., 2020",TLC12,48.78,97.33,-190.7,,original
+640,55,REMOVE,"Struck et al., 2020",TLC5,48.79,97.34,-190.7,,original
+667,56,KEEP,"van der Veen et al., 2020",S127 sp1,31.39,76.88,-147.38,,original
+668,56,REMOVE,"van der Veen et al., 2020",S127 sp2,31.39,76.88,-146.51,,original
+827,57,KEEP,"Wang et al., 2023",Techeng T1,21.15,110.44,-131.0,,original
+828,57,REMOVE,"Wang et al., 2023",Techeng T2,21.15,110.44,-131.0,,original
+830,58,KEEP,"Wang et al., 2023",Techeng T4,21.15,110.44,-135.0,,original
+832,58,REMOVE,"Wang et al., 2023",Techeng T6,21.16,110.44,-135.0,,original
+833,59,KEEP,"Corcoran et al., 2022",Tarn 2,-51.6959,-58.8276,-165.0,,original
+834,59,REMOVE,"Corcoran et al., 2022",Tarn 2,-51.6959,-58.8276,-161.0,,original
+836,59,REMOVE,"Corcoran et al., 2022",Tarn 4,-51.7022,-58.8276,-165.0,,original
+837,59,REMOVE,"Corcoran et al., 2022",Tarn 4,-51.7022,-58.8276,-163.0,,original
+845,60,KEEP,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",27.9656,85.9669,-190.0,2.475,v7_new
+849,60,REMOVE,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",27.9747,85.9761,-189.0,2.475,v7_new
+853,60,REMOVE,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",28.0042,85.9775,-190.0,2.475,v7_new
+860,61,KEEP,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",28.1256,85.9889,-210.0,2.475,v7_new
+861,61,REMOVE,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",28.1431,85.9831,-210.0,2.475,v7_new
+895,62,KEEP,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",29.3296,97.055,-223.0,2.475,v7_new
+897,62,REMOVE,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",29.3351,97.0604,-223.0,2.475,v7_new
+903,63,KEEP,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",29.5363,96.5,-200.0,2.475,v7_new
+904,63,REMOVE,Hren & Brandon 2026,"Himalaya, drainage: Brahmaputra",29.5363,96.5,-201.0,2.475,v7_new
+1033,64,KEEP,Sisley & Wolhowe (2023),"Cascades transect, WA, Leader Lake State Park",48.4,-119.7,-230.0,3.1,v7_new
+1037,64,REMOVE,Sisley & Wolhowe (2023),"Cascades transect, WA, Leader Lake State Park",48.4,-119.7,-228.3,1.0,v7_new
