@@ -11,7 +11,8 @@
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
-library(cmdstanr)
+library(posterior)
+source("scripts/posterior_helpers.R")
 library(loo)
 library(sf)
 library(viridis)
@@ -27,16 +28,14 @@ cat("=======================\n")
 # 1. SPATIAL CROSS-VALIDATION
 #───────────────────────────────────────────────────────────────────────────────
 
-spatial_cv_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
+spatial_cv_analysis <- function(model_name, prepared_data_dir = NULL) {
   cat("\n1. SPATIAL CROSS-VALIDATION for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
-  # Load model and data
-  fit <- readRDS(paste0("model_output/", model_name, "/fit.rds"))
-  stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
-  
-  # Extract predictions and observations
-  y_rep <- fit$draws("d2H_rep", format = "matrix")
+  draws     <- load_draws(model_name)
+  stan_data <- load_stan_data(model_name)
+
+  y_rep <- as_draws_matrix(subset_draws(draws, variable = "d2H_rep"))
   y_pred_mean <- colMeans(y_rep)
   y_obs <- stan_data$d2H_wax
   
@@ -133,18 +132,13 @@ spatial_cv_analysis <- function(model_name, prepared_data_dir = "prepared_data")
 # 2. COMPLEXITY ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
+complexity_analysis <- function(model_name, prepared_data_dir = NULL) {
   cat("\n\n2. MODEL COMPLEXITY ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
-  # Load LOO results
-  loo_file <- paste0("model_output/", model_name, "/loo.rds")
-  if (!file.exists(loo_file)) {
-    cat("  LOO file not found - skipping\n")
-    return(NULL)
-  }
-  
-  loo_result <- readRDS(loo_file)
+  loo_result <- tryCatch(load_loo(model_name),
+                         error = function(e) { cat("  ", conditionMessage(e), "\n"); NULL })
+  if (is.null(loo_result)) return(NULL)
   
   # Extract diagnostics
   p_loo <- loo_result$estimates["p_loo", "Estimate"]
@@ -171,7 +165,7 @@ complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data")
   if (k_summary[2] > 0) {
     cat("\n  Problematic observations (k > 0.7):\n")
     prob_idx <- which(k_values > 0.7)
-    stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
+    stan_data <- load_stan_data(model_name)
     
     prob_obs <- data.frame(
       idx = prob_idx,
@@ -189,16 +183,14 @@ complexity_analysis <- function(model_name, prepared_data_dir = "prepared_data")
 # 3. PREDICTION UNCERTAINTY ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-uncertainty_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
+uncertainty_analysis <- function(model_name, prepared_data_dir = NULL) {
   cat("\n\n3. PREDICTION UNCERTAINTY ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
-  # Load model and data
-  fit <- readRDS(paste0("model_output/", model_name, "/fit.rds"))
-  stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
-  
-  # Get posterior predictions
-  y_rep <- fit$draws("d2H_rep", format = "matrix")
+  draws     <- load_draws(model_name)
+  stan_data <- load_stan_data(model_name)
+
+  y_rep <- as_draws_matrix(subset_draws(draws, variable = "d2H_rep"))
   
   # Calculate prediction intervals
   pred_mean <- colMeans(y_rep)
@@ -258,22 +250,22 @@ uncertainty_analysis <- function(model_name, prepared_data_dir = "prepared_data"
 # 4. SPATIAL SCALE ANALYSIS
 #───────────────────────────────────────────────────────────────────────────────
 
-spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_data") {
+spatial_scale_analysis <- function(model_name, prepared_data_dir = NULL) {
   cat("\n\n4. SPATIAL SCALE ANALYSIS for", model_name, "\n")
   cat(strrep("-", 50), "\n")
 
-  config <- readRDS(paste0(prepared_data_dir, "/config_", model_name, ".rds"))
+  config <- load_config(model_name)
   if (!config$include_gp) {
     cat("  No GP component - skipping\n")
     return(NULL)
   }
-  
-  fit <- readRDS(paste0("model_output/", model_name, "/fit.rds"))
-  
-  # Extract length scales
-  if ("ls_intercept_km" %in% fit$metadata()$variables) {
-    ls_int <- as.vector(fit$draws("ls_intercept_km", format = "matrix"))
-    ls_slope <- as.vector(fit$draws("ls_slope_km", format = "matrix"))
+
+  draws        <- load_draws(model_name)
+  vars_present <- variables(draws)
+
+  if ("ls_intercept_km" %in% vars_present) {
+    ls_int   <- as.numeric(as_draws_matrix(subset_draws(draws, variable = "ls_intercept_km")))
+    ls_slope <- as.numeric(as_draws_matrix(subset_draws(draws, variable = "ls_slope_km")))
     
     cat("  Length scale for intercept (km):\n")
     cat("    Mean:", round(mean(ls_int)), "\n")
@@ -284,7 +276,7 @@ spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_dat
     cat("    95% CI:", round(quantile(ls_slope, c(0.025, 0.975))), "\n")
     
     # Compare to data spacing
-    stan_data <- readRDS(paste0(prepared_data_dir, "/stan_data_", model_name, ".rds"))
+    stan_data <- load_stan_data(model_name)
     coords <- cbind(stan_data$longitude, stan_data$latitude)
     dist_matrix <- fields::rdist.earth(coords, coords, miles = FALSE)
     diag(dist_matrix) <- NA
@@ -300,8 +292,8 @@ spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_dat
   }
   
   # Extract scale weights
-  if ("scale_weights" %in% fit$metadata()$variables) {
-    scale_weights <- fit$draws("scale_weights", format = "matrix")
+  if ("scale_weights" %in% vars_present) {
+    scale_weights <- as_draws_matrix(subset_draws(draws, variable = "scale_weights"))
     scale_weight_means <- colMeans(scale_weights)
     
     cat("\n  Distance scale weights:\n")
@@ -323,42 +315,30 @@ spatial_scale_analysis <- function(model_name, prepared_data_dir = "prepared_dat
 compare_model_sizes <- function() {
   cat("\n\n5. MODEL SIZE COMPARISON\n")
   cat(strrep("-", 50), "\n")
-  
-  # Automatically discover all models that have LOO results
-  loo_files <- list.files("model_output", pattern = "loo.rds", recursive = TRUE, full.names = TRUE)
-  
-  if (length(loo_files) == 0) {
+
+  # Discover all models with loo.rds + config rds in the April mirror.
+  model_dirs <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+  model_dirs <- model_dirs[!grepl("^_", model_dirs)]
+  models <- model_dirs[sapply(model_dirs, function(m)
+    file.exists(file.path(APRIL_RUN, m, "loo.rds")))]
+
+  if (length(models) == 0) {
     cat("  No models with LOO results found\n")
     return(NULL)
   }
-  
-  # Extract model names from file paths
-  models <- basename(dirname(loo_files))
-  
-  # Get the prepared_data directory (use consolidated if it exists)
-  prepared_data_dir <- if(dir.exists("prepared_data")) "prepared_data" else "prepared_data"
 
   size_comparison <- map_df(models, function(m) {
-    loo_file <- paste0("model_output/", m, "/loo.rds")
-    config_file <- paste0(prepared_data_dir, "/config_", m, ".rds")
-    
-    # Check if both files exist
-    if (file.exists(loo_file) && file.exists(config_file)) {
-      loo_result <- readRDS(loo_file)
-      config <- readRDS(config_file)
-      
-      data.frame(
-        model = m,
-        n_knots = config$n_pp_knots,
-        p_loo = loo_result$estimates["p_loo", "Estimate"],
-        looic = loo_result$estimates["looic", "Estimate"],
-        stringsAsFactors = FALSE
-      )
-    } else {
-      return(NULL)
-    }
-  }) %>% 
-    filter(!is.null(model))  # Remove any NULL results
+    loo_result <- tryCatch(load_loo(m), error = function(e) NULL)
+    config     <- tryCatch(load_config(m), error = function(e) NULL)
+    if (is.null(loo_result) || is.null(config)) return(NULL)
+    data.frame(
+      model   = m,
+      n_knots = config$n_pp_knots,
+      p_loo   = loo_result$estimates["p_loo", "Estimate"],
+      looic   = loo_result$estimates["looic", "Estimate"],
+      stringsAsFactors = FALSE
+    )
+  })
   
   if (nrow(size_comparison) == 0) {
     cat("  No complete model results found\n")
@@ -389,33 +369,25 @@ compare_model_sizes <- function() {
 # MAIN EXECUTION
 #───────────────────────────────────────────────────────────────────────────────
 
-# Automatically discover all fitted models
-model_dirs <- list.dirs("model_output", full.names = FALSE, recursive = FALSE)
+# Automatically discover all models with widened posterior_draws.rds in the
+# April mirror. Skip the _prepared_data subdir.
+model_dirs <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+model_dirs <- model_dirs[!grepl("^_", model_dirs)]
 fitted_models <- character()
-
 for (model_name in model_dirs) {
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  if (file.exists(fit_file)) {
+  if (file.exists(file.path(APRIL_RUN, model_name, "posterior_draws.rds"))) {
     fitted_models <- c(fitted_models, model_name)
   }
 }
-
 if (length(fitted_models) == 0) {
-  stop("No fitted models found in model_output/")
+  stop("No fitted models found at ", APRIL_RUN)
 }
 
 cat("Found", length(fitted_models), "fitted models:", paste(fitted_models, collapse = ", "), "\n")
 
-# Determine which prepared_data directory to use
-prepared_data_dir <- if(dir.exists("prepared_data")) {
-  cat("Using prepared_data directory\n")
-  "prepared_data"
-} else if(dir.exists("prepared_data")) {
-  cat("Using prepared_data directory\n")
-  "prepared_data"
-} else {
-  stop("No prepared_data directory found!")
-}
+# prepared_data_dir retained as a legacy function argument; helpers
+# (load_stan_data, load_config) resolve paths internally against APRIL_RUN.
+prepared_data_dir <- NULL
 
 all_results <- list()
 
