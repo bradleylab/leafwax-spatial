@@ -13,6 +13,7 @@
 library(cmdstanr)
 library(posterior)
 library(tidyverse)
+library(loo)
 
 # Load configuration
 source("0_load_config.R")
@@ -201,8 +202,14 @@ for (model_name in model_names) {
     # Basic diagnostics
     diagnostics <- fit$diagnostic_summary()
     
-    # Parameter summary for key parameters
-    params_to_check <- c("beta_0", "beta_oipc", "sigma", "lambda_decay", "effective_scale_km")
+    # Scalar parameters for the diagnostic summary (printed to stdout).
+    # `beta_precip` is gated by include_precip in the Stan model
+    # (4d_leaf_wax_spatial_model.stan:297).
+    params_to_check <- c("beta_0", "beta_oipc", "sigma",
+                         "lambda_decay", "effective_scale_km")
+    if (isTRUE(stan_data$include_precip == 1)) {
+      params_to_check <- c(params_to_check, "beta_precip")
+    }
     if (stan_data$include_c4 == 1) {
       params_to_check <- c(params_to_check, "beta_c4")
       if (stan_data$include_pft == 1) {
@@ -215,10 +222,10 @@ for (model_name in model_names) {
       params_to_check <- c(params_to_check, "beta_oipc_x_tree", "beta_oipc_x_shrub", "beta_oipc_x_grass")
     }
     if (stan_data$include_gp == 1) {
-  	   params_to_check <- c(params_to_check,
-                       "ls_intercept_km", "ls_slope_km", 
+      params_to_check <- c(params_to_check,
+                       "ls_intercept_km", "ls_slope_km",
                        "sigma_intercept_spatial", "sigma_slope_spatial")
-	}
+    }
     
     param_summary <- fit$summary(variables = params_to_check)
     
@@ -262,11 +269,48 @@ for (model_name in model_names) {
       stringsAsFactors = FALSE
     ))
     
-    # Extract and save posterior draws for key parameters
-    cat("\nExtracting posterior draws...\n")
-    draws <- fit$draws(variables = params_to_check, format = "draws_df")
+    # Posterior draws to save. The widened set includes every variable that
+    # downstream analysis reads per-draw. Indexed arrays are requested by base
+    # name; cmdstanr expands them internally. Stored as draws_array for lower
+    # RAM / smaller file size vs draws_df; readers convert locally if needed.
+    #
+    # Always-present (response-level):
+    draws_to_save <- c(params_to_check,
+                       "mu", "d2H_rep", "log_lik", "scale_weights")
+    # GP-only (per-observation + per-knot spatial effects):
+    if (stan_data$include_gp == 1) {
+      draws_to_save <- c(draws_to_save,
+                         "alpha_spatial",
+                         "beta_oipc_spatial",
+                         "z_intercept_spatial",
+                         "z_slope_spatial")
+    }
+
+    cat("\nExtracting posterior draws (", length(draws_to_save),
+        "variables requested)...\n", sep = "")
+    draws <- fit$draws(variables = draws_to_save, format = "draws_array")
     saveRDS(draws, file.path(output_dir, "posterior_draws.rds"))
-    
+
+    # Emit loo.rds so analysis never needs fit.rds or chain CSVs for model
+    # comparison (Table 1 LOOIC, SE, p_eff, Pareto-k counts). Computing from
+    # the draws we just saved keeps the data source consistent with the
+    # widened posterior_draws.rds.
+    cat("\nComputing loo...\n")
+    log_lik_array <- posterior::subset_draws(draws, variable = "log_lik")
+    loo_cores <- min(4L, max(1L, parallel::detectCores() - 1L))
+    loo_result <- tryCatch(
+      loo::loo(log_lik_array, cores = loo_cores),
+      error = function(e) {
+        message("loo::loo failed for ", model_name, ": ", conditionMessage(e))
+        NULL
+      }
+    )
+    if (!is.null(loo_result)) {
+      saveRDS(loo_result, file.path(output_dir, "loo.rds"))
+      cat("  elpd_loo =", round(loo_result$estimates["elpd_loo", "Estimate"], 1),
+          "(SE =", round(loo_result$estimates["elpd_loo", "SE"], 1), ")\n")
+    }
+
     if (!is.na(elapsed_time)) {
       cat("\n✓ Model fitting completed in", round(elapsed_time, 1), "minutes\n")
     }
