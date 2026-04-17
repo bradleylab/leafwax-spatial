@@ -114,22 +114,40 @@ These scripts require completed model fits in `model_output/`.
 
 All hyperparameters, model definitions, and MCMC settings are in `config.yaml`.
 
+## Regenerating figures + tables
+
+Once `results/c2_run_20260414/` contains the per-model rds bundles, every
+manuscript figure and table rebuilds from a single entry point:
+
+```bash
+make pipeline     # figures + tables + numeric audit
+make tables       # just the tables
+make figures      # just the figures (Figure 2 needs the environmental rasters locally)
+make audit        # cross-check each .tex body against its companion CSV
+```
+
+Producer scripts write `.tex` bodies and companion `.csv` files directly from
+the rds bundles; the audit step (`manuscript/table_code/check_tables_numeric.R`)
+catches drift between a table's rendered numbers and its source CSV.
+
 ## Repository layout
 
 | Path | Contents |
 |------|----------|
 | `*.R`, `*.py`, `*.stan`, `*.sh` (root) | Pipeline code (steps 0-5, post-hoc analysis, launcher) |
+| `Makefile` | Single entry point: `make pipeline` regenerates every figure + table |
 | `config.yaml` | MCMC settings + 14 model specifications |
 | `input_data/` | Canonical model input (1131-site d2H CSV; rasters fetched separately) |
 | `slurm/` | SLURM submission scripts for WashU Compute2 |
-| `data/compilation/` | Data-prep pipeline that builds `global_data_c29.csv` (Python, source supplements, Hren-Brandon cross-check) |
+| `scripts/posterior_helpers.R` | Thin rds loaders used by every analysis script |
+| `data/compilation/` | Data-prep pipeline that builds `global_data_c29.csv` (Python + Hren-Brandon cross-check) |
 | `data/HrenBrandon/` | Hren & Brandon (2013) supplementary tables used in cross-check |
-| `results/` | Local copy of C2 model output (git-ignored; mirror of `s3://bradleylab-public/tmp/leafwax_run/`) |
-| `manuscript/figure_code/` | R scripts that render main text figures from fitted models |
+| `results/` | Local copy of C2 model output (git-ignored; see note below) |
+| `manuscript/figure_code/` | R scripts that render main-text figures from the posterior rds bundles |
 | `manuscript/figures/` | Rendered main + supplementary figures |
-| `manuscript/tables/` | `.tex` and `.md` sources for main + supplement tables |
-| `manuscript/submission/` | GCA submission package (text, supplement, checklist, reviewers) |
-| `archive/` | Superseded drafts, figures, validation scripts, and prior methods docs |
+| `manuscript/table_code/` | Producer helpers (`table_helpers.R`) and numeric audit (`check_tables_numeric.R`) |
+| `manuscript/tables/` | `.tex` (and companion `.csv`) sources for main + supplement tables |
+| `manuscript/METHODS.md`, `FIGURES.md`, `TABLES.md` | Per-artifact provenance + regeneration notes |
 
 The data → code → run → results → manuscript flow:
 
@@ -142,14 +160,21 @@ data/compilation/*.py  -->  input_data/global_data_c29.csv
                                      |
                           ./launch_pipeline.sh  (or slurm/submit.sh)
                                      |
-                                results/<run>/*/fit.rds
+              results/<run>/*/posterior_draws.rds + diagnostics.rds + loo.rds
                                      |
-                          manuscript/figure_code/*.R  + 5a-5d_*.R, extract_*.R
+                                make pipeline
                                      |
-                   manuscript/figures/*  +  manuscript/tables/*
-                                     |
-                          manuscript/submission/
+                    manuscript/figures/main_figs/*  +  manuscript/tables/*
 ```
+
+## TODO before final publication
+
+- **Move `results/c2_run_20260414/` off the repo working tree.** It is
+  git-ignored today but still expected at that path by the Makefile and every
+  analysis script. Before the repo is handed to coauthors / reviewers, host
+  the rds bundles in a public mirror (e.g., Zenodo or
+  `s3://bradleylab-public/tmp/leafwax_run/`) and update `scripts/posterior_helpers.R`
+  to resolve the path from an environment variable with a documented default.
 
 ## License
 
