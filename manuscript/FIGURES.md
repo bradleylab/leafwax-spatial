@@ -60,15 +60,12 @@ commit. Downstream regenerated figures should be compared against the prior
 
 ## Known blockers
 
-1. **cmdstanr chain-CSV paths.** Every `readRDS("<model>/fit.rds")` returns a
-   `CmdStanFit` object whose `$output_files()` points at the Compute2 scratch
-   path `/scratch2/fs1/alexander.s.bradley/leafwax_run/model_output/<model>/*.csv`.
-   Any call beyond a pure load — `$summary()`, `$draws()`, `$loo()` — triggers
-   a lazy CSV read and errors out locally. To regen on Mac: either (a) sync
-   the per-chain `*.csv` files from Compute2/S3 alongside each `fit.rds`, or
-   (b) convert fits to `posterior::as_draws_array()` snapshots at C2 and
-   distribute those instead. `posterior_draws.rds` is already present in each
-   April model dir and may be sufficient for most figures.
+1. ~~**cmdstanr chain-CSV paths.**~~ **RESOLVED (Phase 5 W1–W5, 2026-04-16).**
+   `posterior_draws.rds` widened at fit time to include `mu`, `d2H_rep`,
+   `log_lik`, `alpha_spatial`, `beta_oipc_spatial`, `z_intercept_spatial`,
+   `z_slope_spatial`, `scale_weights` (plus existing scalars); `loo.rds`
+   emitted in the same step. Every figure and analysis script migrated to
+   the `posterior_helpers.R` API. No script reads `fit.rds` anymore.
 2. `Figure_05_detection_thresholds.R` hardcodes σ from the Dec-2025 run. Must be
    refreshed from April `full_sp`/`baseline` `sigma_obs` before regen.
 3. Supplement S1, S5 producers unidentified — need to trace or mark MANUAL.
