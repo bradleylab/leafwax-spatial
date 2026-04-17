@@ -228,6 +228,11 @@ for (model_name in spatial_models) {
   # Additional reporting: posterior-mean residual SD in original ‰.
   sigma_resid_orig <- get_mean("sigma_residual_original")
 
+  # Intercept / slope shares expressed two ways:
+  #   * as % of total variance (matches what the prior script reported)
+  #   * as % of the spatial component only (what Table 3 displays, so the
+  #     intercept and slope columns sum to 100 within each spatial model)
+  .pct <- function(num, denom) if (is.finite(denom) && denom > 0) 100 * num / denom else NA_real_
   variance_components[[model_name]] <- data.frame(
     model = model_name,
     var_spatial_intercept = var_int,
@@ -235,8 +240,10 @@ for (model_name in spatial_models) {
     var_total_spatial     = var_spatial,
     var_residual          = var_resid,
     var_total             = var_total,
-    var_intercept_pct     = 100 * var_int   / var_total,
-    var_slope_pct         = 100 * var_slope / var_total,
+    var_intercept_pct     = .pct(var_int,   var_total),
+    var_slope_pct         = .pct(var_slope, var_total),
+    var_intercept_pct_of_spatial = .pct(var_int,   var_spatial),
+    var_slope_pct_of_spatial     = .pct(var_slope, var_spatial),
     var_spatial_total_pct = 100 * prop_spatial,
     var_obs_pct           = 100 * prop_resid,
     sigma_residual_permil = sigma_resid_orig,
@@ -561,6 +568,161 @@ emit_standalone_tex(
   source_script = "extract_full_model_analysis.R"
 )
 cat("wrote manuscript/tables/table1_model_performance.tex\n")
+
+#───────────────────────────────────────────────────────────────────────────────
+# 9. TABLE 3 PRODUCER — manuscript/tables/table3_variance_decomp.tex
+#───────────────────────────────────────────────────────────────────────────────
+#
+# Columns: Model, Spatial (%), Residual (%), Intercept (%), Slope (%).
+# All 9 spatial models, rows ordered as defined in `spatial_models` above
+# (section 3). The intercept / slope columns are percentages of the spatial
+# component (so they sum to 100 within a row); the Spatial / Residual
+# columns are percentages of total variance (so those two sum to 100).
+#
+# Source of every number: generated-quantity posterior means pulled from
+# diagnostics.rds by section 3. The CLAUDE.md integrity rule applies — no
+# re-sampling, no ad-hoc back-transforms. The Phase 5 W5 bug-fix replaced
+# the sigma_int² + sigma² mixing with Stan's prop_variance_* outputs; this
+# table now carries those values directly.
+
+cat("\n\n9. TABLE 3 PRODUCER\n")
+cat(strrep("-", 60), "\n")
+
+# Preserve the `spatial_models` order defined in section 3.
+table3_df <- variance_df %>%
+  mutate(model_order = match(model, spatial_models)) %>%
+  arrange(model_order) %>%
+  transmute(
+    Model      = sapply(model, .latex_model_name, USE.NAMES = FALSE),
+    `Spatial (\\%)`   = sprintf("%.1f", var_spatial_total_pct),
+    `Residual (\\%)`  = sprintf("%.1f", var_obs_pct),
+    `Intercept (\\%)` = sprintf("%.1f", var_intercept_pct_of_spatial),
+    `Slope (\\%)`     = sprintf("%.1f", var_slope_pct_of_spatial)
+  )
+
+write.csv(variance_df %>%
+            mutate(model_order = match(model, spatial_models)) %>%
+            arrange(model_order) %>%
+            select(-model_order),
+          file.path(output_dir, "table3_variance_decomp.csv"),
+          row.names = FALSE)
+
+note3 <- paste(
+  "Variance components shown as percentage of total variance.",
+  "Spatial = variance explained by spatial Gaussian process;",
+  "Residual = unexplained variance;",
+  "Intercept/Slope = proportion of spatial variance attributed to",
+  "intercept vs.\\ slope components."
+)
+
+emit_standalone_tex(
+  table3_df,
+  path      = "manuscript/tables/table3_variance_decomp.tex",
+  caption   = "Variance decomposition for spatial models",
+  label     = "tab:variance_decomp",
+  align     = c("l", rep("c", 4)),
+  note      = note3,
+  size_macro = "small",
+  source_script = "extract_full_model_analysis.R"
+)
+cat("wrote manuscript/tables/table3_variance_decomp.tex\n")
+
+#───────────────────────────────────────────────────────────────────────────────
+# 10. TABLE 4 PRODUCER — manuscript/tables/table4_environmental.tex
+#───────────────────────────────────────────────────────────────────────────────
+#
+# Columns: Model, beta_C4, beta_tree, beta_shrub, beta_grass, beta_precip.
+# Each cell is "mean [lower, upper]" with a 90% credible interval, or "-"
+# when the parameter is not included in the model (gated by include_c4,
+# include_pft, include_precip in 4d_leaf_wax_spatial_model.stan). The
+# predictors are on the Stan model's standardized scale, matching the
+# reporting in the prior hand-authored table.
+#
+# Coefficient draws come from the widened posterior_draws.rds (every β_*
+# scalar is in the saved variable list per 4c_fit_models.R:280–289).
+
+cat("\n\n10. TABLE 4 PRODUCER\n")
+cat(strrep("-", 60), "\n")
+
+table4_params <- c("beta_c4", "beta_tree", "beta_shrub", "beta_grass", "beta_precip")
+
+.fmt_coef_90 <- function(draws_vec) {
+  # Render "mean [q5, q95]" with 3 decimal places matching the prior table.
+  q <- quantile(draws_vec, c(0.05, 0.95), names = FALSE)
+  sprintf("%.3f [%.3f, %.3f]", mean(draws_vec), q[1], q[2])
+}
+
+table4_rows <- lapply(all_models, function(m) {
+  draws <- tryCatch(load_draws(m), error = function(e) NULL)
+  if (is.null(draws)) return(NULL)
+  vars_present <- variables(draws)
+
+  row_vals <- sapply(table4_params, function(p) {
+    if (!(p %in% vars_present)) return("-")
+    d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = p)))
+    .fmt_coef_90(d)
+  }, USE.NAMES = FALSE)
+
+  data.frame(
+    Model                         = .latex_model_name(m),
+    `$\\beta_{\\text{C4}}$`       = row_vals[1],
+    `$\\beta_{\\text{tree}}$`     = row_vals[2],
+    `$\\beta_{\\text{shrub}}$`    = row_vals[3],
+    `$\\beta_{\\text{grass}}$`    = row_vals[4],
+    `$\\beta_{\\text{precip}}$`   = row_vals[5],
+    stringsAsFactors = FALSE,
+    check.names      = FALSE
+  )
+})
+table4_df <- bind_rows(table4_rows)
+
+# Write a plain-name CSV sibling for the numeric audit (W6e).
+table4_csv <- bind_rows(lapply(all_models, function(m) {
+  draws <- tryCatch(load_draws(m), error = function(e) NULL)
+  if (is.null(draws)) return(NULL)
+  vars_present <- variables(draws)
+  row_list <- list(model = m)
+  for (p in table4_params) {
+    if (p %in% vars_present) {
+      d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = p)))
+      q <- quantile(d, c(0.05, 0.95), names = FALSE)
+      row_list[[paste0(p, "_mean")]]  <- mean(d)
+      row_list[[paste0(p, "_q05")]]   <- q[1]
+      row_list[[paste0(p, "_q95")]]   <- q[2]
+    } else {
+      row_list[[paste0(p, "_mean")]] <- NA_real_
+      row_list[[paste0(p, "_q05")]]  <- NA_real_
+      row_list[[paste0(p, "_q95")]]  <- NA_real_
+    }
+  }
+  as.data.frame(row_list, stringsAsFactors = FALSE)
+}))
+write.csv(table4_csv,
+          file.path(output_dir, "table4_environmental.csv"),
+          row.names = FALSE)
+
+note4 <- paste(
+  "Coefficient estimates shown as posterior mean [90\\% credible interval].",
+  "$\\beta_{\\text{C4}}$ = C4 grass fraction effect;",
+  "$\\beta_{\\text{tree}}$, $\\beta_{\\text{shrub}}$, $\\beta_{\\text{grass}}$",
+  "= plant functional type effects;",
+  "$\\beta_{\\text{precip}}$ = precipitation effect.",
+  "Dashes indicate parameters not included in the model.",
+  "All coefficients on the Stan model's standardized $\\delta^2$H scale."
+)
+
+emit_standalone_tex(
+  table4_df,
+  path      = "manuscript/tables/table4_environmental.tex",
+  caption   = "Environmental covariate coefficients",
+  label     = "tab:environmental",
+  align     = c("l", rep("c", 5)),
+  note      = note4,
+  landscape = TRUE,
+  size_macro = "scriptsize",
+  source_script = "extract_full_model_analysis.R"
+)
+cat("wrote manuscript/tables/table4_environmental.tex\n")
 
 #───────────────────────────────────────────────────────────────────────────────
 # SUMMARY REPORT
