@@ -82,21 +82,19 @@ spatial_models <- model_dirs[grep("_sp", basename(model_dirs))]
 cat("\nAvailable spatial models:\n")
 cat(paste("-", basename(spatial_models)), sep = "\n")
 
-# Select best model (prefer full_sp or full_interact_sp)
+# Select best model (prefer full_sp or full_interact_sp). stan_data lives
+# under prepared_data/ (the 0923 subdir predates the April 2026 run).
 if ("model_output/full_interact_sp" %in% spatial_models) {
   model_path <- "model_output/full_interact_sp/fit.rds"
   model_name <- "full_interact_sp"
-  stan_data_path <- "prepared_data_0923/stan_data_full_interact_sp.rds"
 } else if ("model_output/full_sp" %in% spatial_models) {
   model_path <- "model_output/full_sp/fit.rds"
   model_name <- "full_sp"
-  stan_data_path <- "prepared_data_0923/stan_data_full_sp.rds"
 } else {
-  # Use first available spatial model
   model_path <- file.path(spatial_models[1], "fit.rds")
   model_name <- basename(spatial_models[1])
-  stan_data_path <- file.path("prepared_data_0923", paste0("stan_data_", model_name, ".rds"))
 }
+stan_data_path <- file.path("prepared_data", paste0("stan_data_", model_name, ".rds"))
 
 cat("\nUsing model:", model_name, "\n")
 cat("Loading fitted model...\n")
@@ -130,35 +128,25 @@ if ("lambda_decay" %in% fit$metadata()$stan_variables) {
   cat("Lambda not found in model, using default:", lambda_km, "km\n")
 }
 
-# Extract spatial intercept effects (alpha_spatial)
-alpha_spatial_draws <- subset(draws, variable = "alpha_spatial")
+# Spatial intercept contribution in ‰.
+# alpha_spatial[i] is on the standardized scale and already includes beta_0
+# (4d_leaf_wax_spatial_model.stan:316). The GP residual per obs, in ‰, is
+# (alpha_spatial - beta_0) * d2H_sd. Prior implementation multiplied
+# alpha_spatial by sigma_intercept_spatial (already in ‰): mixed-units error.
+d2H_sd <- stan_data$scaling_params$d2H_sd
 
-# Check if we need to scale by sigma
-if ("sigma_intercept_spatial" %in% fit$metadata()$stan_variables) {
-  sigma_draws <- subset(draws, variable = "sigma_intercept_spatial")
-  sigma_intercept <- mean(as.numeric(as_draws_matrix(sigma_draws)))
-  cat("Sigma_intercept_spatial:", round(sigma_intercept, 2), "\n")
+alpha_spatial_draws <- as_draws_matrix(subset(draws, variable = "alpha_spatial"))
+beta_0_draws <- as.numeric(as_draws_matrix(subset(draws, variable = "beta_0")))
+alpha_spatial_scaled <- sweep(alpha_spatial_draws, 1, beta_0_draws, "-") * d2H_sd
 
-  # Check if alpha values need scaling
-  alpha_test <- mean(abs(as.numeric(as_draws_matrix(alpha_spatial_draws))))
-  if (alpha_test < 2) {  # Likely z-scores if values are small
-    cat("Scaling alpha_spatial by sigma_intercept_spatial\n")
-    alpha_spatial_scaled <- as_draws_matrix(alpha_spatial_draws) * sigma_intercept
-  } else {
-    alpha_spatial_scaled <- as_draws_matrix(alpha_spatial_draws)
-  }
-} else {
-  alpha_spatial_scaled <- as_draws_matrix(alpha_spatial_draws)
-}
-
-# Get posterior means for each observation
 alpha_spatial_means <- colMeans(alpha_spatial_scaled)
 n_obs <- length(alpha_spatial_means)
 
 cat("Number of observations:", n_obs, "\n")
-cat("Range of spatial effects:",
-    round(min(alpha_spatial_means), 1), "to",
-    round(max(alpha_spatial_means), 1), "‰\n")
+cat(sprintf("Range of spatial intercept contribution: %.1f to %.1f ‰\n",
+            min(alpha_spatial_means), max(alpha_spatial_means)))
+cat(sprintf("SD of spatial intercept contribution:   %.2f ‰\n",
+            sd(alpha_spatial_means)))
 
 #───────────────────────────────────────────────────────────────────────────────
 # 3. COMPUTE SPATIALLY-WEIGHTED ENVIRONMENTAL VARIABLES

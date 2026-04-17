@@ -67,41 +67,38 @@ fit <- readRDS(model_path)
 # 2. EXTRACT SPATIAL EFFECTS
 #───────────────────────────────────────────────────────────────────────────────
 
-cat("\nExtracting spatial effects...\n")
+cat("\nExtracting spatial effects (back-transformed to ‰)...\n")
 
-# Get posterior draws
-draws <- fit$draws()
-
-# Extract spatial intercept effects (alpha_spatial)
-# These should be scaled values in permille
-alpha_spatial_draws <- subset(draws, variable = "alpha_spatial")
-
-# Check if we need to scale by sigma
-if ("sigma_intercept_spatial" %in% fit$metadata()$stan_variables) {
-  sigma_draws <- subset(draws, variable = "sigma_intercept_spatial")
-  sigma_intercept <- mean(as.numeric(as_draws_matrix(sigma_draws)))
-  cat("Sigma_intercept_spatial:", sigma_intercept, "\n")
-
-  # Check if alpha values need scaling
-  alpha_test <- mean(abs(as.numeric(as_draws_matrix(alpha_spatial_draws))))
-  if (alpha_test < 2) {  # Likely z-scores if values are small
-    cat("Scaling alpha_spatial by sigma_intercept_spatial\n")
-    alpha_spatial_scaled <- as_draws_matrix(alpha_spatial_draws) * sigma_intercept
-  } else {
-    alpha_spatial_scaled <- as_draws_matrix(alpha_spatial_draws)
-  }
-} else {
-  alpha_spatial_scaled <- as_draws_matrix(alpha_spatial_draws)
+# Stan defines alpha_spatial[i] on the standardized response scale, already
+# including the global intercept beta_0 (4d_leaf_wax_spatial_model.stan:316,
+# 331-335). The GP intercept *residual* contribution at obs i, in standardized
+# units, is alpha_spatial[i] - beta_0. Multiply by stan_data$scaling_params$d2H_sd
+# to get per-mille. This replaces a prior units-error that multiplied the raw
+# alpha_spatial draws by sigma_intercept_spatial (a different quantity, already
+# in ‰).
+stan_data_path <- file.path("prepared_data", paste0("stan_data_", model_name, ".rds"))
+if (!file.exists(stan_data_path)) {
+  stop("stan_data not found at: ", stan_data_path)
 }
+stan_data <- readRDS(stan_data_path)
+d2H_sd <- stan_data$scaling_params$d2H_sd
 
-# Get posterior means for each observation
+draws <- fit$draws()
+alpha_spatial_draws <- as_draws_matrix(subset(draws, variable = "alpha_spatial"))
+beta_0_draws <- as.numeric(as_draws_matrix(subset(draws, variable = "beta_0")))
+
+# Broadcast beta_0 across columns (one observation per column) and convert.
+alpha_spatial_residual_std <- sweep(alpha_spatial_draws, 1, beta_0_draws, "-")
+alpha_spatial_scaled <- alpha_spatial_residual_std * d2H_sd
+
 alpha_spatial_means <- colMeans(alpha_spatial_scaled)
 n_obs <- length(alpha_spatial_means)
 
 cat("Number of observations:", n_obs, "\n")
-cat("Range of spatial effects:",
-    round(min(alpha_spatial_means), 1), "to",
-    round(max(alpha_spatial_means), 1), "‰\n")
+cat(sprintf("Range of spatial intercept contribution: %.1f to %.1f ‰\n",
+            min(alpha_spatial_means), max(alpha_spatial_means)))
+cat(sprintf("SD of spatial intercept contribution:   %.2f ‰\n",
+            sd(alpha_spatial_means)))
 
 #───────────────────────────────────────────────────────────────────────────────
 # 3. PREPARE ENVIRONMENTAL VARIABLES

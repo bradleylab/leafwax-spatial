@@ -33,6 +33,31 @@ applied in this phase. Supplement producers require tracing through the
 archive. After tracing, lift supplement `.R` files into `figure_code/` or a
 dedicated subdir.
 
+## Corrections log
+
+**2026-04-16 — Figure 3 spatial intercept back-transform corrected (Phase 5 W3).**
+Prior versions of `figure_03_spatial_confounding_revised.R` multiplied
+`alpha_spatial[i]` by `sigma_intercept_spatial` to obtain per-mille spatial
+effects. This is a units error: `alpha_spatial` is defined on the
+*standardized* response scale (4d_leaf_wax_spatial_model.stan:316,
+331-335) and already includes the global intercept `beta_0`, while
+`sigma_intercept_spatial` is the GP intercept SD in original per-mille units
+(Stan:488). Multiplying the two mixes scales.
+
+The corrected transform isolates the GP residual contribution in ‰:
+```
+alpha_spatial_contribution_‰ = (alpha_spatial − beta_0) × d2H_sd
+```
+where `d2H_sd = stan_data$scaling_params$d2H_sd` is the standardization factor
+used in prep (4a_spatial_functions.R:614). This matches Stan's own variance
+accounting at `4d_leaf_wax_spatial_model.stan:504` (`variance(alpha_spatial − beta_0)`)
+and Stan's original-scale derivation at line 488.
+
+The same corrupted transform existed in `5e_spatial_intercept_correlations.R`
+and `5e_spatial_intercept_correlations_weighted.R`; both fixed in the same
+commit. Downstream regenerated figures should be compared against the prior
+"±60 ‰" narrative — the magnitude range may shift.
+
 ## Known blockers
 
 1. **cmdstanr chain-CSV paths.** Every `readRDS("<model>/fit.rds")` returns a
