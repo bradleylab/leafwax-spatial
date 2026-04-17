@@ -1,6 +1,8 @@
 # Extract vegetation coefficients from all models
 library(tidyverse)
-library(cmdstanr)
+library(posterior)
+
+source("scripts/posterior_helpers.R")
 
 # Create output directory
 output_dir <- "model_analysis/tables"
@@ -21,22 +23,14 @@ for (model_name in models_to_check) {
   cat("\nProcessing:", model_name, "\n")
   cat(strrep("-", 40), "\n")
 
-  # Check if model output exists
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  config_file <- paste0("prepared_data/config_", model_name, ".rds")
-
-  if (!file.exists(fit_file)) {
-    cat("  Model fit not found - skipping\n")
-    next
-  }
-  if (!file.exists(config_file)) {
-    cat("  Config not found - skipping\n")
-    next
-  }
-
-  # Load model and config
-  fit <- readRDS(fit_file)
-  config <- readRDS(config_file)
+  bundle <- tryCatch(
+    list(draws = load_draws(model_name),
+         summ  = load_summaries(model_name),
+         config = load_config(model_name)),
+    error = function(e) { cat("  skip:", conditionMessage(e), "\n"); NULL })
+  if (is.null(bundle)) next
+  draws <- bundle$draws; summ <- bundle$summ; config <- bundle$config
+  vars_present <- variables(draws)
 
   cat("  Model configuration:\n")
   cat("    Include C4:", config$include_c4, "\n")
@@ -58,49 +52,44 @@ for (model_name in models_to_check) {
 
   # Extract draws for each parameter
   for (param in veg_params) {
-    if (param %in% fit$metadata()$variables) {
-      draws <- as.vector(fit$draws(param, format = "matrix"))
-
-      # Calculate statistics
-      param_stats <- data.frame(
-        model = model_name,
-        parameter = param,
-        mean = mean(draws),
-        median = median(draws),
-        sd = sd(draws),
-        lower_95 = quantile(draws, 0.025),
-        upper_95 = quantile(draws, 0.975),
-        lower_50 = quantile(draws, 0.25),
-        upper_50 = quantile(draws, 0.75),
-        n_eff = NA,  # Will add if available
-        rhat = NA,   # Will add if available
-        stringsAsFactors = FALSE
-      )
-
-      # Check if significantly different from zero
-      param_stats$significant <- (param_stats$lower_95 > 0) | (param_stats$upper_95 < 0)
-
-      # Get convergence diagnostics if available
-      summary_df <- fit$summary(param)
-      if (nrow(summary_df) > 0) {
-        param_stats$n_eff <- summary_df$ess_bulk[1]
-        param_stats$rhat <- summary_df$rhat[1]
-      }
-
-      all_coefficients[[paste(model_name, param, sep = "_")]] <- param_stats
-
-      # Print summary
-      cat("\n  ", param, ":\n")
-      cat("    Mean (SD):", sprintf("%.3f (%.3f)", param_stats$mean, param_stats$sd), "\n")
-      cat("    Median:", sprintf("%.3f", param_stats$median), "\n")
-      cat("    95% CI: [", sprintf("%.3f, %.3f", param_stats$lower_95, param_stats$upper_95), "]\n")
-      cat("    Significant:", param_stats$significant, "\n")
-      if (!is.na(param_stats$rhat)) {
-        cat("    Rhat:", sprintf("%.3f", param_stats$rhat), "\n")
-      }
-    } else {
+    if (!(param %in% vars_present)) {
       cat("\n  ", param, ": Not found in model\n")
+      next
     }
+    d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = param)))
+
+    # Calculate statistics
+    param_stats <- data.frame(
+      model = model_name,
+      parameter = param,
+      mean = mean(d),
+      median = median(d),
+      sd = sd(d),
+      lower_95 = quantile(d, 0.025),
+      upper_95 = quantile(d, 0.975),
+      lower_50 = quantile(d, 0.25),
+      upper_50 = quantile(d, 0.75),
+      n_eff = NA_real_,
+      rhat  = NA_real_,
+      stringsAsFactors = FALSE
+    )
+    param_stats$significant <- (param_stats$lower_95 > 0) | (param_stats$upper_95 < 0)
+
+    # Convergence diagnostics from diagnostics.rds summary
+    s_row <- summ[summ$variable == param, , drop = FALSE]
+    if (nrow(s_row) == 1) {
+      param_stats$n_eff <- s_row$ess_bulk
+      param_stats$rhat  <- s_row$rhat
+    }
+
+    all_coefficients[[paste(model_name, param, sep = "_")]] <- param_stats
+
+    cat("\n  ", param, ":\n")
+    cat("    Mean (SD):", sprintf("%.3f (%.3f)", param_stats$mean, param_stats$sd), "\n")
+    cat("    Median:", sprintf("%.3f", param_stats$median), "\n")
+    cat("    95% CI: [", sprintf("%.3f, %.3f", param_stats$lower_95, param_stats$upper_95), "]\n")
+    cat("    Significant:", param_stats$significant, "\n")
+    if (!is.na(param_stats$rhat)) cat("    Rhat:", sprintf("%.3f", param_stats$rhat), "\n")
   }
 }
 
@@ -194,61 +183,56 @@ cat(strrep("-", 60), "\n")
 spatial_veg_models <- c("baseline_veg_sp", "full_sp", "full_interact_sp")
 variance_results <- list()
 
-for (model_name in spatial_veg_models) {
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
-
-  if (file.exists(fit_file)) {
-    fit <- readRDS(fit_file)
-
-    # Extract GP variance components. Stan exports sigma_intercept_spatial /
-    # sigma_slope_spatial (4d_leaf_wax_spatial_model.stan:482-483); the legacy
-    # names sigma_gp_intercept / sigma_gp_slope never existed in this model.
-    if ("sigma_intercept_spatial" %in% fit$metadata()$variables) {
-      sigma_int <- mean(as.vector(fit$draws("sigma_intercept_spatial", format = "matrix")))
-      sigma_slope <- mean(as.vector(fit$draws("sigma_slope_spatial", format = "matrix")))
-      sigma_obs <- mean(as.vector(fit$draws("sigma", format = "matrix")))
-
-      # Calculate variance proportions
-      total_var <- sigma_int^2 + sigma_slope^2 + sigma_obs^2
-
-      cat("\n", model_name, ":\n")
-      cat(sprintf("  Intercept GP variance: %.1f%% (σ = %.2f‰)\n",
-                  100 * sigma_int^2 / total_var, sigma_int))
-      cat(sprintf("  Slope GP variance:     %.1f%% (σ = %.2f)\n",
-                  100 * sigma_slope^2 / total_var, sigma_slope))
-      cat(sprintf("  Observation variance:  %.1f%% (σ = %.2f‰)\n",
-                  100 * sigma_obs^2 / total_var, sigma_obs))
-      cat(sprintf("  Total GP variance:     %.1f%%\n",
-                  100 * (sigma_int^2 + sigma_slope^2) / total_var))
-
-      variance_results[[model_name]] <- list(
-        sigma_intercept = sigma_int,
-        sigma_slope = sigma_slope,
-        sigma_obs = sigma_obs,
-        prop_gp = (sigma_int^2 + sigma_slope^2) / total_var
-      )
-    }
+# Variance decomposition uses Stan's own generated quantities
+# (prop_variance_spatial, prop_variance_residual; see extract_full_model_analysis.R
+# for the rationale — the old sigma_int^2 + sigma^2 calculation mixed units
+# and inflated the spatial share to 100%%).
+.variance_bundle <- function(model_name) {
+  summ <- tryCatch(load_summaries(model_name),
+                   error = function(e) { cat("  skip:", conditionMessage(e), "\n"); NULL })
+  if (is.null(summ)) return(NULL)
+  g <- function(v) {
+    row <- summ[summ$variable == v, , drop = FALSE]
+    if (nrow(row) != 1) NA_real_ else row$mean
   }
+  list(
+    sigma_resid_permil = g("sigma_residual_original"),
+    prop_spatial       = g("prop_variance_spatial"),
+    prop_residual      = g("prop_variance_residual"),
+    var_intercept      = g("var_spatial_intercept"),
+    var_slope          = g("var_spatial_slope"),
+    var_total          = g("var_total")
+  )
 }
 
-# Compare to baseline_sp if available
-baseline_sp_file <- "model_output/baseline_sp/fit.rds"
-if (file.exists(baseline_sp_file)) {
-  fit_baseline <- readRDS(baseline_sp_file)
-  if ("sigma_intercept_spatial" %in% fit_baseline$metadata()$variables) {
-    sigma_int_base <- mean(as.vector(fit_baseline$draws("sigma_intercept_spatial", format = "matrix")))
-    sigma_slope_base <- mean(as.vector(fit_baseline$draws("sigma_slope_spatial", format = "matrix")))
-    sigma_obs_base <- mean(as.vector(fit_baseline$draws("sigma", format = "matrix")))
-    total_var_base <- sigma_int_base^2 + sigma_slope_base^2 + sigma_obs_base^2
-    gp_prop_base <- (sigma_int_base^2 + sigma_slope_base^2) / total_var_base
+for (model_name in spatial_veg_models) {
+  vc <- .variance_bundle(model_name)
+  if (is.null(vc) || is.na(vc$prop_spatial)) next
+  cat("\n", model_name, ":\n")
+  cat(sprintf("  Spatial (GP) variance: %.1f%%\n", 100 * vc$prop_spatial))
+  cat(sprintf("    Intercept component: %.1f%%\n",
+              100 * vc$var_intercept / vc$var_total))
+  cat(sprintf("    Slope component:     %.1f%%\n",
+              100 * vc$var_slope / vc$var_total))
+  cat(sprintf("  Residual variance:     %.1f%% (σ = %.2f ‰)\n",
+              100 * vc$prop_residual, vc$sigma_resid_permil))
+  variance_results[[model_name]] <- list(
+    sigma_intercept = NA_real_,           # kept for downstream field names
+    sigma_slope     = NA_real_,
+    sigma_obs       = vc$sigma_resid_permil,
+    prop_gp         = vc$prop_spatial
+  )
+}
 
-    cat("\n\nComparison to baseline_sp (no vegetation):\n")
-    cat(sprintf("  Baseline GP variance: %.1f%%\n", 100 * gp_prop_base))
-
-    for (model_name in names(variance_results)) {
-      reduction <- 100 * (gp_prop_base - variance_results[[model_name]]$prop_gp) / gp_prop_base
-      cat(sprintf("  %s reduces GP variance by %.1f%%\n", model_name, reduction))
-    }
+# Compare to baseline_sp (no vegetation) using the same Stan-based decomposition.
+baseline_vc <- .variance_bundle("baseline_sp")
+if (!is.null(baseline_vc) && !is.na(baseline_vc$prop_spatial)) {
+  gp_prop_base <- baseline_vc$prop_spatial
+  cat("\n\nComparison to baseline_sp (no vegetation):\n")
+  cat(sprintf("  Baseline GP variance: %.1f%%\n", 100 * gp_prop_base))
+  for (model_name in names(variance_results)) {
+    reduction <- 100 * (gp_prop_base - variance_results[[model_name]]$prop_gp) / gp_prop_base
+    cat(sprintf("  %s reduces GP variance by %.1f%%\n", model_name, reduction))
   }
 }
 
