@@ -326,26 +326,35 @@ for (model_name in model_names) {
     # 4. SPATIAL PREDICTIONS AT DATA LOCATIONS
     cat("\n4. SPATIAL PREDICTIONS AT DATA LOCATIONS\n")
     
-    # Extract GP predictions at observation locations if available
-    gp_vars <- grep("^gp_", unique_vars, value = TRUE)
-    
-    if (length(gp_vars) > 0) {
-      # Get GP intercept and slope at observations
-      if ("gp_intercept" %in% unique_vars) {
-        gp_intercept_summary <- fit$summary(variables = "gp_intercept")
-        gp_intercept_obs <- gp_intercept_summary$mean[1:N]
+    # Extract per-observation spatial effects. Stan exports `alpha_spatial[N]`
+    # (intercept at each location) and `beta_oipc_spatial[N]` (slope at each
+    # location). The GP *residual* contributions are
+    #   intercept residual = alpha_spatial - beta_0
+    #   slope residual     = beta_oipc_spatial - beta_oipc
+    # (4d_leaf_wax_spatial_model.stan:316,342,504-505). The legacy names
+    # `gp_intercept` / `gp_slope` never existed in this model.
+    has_alpha <- "alpha_spatial" %in% unique_vars
+    has_slope <- "beta_oipc_spatial" %in% unique_vars
+
+    if (has_alpha || has_slope) {
+      if (has_alpha) {
+        alpha_mean <- fit$summary(variables = "alpha_spatial")$mean
+        beta_0_mean <- fit$summary(variables = "beta_0")$mean
+        gp_intercept_obs <- alpha_mean[1:N] - beta_0_mean
       } else {
         gp_intercept_obs <- rep(0, N)
       }
-      
-      if ("gp_slope" %in% unique_vars) {
-        gp_slope_summary <- fit$summary(variables = "gp_slope")
-        gp_slope_obs <- gp_slope_summary$mean[1:N]
+
+      if (has_slope) {
+        slope_mean <- fit$summary(variables = "beta_oipc_spatial")$mean
+        beta_oipc_mean <- fit$summary(variables = "beta_oipc")$mean
+        gp_slope_obs <- slope_mean[1:N] - beta_oipc_mean
       } else {
         gp_slope_obs <- rep(0, N)
       }
-      
-      # Create observation-level data frame
+
+      # Observation-level data frame (effects are residuals from the global
+      # mean, so they plot as deviations).
       obs_df <- data.frame(
         lon = stan_data$longitude * lon_sd + lon_mean,
         lat = stan_data$latitude * lat_sd + lat_mean,

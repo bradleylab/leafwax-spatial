@@ -167,9 +167,13 @@ for (model_name in c(paleo_models, "baseline_sp")) {
 
   fit <- readRDS(fit_file)
 
-  # Parameters to check
-  params_to_extract <- c("beta_oipc", "beta_c4", "beta_elevation",
-                        "beta_oipc_c4", "beta_elevation_c4")
+  # Parameters to check. Names must match 4d_leaf_wax_spatial_model.stan.
+  # Notes on legacy names:
+  #  - beta_elevation: not a scalar in Stan; elevation enters via
+  #    `beta_elev_bspline` (vector of B-spline coefficients). Handled below.
+  #  - beta_oipc_c4: Stan exports `beta_oipc_x_c4`.
+  #  - beta_elevation_c4: no elevation×C4 interaction exists in the model.
+  params_to_extract <- c("beta_oipc", "beta_c4", "beta_oipc_x_c4")
 
   for (param in params_to_extract) {
     if (param %in% fit$metadata()$variables) {
@@ -196,12 +200,13 @@ for (model_name in c(paleo_models, "baseline_sp")) {
     }
   }
 
-  # Check for elevation B-spline coefficients
-  if ("beta_elevation" %in% fit$metadata()$variables) {
-    elev_draws <- fit$draws("beta_elevation", format = "matrix")
-    # Get mean effect across spline coefficients
+  # Elevation B-spline coefficients (vector, not scalar).
+  if ("beta_elev_bspline" %in% fit$metadata()$variables) {
+    elev_draws <- fit$draws("beta_elev_bspline", format = "matrix")
+    # Mean across-coefficient effect (not across draws). colMeans collapses
+    # draws per coefficient, yielding a posterior-mean coefficient vector.
     elev_effects <- colMeans(elev_draws)
-    cat(sprintf("  Elevation effects   : Mean across knots = %.3f\n",
+    cat(sprintf("  Elevation effects   : Mean across B-spline coefs = %.3f\n",
                 mean(elev_effects)))
     cat(sprintf("                        Range: [%.3f, %.3f]\n",
                 min(elev_effects), max(elev_effects)))
