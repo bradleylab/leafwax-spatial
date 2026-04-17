@@ -725,6 +725,152 @@ emit_standalone_tex(
 cat("wrote manuscript/tables/table4_environmental.tex\n")
 
 #───────────────────────────────────────────────────────────────────────────────
+# 11. TABLE 2 PRODUCER — manuscript/tables/table2_global_params_body.tex
+#───────────────────────────────────────────────────────────────────────────────
+#
+# Nine columns: Model, RMSE (‰), R², β_0 (‰), β_OIPC, λ_int (km),
+# GP scale (km), Knot Slope SD, Knot Int SD (‰). All rendered as
+# "mean [95% CI]"; GP-only columns show "-" for non-spatial models.
+#
+# Lineage per cell (every one traceable to a draws column):
+#   RMSE      sqrt(mean((d2H_wax - mu[draw])^2)) × d2H_sd                  per draw
+#   R²        1 - SSres / SStot using per-draw mu                          per draw
+#   β_0 (‰)   beta_0[draw] × d2H_sd + d2H_mean                             per draw
+#   β_OIPC    beta_oipc[draw]                                              per draw
+#   λ_int     lambda_decay[draw] (already km per Stan l.496)               per draw
+#   GP scale  ls_intercept_km[draw] (include_gp == 1 only)                 per draw
+#   Knot Slope SD  sigma_slope_spatial[draw]                               per draw
+#   Knot Int SD (‰) sigma_intercept_spatial[draw] (already ‰ per Stan)    per draw
+#
+# The producer writes only the body fragment; table2_global_params.tex is
+# a hand-maintained wrapper that carries the landscape longtable preamble
+# and `\input{}`s this file.
+
+cat("\n\n11. TABLE 2 PRODUCER\n")
+cat(strrep("-", 60), "\n")
+
+.fmt_ci95_number <- function(v, digits = 3) {
+  q <- quantile(v, c(0.025, 0.975), names = FALSE)
+  sprintf(paste0("%.", digits, "f [%.", digits, "f, %.", digits, "f]"),
+          mean(v), q[1], q[2])
+}
+
+.get_draws_vec <- function(draws, name) {
+  as.numeric(as_draws_matrix(subset_draws(draws, variable = name)))
+}
+
+table2_rows <- lapply(all_models, function(m) {
+  draws <- tryCatch(load_draws(m), error = function(e) NULL)
+  if (is.null(draws)) return(NULL)
+  sd_m  <- load_stan_data(m)
+  vars_present <- variables(draws)
+
+  d2H_sd   <- sd_m$scaling_params$d2H_sd
+  d2H_mean <- sd_m$scaling_params$d2H_mean
+  y_obs    <- sd_m$d2H_wax
+
+  # Per-draw fit statistics use `mu` (linear-predictor mean, without the
+  # observation noise that d2H_rep adds). This matches section 1's point
+  # estimate (RMSE / R² evaluated at the posterior mean prediction) when
+  # averaged over draws, and gives tight CIs reflecting parameter
+  # uncertainty alone — consistent with what the prior hand-authored
+  # table 2 reported. `mu` is included in the widened posterior_draws.rds
+  # via 4c_fit_models.R:280.
+  mu <- as_draws_matrix(subset_draws(draws, variable = "mu"))
+  y_mat <- matrix(y_obs, nrow = nrow(mu), ncol = length(y_obs), byrow = TRUE)
+  ss_res_draws <- rowSums((y_mat - mu)^2)
+  ss_tot <- sum((y_obs - mean(y_obs))^2)
+  rmse_draws <- sqrt(rowMeans((y_mat - mu)^2)) * d2H_sd
+  r2_draws   <- 1 - ss_res_draws / ss_tot
+
+  # Global intercept on original scale — Stan line 478:
+  # intercept_original = beta_0 * d2H_wax_sd_original + d2H_wax_mean_original.
+  beta0_draws    <- .get_draws_vec(draws, "beta_0") * d2H_sd + d2H_mean
+  beta_oipc_draws <- .get_draws_vec(draws, "beta_oipc")
+  lambda_draws   <- .get_draws_vec(draws, "lambda_decay")
+
+  has_gp <- all(c("ls_intercept_km", "sigma_slope_spatial",
+                  "sigma_intercept_spatial") %in% vars_present)
+
+  if (has_gp) {
+    gp_scale_draws <- .get_draws_vec(draws, "ls_intercept_km")
+    knot_slope_sd  <- .get_draws_vec(draws, "sigma_slope_spatial")
+    knot_int_sd    <- .get_draws_vec(draws, "sigma_intercept_spatial")
+  }
+
+  data.frame(
+    Model          = .latex_model_name(m),
+    RMSE           = .fmt_ci95_number(rmse_draws,    digits = 1),
+    R2             = .fmt_ci95_number(r2_draws,      digits = 3),
+    beta_0         = .fmt_ci95_number(beta0_draws,   digits = 1),
+    beta_oipc      = .fmt_ci95_number(beta_oipc_draws, digits = 3),
+    lambda_int     = .fmt_ci95_number(lambda_draws,  digits = 1),
+    gp_scale       = if (has_gp) .fmt_ci95_number(gp_scale_draws, digits = 0) else "-",
+    knot_slope_sd  = if (has_gp) sprintf("%.3f", mean(knot_slope_sd))         else "-",
+    knot_int_sd    = if (has_gp) sprintf("%.1f", mean(knot_int_sd))            else "-",
+    stringsAsFactors = FALSE
+  )
+})
+table2_df <- bind_rows(table2_rows)
+
+# Plain-number CSV for audit. Keeps every posterior summary Table 2 reports.
+table2_csv <- bind_rows(lapply(all_models, function(m) {
+  draws <- tryCatch(load_draws(m), error = function(e) NULL)
+  if (is.null(draws)) return(NULL)
+  sd_m  <- load_stan_data(m)
+  vars_present <- variables(draws)
+
+  d2H_sd   <- sd_m$scaling_params$d2H_sd
+  d2H_mean <- sd_m$scaling_params$d2H_mean
+  y_obs    <- sd_m$d2H_wax
+  mu       <- as_draws_matrix(subset_draws(draws, variable = "mu"))
+  ss_tot   <- sum((y_obs - mean(y_obs))^2)
+  y_mat    <- matrix(y_obs, nrow = nrow(mu), ncol = length(y_obs), byrow = TRUE)
+  rmse_d   <- sqrt(rowMeans((y_mat - mu)^2)) * d2H_sd
+  r2_d     <- 1 - rowSums((y_mat - mu)^2) / ss_tot
+  beta0_d  <- .get_draws_vec(draws, "beta_0") * d2H_sd + d2H_mean
+  b_oipc_d <- .get_draws_vec(draws, "beta_oipc")
+  lam_d    <- .get_draws_vec(draws, "lambda_decay")
+  has_gp   <- all(c("ls_intercept_km", "sigma_slope_spatial",
+                    "sigma_intercept_spatial") %in% vars_present)
+  if (has_gp) {
+    gp_d   <- .get_draws_vec(draws, "ls_intercept_km")
+    ks_d   <- .get_draws_vec(draws, "sigma_slope_spatial")
+    ki_d   <- .get_draws_vec(draws, "sigma_intercept_spatial")
+  } else {
+    gp_d <- ks_d <- ki_d <- NA_real_
+  }
+  .summ <- function(v, label) {
+    if (all(is.na(v))) return(setNames(list(NA_real_, NA_real_, NA_real_),
+                                      paste0(label, c("_mean", "_q025", "_q975"))))
+    q <- quantile(v, c(0.025, 0.975), names = FALSE)
+    setNames(list(mean(v), q[1], q[2]),
+             paste0(label, c("_mean", "_q025", "_q975")))
+  }
+  as.data.frame(c(list(model = m),
+                  .summ(rmse_d,   "rmse_permil"),
+                  .summ(r2_d,     "r_squared"),
+                  .summ(beta0_d,  "beta_0_permil"),
+                  .summ(b_oipc_d, "beta_oipc"),
+                  .summ(lam_d,    "lambda_int_km"),
+                  .summ(gp_d,     "gp_scale_km"),
+                  .summ(ks_d,     "knot_slope_sd"),
+                  .summ(ki_d,     "knot_intercept_sd_permil")),
+                stringsAsFactors = FALSE)
+}))
+write.csv(table2_csv,
+          file.path(output_dir, "table2_global_params.csv"),
+          row.names = FALSE)
+
+# Emit body-only fragment. Wrapper .tex supplies \begin{longtable} + header.
+emit_tabular_fragment(
+  table2_df,
+  path          = "manuscript/tables/table2_global_params_body.tex",
+  source_script = "extract_full_model_analysis.R"
+)
+cat("wrote manuscript/tables/table2_global_params_body.tex\n")
+
+#───────────────────────────────────────────────────────────────────────────────
 # SUMMARY REPORT
 #───────────────────────────────────────────────────────────────────────────────
 
