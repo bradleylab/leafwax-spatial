@@ -10,7 +10,9 @@
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
-library(cmdstanr)
+library(posterior)
+
+source("scripts/posterior_helpers.R")
 
 # Create output directory
 output_dir <- "model_analysis/tables"
@@ -38,46 +40,41 @@ cat(strrep("-", 60), "\n\n")
 performance_list <- list()
 
 for (model_name in all_models) {
-  loo_file <- paste0("model_output/", model_name, "/loo.rds")
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
+  bundle <- tryCatch(
+    list(draws     = load_draws(model_name),
+         loo       = load_loo(model_name),
+         stan_data = load_stan_data(model_name)),
+    error = function(e) {
+      cat(sprintf("%-25s: %s\n", model_name, conditionMessage(e))); NULL })
+  if (is.null(bundle)) next
+  loo_result <- bundle$loo
+  stan_data  <- bundle$stan_data
 
-  if (file.exists(loo_file) && file.exists(fit_file)) {
-    # Load LOO
-    loo_result <- readRDS(loo_file)
+  y_rep       <- as_draws_matrix(subset_draws(bundle$draws, variable = "d2H_rep"))
+  y_pred_mean <- colMeans(y_rep)
+  y_obs       <- stan_data$d2H_wax
 
-    # Load fit for R² and RMSE
-    fit <- readRDS(fit_file)
-    stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
+  ss_res    <- sum((y_obs - y_pred_mean)^2)
+  ss_tot    <- sum((y_obs - mean(y_obs))^2)
+  r_squared <- 1 - (ss_res / ss_tot)
 
-    # Calculate R² and RMSE
-    y_rep <- fit$draws("d2H_rep", format = "matrix")
-    y_pred_mean <- colMeans(y_rep)
-    y_obs <- stan_data$d2H_wax
+  rmse        <- sqrt(mean((y_obs - y_pred_mean)^2))
+  rmse_permil <- rmse * stan_data$scaling_params$d2H_sd
 
-    ss_res <- sum((y_obs - y_pred_mean)^2)
-    ss_tot <- sum((y_obs - mean(y_obs))^2)
-    r_squared <- 1 - (ss_res / ss_tot)
+  performance_list[[model_name]] <- data.frame(
+    model = model_name,
+    looic = loo_result$estimates["looic", "Estimate"],
+    elpd  = loo_result$estimates["elpd_loo", "Estimate"],
+    p_loo = loo_result$estimates["p_loo", "Estimate"],
+    r_squared = r_squared,
+    rmse_permil = rmse_permil,
+    n = length(y_obs),
+    stringsAsFactors = FALSE
+  )
 
-    rmse <- sqrt(mean((y_obs - y_pred_mean)^2))
-    rmse_permil <- rmse * stan_data$scaling_params$d2H_sd
-
-    performance_list[[model_name]] <- data.frame(
-      model = model_name,
-      looic = loo_result$estimates["looic", "Estimate"],
-      elpd = loo_result$estimates["elpd_loo", "Estimate"],
-      p_loo = loo_result$estimates["p_loo", "Estimate"],
-      r_squared = r_squared,
-      rmse_permil = rmse_permil,
-      n = length(y_obs),
-      stringsAsFactors = FALSE
-    )
-
-    cat(sprintf("%-25s: LOOIC = %7.1f, R² = %.3f, RMSE = %.1f‰\n",
-                model_name, performance_list[[model_name]]$looic,
-                r_squared, rmse_permil))
-  } else {
-    cat(sprintf("%-25s: Not found\n", model_name))
-  }
+  cat(sprintf("%-25s: LOOIC = %7.1f, R² = %.3f, RMSE = %.1f‰\n",
+              model_name, performance_list[[model_name]]$looic,
+              r_squared, rmse_permil))
 }
 
 performance_df <- bind_rows(performance_list)
@@ -160,12 +157,10 @@ coefficient_list <- list()
 for (model_name in c(paleo_models, "baseline_sp")) {
   cat("\n", model_name, ":\n")
 
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  config_file <- paste0("prepared_data/config_", model_name, ".rds")
-
-  if (!file.exists(fit_file)) next
-
-  fit <- readRDS(fit_file)
+  draws <- tryCatch(load_draws(model_name),
+                    error = function(e) { cat("  skip:", conditionMessage(e), "\n"); NULL })
+  if (is.null(draws)) next
+  vars_present <- variables(draws)
 
   # Parameters to check. Names must match 4d_leaf_wax_spatial_model.stan.
   # Notes on legacy names:
@@ -176,40 +171,39 @@ for (model_name in c(paleo_models, "baseline_sp")) {
   params_to_extract <- c("beta_oipc", "beta_c4", "beta_oipc_x_c4")
 
   for (param in params_to_extract) {
-    if (param %in% fit$metadata()$variables) {
-      draws <- as.vector(fit$draws(param, format = "matrix"))
+    if (!(param %in% vars_present)) next
+    d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = param)))
 
-      coef_stats <- data.frame(
-        model = model_name,
-        parameter = param,
-        mean = mean(draws),
-        median = median(draws),
-        sd = sd(draws),
-        lower_95 = quantile(draws, 0.025),
-        upper_95 = quantile(draws, 0.975),
-        significant = (quantile(draws, 0.025) > 0) | (quantile(draws, 0.975) < 0),
-        stringsAsFactors = FALSE
-      )
+    coef_stats <- data.frame(
+      model = model_name,
+      parameter = param,
+      mean = mean(d),
+      median = median(d),
+      sd = sd(d),
+      lower_95 = quantile(d, 0.025),
+      upper_95 = quantile(d, 0.975),
+      significant = (quantile(d, 0.025) > 0) | (quantile(d, 0.975) < 0),
+      stringsAsFactors = FALSE
+    )
 
-      coefficient_list[[paste(model_name, param, sep = "_")]] <- coef_stats
+    coefficient_list[[paste(model_name, param, sep = "_")]] <- coef_stats
 
-      sig_marker <- if(coef_stats$significant) "*" else " "
-      cat(sprintf("  %-20s: %7.3f [%7.3f, %7.3f]%s\n",
-                  param, coef_stats$mean, coef_stats$lower_95,
-                  coef_stats$upper_95, sig_marker))
-    }
+    sig_marker <- if(coef_stats$significant) "*" else " "
+    cat(sprintf("  %-20s: %7.3f [%7.3f, %7.3f]%s\n",
+                param, coef_stats$mean, coef_stats$lower_95,
+                coef_stats$upper_95, sig_marker))
   }
 
-  # Elevation B-spline coefficients (vector, not scalar).
-  if ("beta_elev_bspline" %in% fit$metadata()$variables) {
-    elev_draws <- fit$draws("beta_elev_bspline", format = "matrix")
-    # Mean across-coefficient effect (not across draws). colMeans collapses
-    # draws per coefficient, yielding a posterior-mean coefficient vector.
-    elev_effects <- colMeans(elev_draws)
+  # Elevation B-spline coefficients (vector). Summarize across coefficients
+  # from diagnostics summaries since beta_elev_bspline isn't in the widened
+  # posterior_draws.rds variable list.
+  summ <- load_summaries(model_name)
+  elev_rows <- summ[grepl("^beta_elev_bspline", summ$variable), ]
+  if (nrow(elev_rows) > 0) {
     cat(sprintf("  Elevation effects   : Mean across B-spline coefs = %.3f\n",
-                mean(elev_effects)))
+                mean(elev_rows$mean)))
     cat(sprintf("                        Range: [%.3f, %.3f]\n",
-                min(elev_effects), max(elev_effects)))
+                min(elev_rows$mean), max(elev_rows$mean)))
   }
 }
 
@@ -225,35 +219,29 @@ cat(strrep("-", 60), "\n\n")
 spatial_hetero_list <- list()
 
 for (model_name in c(paleo_models, reference_models)) {
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
+  draws <- tryCatch(load_draws(model_name), error = function(e) NULL)
+  if (is.null(draws)) next
+  vars_present <- variables(draws)
 
-  if (file.exists(fit_file)) {
-    fit <- readRDS(fit_file)
+  if ("sigma_slope_spatial" %in% vars_present) {
+    slope_d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = "sigma_slope_spatial")))
+    spatial_hetero_list[[model_name]] <- data.frame(
+      model           = model_name,
+      slope_sd_mean   = mean(slope_d),
+      slope_sd_median = median(slope_d),
+      slope_sd_lower  = quantile(slope_d, 0.025),
+      slope_sd_upper  = quantile(slope_d, 0.975),
+      stringsAsFactors = FALSE
+    )
+    cat(sprintf("%-25s: Slope SD = %.3f [%.3f, %.3f]\n",
+                model_name, mean(slope_d),
+                quantile(slope_d, 0.025),
+                quantile(slope_d, 0.975)))
+  }
 
-    # Extract spatial variance components
-    if ("sigma_slope_spatial" %in% fit$metadata()$variables) {
-      slope_draws <- as.vector(fit$draws("sigma_slope_spatial", format = "matrix"))
-
-      spatial_hetero_list[[model_name]] <- data.frame(
-        model = model_name,
-        slope_sd_mean = mean(slope_draws),
-        slope_sd_median = median(slope_draws),
-        slope_sd_lower = quantile(slope_draws, 0.025),
-        slope_sd_upper = quantile(slope_draws, 0.975),
-        stringsAsFactors = FALSE
-      )
-
-      cat(sprintf("%-25s: Slope SD = %.3f [%.3f, %.3f]\n",
-                  model_name, mean(slope_draws),
-                  quantile(slope_draws, 0.025),
-                  quantile(slope_draws, 0.975)))
-    }
-
-    # Also check intercept variation
-    if ("sigma_intercept_spatial" %in% fit$metadata()$variables) {
-      int_draws <- as.vector(fit$draws("sigma_intercept_spatial", format = "matrix"))
-      spatial_hetero_list[[model_name]]$intercept_sd_mean <- mean(int_draws)
-    }
+  if ("sigma_intercept_spatial" %in% vars_present) {
+    int_d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = "sigma_intercept_spatial")))
+    spatial_hetero_list[[model_name]]$intercept_sd_mean <- mean(int_d)
   }
 }
 
