@@ -1,6 +1,8 @@
 # Comprehensive analysis of full models for Section 3.4
 library(tidyverse)
-library(cmdstanr)
+library(posterior)
+
+source("scripts/posterior_helpers.R")
 
 # Create output directory
 output_dir <- "model_analysis/tables"
@@ -28,53 +30,58 @@ all_models <- c(
   "c4_only_sp", "elevation_c4_interact_sp"
 )
 
+# Full-model subset used for per-coefficient extraction (section 2).
+# Section 1 runs over all 14 models; section 2 only over the four "full" ones.
+full_models <- c("full", "full_sp", "full_interact", "full_interact_sp")
+
 performance_metrics <- list()
 
 for (model_name in all_models) {
-  # Check if model exists
-  loo_file <- paste0("model_output/", model_name, "/loo.rds")
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
+  # Helpers raise a clear error if any piece is missing; wrap in tryCatch
+  # so a missing model doesn't abort the whole loop.
+  bundle <- tryCatch({
+    list(draws     = load_draws(model_name),
+         loo       = load_loo(model_name),
+         stan_data = load_stan_data(model_name))
+  }, error = function(e) {
+    cat(sprintf("%-20s: %s\n", model_name, conditionMessage(e)))
+    NULL
+  })
+  if (is.null(bundle)) next
 
-  if (file.exists(loo_file) && file.exists(fit_file)) {
-    # Load LOO
-    loo_result <- readRDS(loo_file)
+  loo_result <- bundle$loo
+  stan_data  <- bundle$stan_data
 
-    # Load fit for R² and RMSE calculation
-    fit <- readRDS(fit_file)
-    stan_data <- readRDS(paste0("prepared_data/stan_data_", model_name, ".rds"))
+  # Posterior predictive means: y_rep is a draws matrix with one column per
+  # observation; colMeans gives the per-obs posterior mean.
+  y_rep       <- as_draws_matrix(subset_draws(bundle$draws, variable = "d2H_rep"))
+  y_pred_mean <- colMeans(y_rep)
+  y_obs       <- stan_data$d2H_wax
 
-    # Get posterior predictions
-    y_rep <- fit$draws("d2H_rep", format = "matrix")
-    y_pred_mean <- colMeans(y_rep)
-    y_obs <- stan_data$d2H_wax
+  # Calculate R² and RMSE in standardized units
+  ss_res <- sum((y_obs - y_pred_mean)^2)
+  ss_tot <- sum((y_obs - mean(y_obs))^2)
+  r_squared <- 1 - (ss_res / ss_tot)
+  rmse <- sqrt(mean((y_obs - y_pred_mean)^2))
 
-    # Calculate R² and RMSE in standardized units
-    ss_res <- sum((y_obs - y_pred_mean)^2)
-    ss_tot <- sum((y_obs - mean(y_obs))^2)
-    r_squared <- 1 - (ss_res / ss_tot)
-    rmse <- sqrt(mean((y_obs - y_pred_mean)^2))
+  # Convert RMSE to original scale
+  rmse_permil <- rmse * stan_data$scaling_params$d2H_sd
 
-    # Convert RMSE to original scale
-    rmse_permil <- rmse * stan_data$scaling_params$d2H_sd
+  performance_metrics[[model_name]] <- data.frame(
+    model = model_name,
+    looic = loo_result$estimates["looic", "Estimate"],
+    elpd = loo_result$estimates["elpd_loo", "Estimate"],
+    p_loo = loo_result$estimates["p_loo", "Estimate"],
+    r_squared = r_squared,
+    rmse_std = rmse,
+    rmse_permil = rmse_permil,
+    n = length(y_obs),
+    stringsAsFactors = FALSE
+  )
 
-    performance_metrics[[model_name]] <- data.frame(
-      model = model_name,
-      looic = loo_result$estimates["looic", "Estimate"],
-      elpd = loo_result$estimates["elpd_loo", "Estimate"],
-      p_loo = loo_result$estimates["p_loo", "Estimate"],
-      r_squared = r_squared,
-      rmse_std = rmse,
-      rmse_permil = rmse_permil,
-      n = length(y_obs),
-      stringsAsFactors = FALSE
-    )
-
-    cat(sprintf("%-20s: LOOIC = %8.1f, R² = %.3f, RMSE = %.1f‰\n",
-                model_name, performance_metrics[[model_name]]$looic,
-                r_squared, rmse_permil))
-  } else {
-    cat(sprintf("%-20s: Not found\n", model_name))
-  }
+  cat(sprintf("%-20s: LOOIC = %8.1f, R² = %.3f, RMSE = %.1f‰\n",
+              model_name, performance_metrics[[model_name]]$looic,
+              r_squared, rmse_permil))
 }
 
 performance_df <- bind_rows(performance_metrics)
@@ -97,13 +104,11 @@ coefficient_list <- list()
 for (model_name in full_models) {
   cat("\n", model_name, ":\n")
 
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
-  config_file <- paste0("prepared_data/config_", model_name, ".rds")
-
-  if (!file.exists(fit_file)) next
-
-  fit <- readRDS(fit_file)
-  config <- readRDS(config_file)
+  draws <- tryCatch(load_draws(model_name),
+                    error = function(e) { cat("  skip:", conditionMessage(e), "\n"); NULL })
+  if (is.null(draws)) next
+  config <- load_config(model_name)
+  vars_present <- variables(draws)
 
   # Parameters to extract. Names must match 4d_leaf_wax_spatial_model.stan exactly.
   # Stan exports `beta_precip` (not `beta_precip_amount`) and `beta_oipc_x_*`
@@ -120,40 +125,41 @@ for (model_name in full_models) {
   }
 
   for (param in params_to_extract) {
-    if (param %in% fit$metadata()$variables) {
-      draws <- as.vector(fit$draws(param, format = "matrix"))
+    if (!(param %in% vars_present)) next
+    d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = param)))
 
-      coef_stats <- data.frame(
-        model = model_name,
-        parameter = param,
-        mean = mean(draws),
-        median = median(draws),
-        sd = sd(draws),
-        lower_95 = quantile(draws, 0.025),
-        upper_95 = quantile(draws, 0.975),
-        lower_50 = quantile(draws, 0.25),
-        upper_50 = quantile(draws, 0.75),
-        significant = (quantile(draws, 0.025) > 0) | (quantile(draws, 0.975) < 0),
-        stringsAsFactors = FALSE
-      )
+    coef_stats <- data.frame(
+      model = model_name,
+      parameter = param,
+      mean = mean(d),
+      median = median(d),
+      sd = sd(d),
+      lower_95 = quantile(d, 0.025),
+      upper_95 = quantile(d, 0.975),
+      lower_50 = quantile(d, 0.25),
+      upper_50 = quantile(d, 0.75),
+      significant = (quantile(d, 0.025) > 0) | (quantile(d, 0.975) < 0),
+      stringsAsFactors = FALSE
+    )
 
-      coefficient_list[[paste(model_name, param, sep = "_")]] <- coef_stats
+    coefficient_list[[paste(model_name, param, sep = "_")]] <- coef_stats
 
-      sig_marker <- if(coef_stats$significant) "*" else " "
-      cat(sprintf("  %-20s: %7.3f [%7.3f, %7.3f]%s\n",
-                  param, coef_stats$mean, coef_stats$lower_95,
-                  coef_stats$upper_95, sig_marker))
-    }
+    sig_marker <- if(coef_stats$significant) "*" else " "
+    cat(sprintf("  %-20s: %7.3f [%7.3f, %7.3f]%s\n",
+                param, coef_stats$mean, coef_stats$lower_95,
+                coef_stats$upper_95, sig_marker))
   }
 
   # Elevation enters via B-spline coefficients `beta_elev_bspline` (a vector),
   # not a scalar `beta_elevation`. Summarize mean magnitude across coefficients.
-  if ("beta_elev_bspline" %in% fit$metadata()$variables) {
-    elev_draws <- fit$draws("beta_elev_bspline", format = "matrix")
-    # Mean absolute coefficient magnitude and across-coefficient SD
-    elev_mean_abs <- mean(abs(elev_draws))
-    elev_sd <- sd(elev_draws)
-
+  # beta_elev_bspline is NOT in draws_to_save (Phase 5 W1 widened list); pull
+  # its summary from diagnostics.rds where all parameters are summarized.
+  summ <- load_summaries(model_name)
+  elev_rows <- summ[grepl("^beta_elev_bspline", summ$variable), ]
+  if (nrow(elev_rows) > 0) {
+    # Use posterior-mean coefficient values; across-coefficient stats only.
+    elev_mean_abs <- mean(abs(elev_rows$mean))
+    elev_sd       <- sd(elev_rows$mean)
     cat(sprintf("  Elevation (|β| avg) : %7.3f (SD = %.3f)\n", elev_mean_abs, elev_sd))
   }
 }
@@ -183,43 +189,57 @@ spatial_models <- c(
 variance_components <- list()
 
 for (model_name in spatial_models) {
-  fit_file <- paste0("model_output/", model_name, "/fit.rds")
+  summ <- tryCatch(load_summaries(model_name),
+                   error = function(e) { cat(sprintf("%-20s skip: %s\n", model_name, conditionMessage(e))); NULL })
+  if (is.null(summ)) next
 
-  if (file.exists(fit_file)) {
-    fit <- readRDS(fit_file)
-
-    # Extract variance components
-    if ("sigma_intercept_spatial" %in% fit$metadata()$variables) {
-      sigma_int <- mean(as.vector(fit$draws("sigma_intercept_spatial", format = "matrix")))
-      sigma_slope <- mean(as.vector(fit$draws("sigma_slope_spatial", format = "matrix")))
-      sigma_obs <- mean(as.vector(fit$draws("sigma", format = "matrix")))
-
-      # Calculate proportions
-      total_var <- sigma_int^2 + sigma_slope^2 + sigma_obs^2
-
-      variance_components[[model_name]] <- data.frame(
-        model = model_name,
-        sigma_intercept = sigma_int,
-        sigma_slope = sigma_slope,
-        sigma_obs = sigma_obs,
-        var_intercept_pct = 100 * sigma_int^2 / total_var,
-        var_slope_pct = 100 * sigma_slope^2 / total_var,
-        var_obs_pct = 100 * sigma_obs^2 / total_var,
-        var_spatial_total_pct = 100 * (sigma_int^2 + sigma_slope^2) / total_var,
-        stringsAsFactors = FALSE
-      )
-
-      cat(sprintf("\n%s:\n", model_name))
-      cat(sprintf("  Spatial variance (total): %.1f%%\n",
-                  variance_components[[model_name]]$var_spatial_total_pct))
-      cat(sprintf("    - Intercept: %.1f%% (σ = %.2f‰)\n",
-                  variance_components[[model_name]]$var_intercept_pct, sigma_int))
-      cat(sprintf("    - Slope:     %.1f%% (σ = %.2f)\n",
-                  variance_components[[model_name]]$var_slope_pct, sigma_slope))
-      cat(sprintf("  Observation variance:     %.1f%% (σ = %.2f‰)\n",
-                  variance_components[[model_name]]$var_obs_pct, sigma_obs))
-    }
+  # Use Stan's own variance decomposition from generated quantities.
+  # 4d_leaf_wax_spatial_model.stan:504-511 defines var_spatial_intercept,
+  # var_spatial_slope, var_residual on a consistent scale, and
+  # prop_variance_spatial / prop_variance_residual as the final proportions.
+  # The prior ad-hoc calculation mixed sigma_intercept_spatial (original ‰)
+  # with sigma (standardized) and inflated the spatial share to 100%.
+  get_mean <- function(var) {
+    row <- summ[summ$variable == var, , drop = FALSE]
+    if (nrow(row) != 1) return(NA_real_)
+    row$mean
   }
+
+  var_int      <- get_mean("var_spatial_intercept")
+  var_slope    <- get_mean("var_spatial_slope")
+  var_spatial  <- get_mean("var_total_spatial")
+  var_resid    <- get_mean("var_residual")
+  var_total    <- get_mean("var_total")
+  prop_spatial <- get_mean("prop_variance_spatial")
+  prop_resid   <- get_mean("prop_variance_residual")
+
+  # Additional reporting: posterior-mean residual SD in original ‰.
+  sigma_resid_orig <- get_mean("sigma_residual_original")
+
+  variance_components[[model_name]] <- data.frame(
+    model = model_name,
+    var_spatial_intercept = var_int,
+    var_spatial_slope     = var_slope,
+    var_total_spatial     = var_spatial,
+    var_residual          = var_resid,
+    var_total             = var_total,
+    var_intercept_pct     = 100 * var_int   / var_total,
+    var_slope_pct         = 100 * var_slope / var_total,
+    var_spatial_total_pct = 100 * prop_spatial,
+    var_obs_pct           = 100 * prop_resid,
+    sigma_residual_permil = sigma_resid_orig,
+    stringsAsFactors = FALSE
+  )
+
+  cat(sprintf("\n%s:\n", model_name))
+  cat(sprintf("  Spatial variance (total): %.1f%%\n",
+              variance_components[[model_name]]$var_spatial_total_pct))
+  cat(sprintf("    - Intercept: %.1f%%\n",
+              variance_components[[model_name]]$var_intercept_pct))
+  cat(sprintf("    - Slope:     %.1f%%\n",
+              variance_components[[model_name]]$var_slope_pct))
+  cat(sprintf("  Residual variance:        %.1f%% (σ = %.2f ‰)\n",
+              variance_components[[model_name]]$var_obs_pct, sigma_resid_orig))
 }
 
 variance_df <- bind_rows(variance_components)
@@ -245,26 +265,34 @@ if ("baseline_sp" %in% names(variance_components)) {
 cat("\n\n4. PREDICTOR CORRELATION ANALYSIS\n")
 cat(strrep("-", 60), "\n")
 
-# Load a representative dataset
-stan_data <- readRDS("prepared_data/stan_data_full.rds")
+# Build a per-obs predictor matrix for multicollinearity analysis.
+# Environmental covariates in stan_data are 1124×9 matrices (obs × spatial
+# scale); use the narrowest-scale column (index 1) as the representative
+# point value. Scalar per-obs variables come from the sediment frame.
+sd_full <- load_stan_data("full")
+sed     <- load_sediment()
 
-# Create predictor matrix
+.col1 <- function(m) if (is.matrix(m)) m[, 1] else as.numeric(m)
+
 predictors <- data.frame(
-  oipc = stan_data$oipc,
-  c4 = stan_data$c4_mean,
-  elevation = stan_data$elevation_z
+  oipc      = .col1(sd_full$oipc_values),
+  elevation = .col1(sd_full$elevation_values)
 )
-
-# Add precipitation if available
-if (!is.null(stan_data$precip_amount)) {
-  predictors$precip = stan_data$precip_amount
+# c4 in stan_data: try weighted first, fall back to sediment scalar
+if (!is.null(sd_full$c4_values) && is.matrix(sd_full$c4_values)) {
+  predictors$c4 <- .col1(sd_full$c4_values)
+} else {
+  predictors$c4 <- sed$c4_mean_filled
 }
-
-# Add PFT if available
-if (!is.null(stan_data$pft_tree)) {
-  predictors$tree = stan_data$pft_tree
-  predictors$shrub = stan_data$pft_shrub
-  predictors$grass = stan_data$pft_grass
+if (!is.null(sd_full$precip_values) && is.matrix(sd_full$precip_values)) {
+  predictors$precip <- .col1(sd_full$precip_values)
+} else if (!is.null(sed$annual_precip)) {
+  predictors$precip <- sed$annual_precip
+}
+if (!is.null(sd_full$pft_tree) && is.matrix(sd_full$pft_tree)) {
+  predictors$tree  <- .col1(sd_full$pft_tree)
+  predictors$shrub <- .col1(sd_full$pft_shrub)
+  predictors$grass <- .col1(sd_full$pft_grass)
 }
 
 # Calculate correlation matrix
