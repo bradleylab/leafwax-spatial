@@ -96,7 +96,13 @@ for (model_name in model_names) {
   stan_data_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("stan_data_", model_name, ".rds"))
   config_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("config_", model_name, ".rds"))
   output_dir <- file.path(CONFIG$output_dirs$model_output, model_name)
-  
+
+  # Load stan_data and config eagerly — needed by both the resume-fit path
+  # (post-sampling diagnostics reference stan_data$include_gp etc.) and the
+  # fresh-fit path. Both files are small.
+  stan_data <- readRDS(stan_data_file)
+  config <- readRDS(config_file)
+
   # Check if model already fitted
   fit_file <- file.path(output_dir, "fit.rds")
   if (file.exists(fit_file)) {
@@ -113,10 +119,6 @@ for (model_name in model_names) {
   } else {
     # Create output directory
     dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
-    
-    # Load data and config
-    stan_data <- readRDS(stan_data_file)
-    config <- readRDS(config_file)
     
     # Validate stan_data
     cat("Validating Stan data...\n")
