@@ -14,13 +14,14 @@
 
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(cmdstanr)
   library(posterior)
   library(corrplot)
   library(ggpubr)
   library(cowplot)
   library(viridis)
 })
+
+source("scripts/posterior_helpers.R")
 
 cat("SPATIAL INTERCEPT CORRELATION ANALYSIS\n")
 cat("=======================================\n\n")
@@ -37,31 +38,26 @@ if (!dir.exists("results")) dir.create("results", recursive = TRUE)
 #───────────────────────────────────────────────────────────────────────────────
 
 cat("Loading environmental data...\n")
-data <- readRDS("results/3_sediment_ready_for_modeling.rds")
+data <- load_sediment()
 
-# Find available spatial models
-model_dirs <- list.dirs("model_output", recursive = FALSE)
-spatial_models <- model_dirs[grep("_sp", basename(model_dirs))]
+# Find available spatial models (exclude _prepared_data)
+all_models <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+all_models <- all_models[!grepl("^_", all_models)]
+spatial_models <- all_models[grepl("_sp$", all_models)]
 
 cat("\nAvailable spatial models:\n")
-cat(paste("-", basename(spatial_models)), sep = "\n")
+cat(paste("-", spatial_models), sep = "\n")
 
-# Select best model (prefer full_sp or full_interact_sp)
-if ("model_output/full_interact_sp" %in% spatial_models) {
-  model_path <- "model_output/full_interact_sp/fit.rds"
+# Select best model (prefer full_interact_sp, then full_sp, then first _sp)
+if ("full_interact_sp" %in% spatial_models) {
   model_name <- "full_interact_sp"
-} else if ("model_output/full_sp" %in% spatial_models) {
-  model_path <- "model_output/full_sp/fit.rds"
+} else if ("full_sp" %in% spatial_models) {
   model_name <- "full_sp"
 } else {
-  # Use first available spatial model
-  model_path <- file.path(spatial_models[1], "fit.rds")
-  model_name <- basename(spatial_models[1])
+  model_name <- spatial_models[1]
 }
 
 cat("\nUsing model:", model_name, "\n")
-cat("Loading fitted model...\n")
-fit <- readRDS(model_path)
 
 #───────────────────────────────────────────────────────────────────────────────
 # 2. EXTRACT SPATIAL EFFECTS
@@ -76,16 +72,12 @@ cat("\nExtracting spatial effects (back-transformed to ‰)...\n")
 # to get per-mille. This replaces a prior units-error that multiplied the raw
 # alpha_spatial draws by sigma_intercept_spatial (a different quantity, already
 # in ‰).
-stan_data_path <- file.path("prepared_data", paste0("stan_data_", model_name, ".rds"))
-if (!file.exists(stan_data_path)) {
-  stop("stan_data not found at: ", stan_data_path)
-}
-stan_data <- readRDS(stan_data_path)
-d2H_sd <- stan_data$scaling_params$d2H_sd
+stan_data <- load_stan_data(model_name)
+d2H_sd    <- stan_data$scaling_params$d2H_sd
 
-draws <- fit$draws()
-alpha_spatial_draws <- as_draws_matrix(subset(draws, variable = "alpha_spatial"))
-beta_0_draws <- as.numeric(as_draws_matrix(subset(draws, variable = "beta_0")))
+draws <- load_draws(model_name)
+alpha_spatial_draws <- as_draws_matrix(subset_draws(draws, variable = "alpha_spatial"))
+beta_0_draws <- as.numeric(as_draws_matrix(subset_draws(draws, variable = "beta_0")))
 
 # Broadcast beta_0 across columns (one observation per column) and convert.
 alpha_spatial_residual_std <- sweep(alpha_spatial_draws, 1, beta_0_draws, "-")

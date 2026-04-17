@@ -15,13 +15,14 @@
 
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(cmdstanr)
   library(posterior)
   library(corrplot)
   library(ggpubr)
   library(cowplot)
   library(viridis)
 })
+
+source("scripts/posterior_helpers.R")
 
 cat("SPATIAL INTERCEPT CORRELATION ANALYSIS (SPATIALLY-WEIGHTED)\n")
 cat("============================================================\n\n")
@@ -73,36 +74,27 @@ compute_weighted_mean <- function(values, distances_deg, scale_km, center_lat) {
 #───────────────────────────────────────────────────────────────────────────────
 
 cat("Loading environmental data...\n")
-data <- readRDS("results/3_sediment_ready_for_modeling.rds")
+data <- load_sediment()
 
-# Find available spatial models
-model_dirs <- list.dirs("model_output", recursive = FALSE)
-spatial_models <- model_dirs[grep("_sp", basename(model_dirs))]
+# Find available spatial models (exclude _prepared_data)
+all_models <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+all_models <- all_models[!grepl("^_", all_models)]
+spatial_models <- all_models[grepl("_sp$", all_models)]
 
 cat("\nAvailable spatial models:\n")
-cat(paste("-", basename(spatial_models)), sep = "\n")
+cat(paste("-", spatial_models), sep = "\n")
 
-# Select best model (prefer full_sp or full_interact_sp). stan_data lives
-# under prepared_data/ (the 0923 subdir predates the April 2026 run).
-if ("model_output/full_interact_sp" %in% spatial_models) {
-  model_path <- "model_output/full_interact_sp/fit.rds"
+if ("full_interact_sp" %in% spatial_models) {
   model_name <- "full_interact_sp"
-} else if ("model_output/full_sp" %in% spatial_models) {
-  model_path <- "model_output/full_sp/fit.rds"
+} else if ("full_sp" %in% spatial_models) {
   model_name <- "full_sp"
 } else {
-  model_path <- file.path(spatial_models[1], "fit.rds")
-  model_name <- basename(spatial_models[1])
+  model_name <- spatial_models[1]
 }
-stan_data_path <- file.path("prepared_data", paste0("stan_data_", model_name, ".rds"))
 
 cat("\nUsing model:", model_name, "\n")
-cat("Loading fitted model...\n")
-fit <- readRDS(model_path)
-
-# Load stan_data for comparison
-cat("Loading stan_data for reference...\n")
-stan_data <- readRDS(stan_data_path)
+draws     <- load_draws(model_name)
+stan_data <- load_stan_data(model_name)
 
 #───────────────────────────────────────────────────────────────────────────────
 # 2. EXTRACT SPATIAL EFFECTS AND LAMBDA
@@ -110,20 +102,13 @@ stan_data <- readRDS(stan_data_path)
 
 cat("\nExtracting spatial effects and integration scale...\n")
 
-# Get posterior draws
-draws <- fit$draws()
-
 # Extract lambda (spatial integration scale)
-if ("lambda_decay" %in% fit$metadata()$stan_variables) {
-  lambda_draws <- subset(draws, variable = "lambda_decay")
-  lambda_km <- mean(as.numeric(as_draws_matrix(lambda_draws)))
-  cat("Fitted λ (integration scale):", round(lambda_km, 2), "km\n")
-} else if ("lambda_decay_raw" %in% fit$metadata()$stan_variables) {
-  lambda_draws <- subset(draws, variable = "lambda_decay_raw")
-  lambda_km <- mean(as.numeric(as_draws_matrix(lambda_draws)))
+vars_present <- variables(draws)
+if ("lambda_decay" %in% vars_present) {
+  lambda_km <- mean(as.numeric(
+    as_draws_matrix(subset_draws(draws, variable = "lambda_decay"))))
   cat("Fitted λ (integration scale):", round(lambda_km, 2), "km\n")
 } else {
-  # Default to 8 km if not found
   lambda_km <- 8.0
   cat("Lambda not found in model, using default:", lambda_km, "km\n")
 }
