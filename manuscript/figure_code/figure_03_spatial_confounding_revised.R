@@ -3,12 +3,14 @@
 # Figure 3: Spatial Confounding in δ²Hwax-δ²Hprecip Relationship
 # Shows how spatial structure affects the apparent slope
 
-library(cmdstanr)
+library(posterior)
 library(ggplot2)
 library(tidyverse)
 library(cowplot)
 library(viridis)
 library(scales)
+
+source("posterior_helpers.R")
 
 cat("\n=== Figure 3: Spatial Confounding in δ²Hwax-δ²Hprecip Relationship ===\n\n")
 
@@ -16,43 +18,17 @@ cat("\n=== Figure 3: Spatial Confounding in δ²Hwax-δ²Hprecip Relationship ==
 # LOAD MODELS AND DATA
 # ========================================
 
-cat("Loading models and data...\n")
+cat("Loading models and data via posterior_helpers...\n")
 
-APRIL_RUN <- "../../results/c2_run_20260414"
-
-# Load baseline (non-spatial) model
-baseline_path <- file.path(APRIL_RUN, "baseline", "fit.rds")
-if (!file.exists(baseline_path)) {
-  stop("Baseline model not found at: ", baseline_path)
-}
-fit_baseline <- readRDS(baseline_path)
-cat("  Loaded baseline (non-spatial) model\n")
-
-# Load baseline_sp (spatial) model
-baseline_sp_path <- file.path(APRIL_RUN, "baseline_sp", "fit.rds")
-if (!file.exists(baseline_sp_path)) {
-  stop("Baseline spatial model not found at: ", baseline_sp_path)
-}
-fit_baseline_sp <- readRDS(baseline_sp_path)
-cat("  Loaded baseline_sp (spatial) model\n")
-
-# Load sediment data
-sediment_path <- file.path(APRIL_RUN, "3_sediment_ready_for_modeling.rds")
-if (!file.exists(sediment_path)) {
-  stop("Sediment data not found at: ", sediment_path)
-}
-sediment_data <- readRDS(sediment_path)
-cat("  Loaded sediment data: ", nrow(sediment_data), " observations\n")
-
-# Load stan_data for the spatial model to access standardization constants.
-# We need d2H_sd to back-transform alpha_spatial (standardized) to ‰.
-stan_data_path <- file.path(APRIL_RUN, "_prepared_data", "stan_data_baseline_sp.rds")
-if (!file.exists(stan_data_path)) {
-  stop("stan_data not found at: ", stan_data_path)
-}
-stan_data_sp <- readRDS(stan_data_path)
-d2H_sd <- stan_data_sp$scaling_params$d2H_sd
+draws_baseline    <- load_draws("baseline")
+draws_sp          <- load_draws("baseline_sp")
+sediment_data     <- load_sediment()
+stan_data_sp      <- load_stan_data("baseline_sp")
+d2H_sd            <- stan_data_sp$scaling_params$d2H_sd
+cat(sprintf("  baseline: %d vars  baseline_sp: %d vars\n",
+            length(variables(draws_baseline)), length(variables(draws_sp))))
 cat(sprintf("  d2H_sd (standardization factor): %.3f ‰\n", d2H_sd))
+cat("  sediment data: ", nrow(sediment_data), " observations\n")
 
 # ========================================
 # EXTRACT MODEL PARAMETERS
@@ -61,20 +37,18 @@ cat(sprintf("  d2H_sd (standardization factor): %.3f ‰\n", d2H_sd))
 cat("\nExtracting model parameters...\n")
 
 # Non-spatial model
-draws_baseline <- fit_baseline$draws()
-beta_oipc_baseline <- subset(draws_baseline, variable="beta_oipc")
+beta_oipc_baseline <- as.numeric(
+  as_draws_matrix(subset_draws(draws_baseline, variable = "beta_oipc")))
 slope_mean_baseline <- mean(beta_oipc_baseline)
-slope_ci_baseline <- quantile(beta_oipc_baseline, c(0.025, 0.975))
-
+slope_ci_baseline   <- quantile(beta_oipc_baseline, c(0.025, 0.975))
 cat(sprintf("  Non-spatial model slope: %.3f (95%% CI: %.3f-%.3f)\n",
             slope_mean_baseline, slope_ci_baseline[1], slope_ci_baseline[2]))
 
 # Spatial model
-draws_sp <- fit_baseline_sp$draws()
-beta_oipc_sp <- subset(draws_sp, variable="beta_oipc")
+beta_oipc_sp <- as.numeric(
+  as_draws_matrix(subset_draws(draws_sp, variable = "beta_oipc")))
 slope_mean_sp <- mean(beta_oipc_sp)
-slope_ci_sp <- quantile(beta_oipc_sp, c(0.025, 0.975))
-
+slope_ci_sp   <- quantile(beta_oipc_sp, c(0.025, 0.975))
 cat(sprintf("  Spatial model slope: %.3f (95%% CI: %.3f-%.3f)\n",
             slope_mean_sp, slope_ci_sp[1], slope_ci_sp[2]))
 
@@ -102,13 +76,16 @@ cat("\nExtracting spatial intercept effects (back-transformed to ‰)...\n")
 n_obs <- nrow(sediment_data)
 
 # Posterior means of alpha_spatial[i] and beta_0 on the standardized scale.
-beta_0_mean <- mean(subset(draws_sp, variable = "beta_0"))
-cat(sprintf("  beta_0 (standardized): %.4f\n", beta_0_mean))
+# Pull both as draws_matrices (iters × chains rows flattened, obs as cols),
+# take posterior means per column.
+alpha_matrix <- as_draws_matrix(subset_draws(draws_sp, variable = "alpha_spatial"))
+beta_0_draws <- as.numeric(
+  as_draws_matrix(subset_draws(draws_sp, variable = "beta_0")))
 
-alpha_spatial_std <- numeric(n_obs)
-for (i in 1:n_obs) {
-  alpha_spatial_std[i] <- mean(subset(draws_sp, variable = sprintf("alpha_spatial[%d]", i)))
-}
+beta_0_mean       <- mean(beta_0_draws)
+alpha_spatial_std <- colMeans(alpha_matrix)
+cat(sprintf("  beta_0 (standardized): %.4f\n", beta_0_mean))
+stopifnot(length(alpha_spatial_std) == n_obs)
 
 # GP residual contribution, in original ‰ units:
 #   (alpha_spatial - beta_0) × d2H_sd
