@@ -197,28 +197,14 @@ calculate_knot_data_density <- function(knot_coords, obs_coords, radius = 0.2, v
   if (verbose) {
     cat("  Calculating data density at", n_knots, "knots...\n")
     cat("  Using radius of", radius, "standardized units for 'nearby' observations\n")
-    cat("  Note: Exponential regularization will be applied (Lindgren et al., 2011)\n")
   }
-  
-  # For each knot, count observations within radius
+
   for (k in 1:n_knots) {
-    # Calculate Euclidean distances in standardized space
-    dists <- sqrt((knot_coords[k,1] - obs_coords[,1])^2 + 
+    dists <- sqrt((knot_coords[k,1] - obs_coords[,1])^2 +
                   (knot_coords[k,2] - obs_coords[,2])^2)
-    
-    # Count observations within radius
     knot_density[k] <- sum(dists <= radius)
   }
-  
-  if (verbose) {
-    # Summary statistics
-    cat("    Density range: [", min(knot_density), 
-        ", ", max(knot_density), "] observations per knot\n")
-    cat("    Mean density:", round(mean(knot_density), 1), "\n")
-    cat("    Median density:", median(knot_density), "\n")
-    
-  }
-  
+
   return(knot_density)
 }
 
