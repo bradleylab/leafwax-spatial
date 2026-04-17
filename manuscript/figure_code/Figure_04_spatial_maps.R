@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-library(cmdstanr)
+library(posterior)
 library(ggplot2)
 library(sf)
 library(rnaturalearth)
@@ -10,62 +10,48 @@ library(scales)
 library(gridExtra)
 library(cowplot)
 
-cat("\n=== Figure 3: Spatial Patterns in Intercepts and Slopes ===\n\n")
+source("posterior_helpers.R")
+
+cat("\n=== Figure 4: Spatial Patterns in Intercepts and Slopes ===\n\n")
 
 # ========================================
 # LOAD MODEL AND DATA
 # ========================================
 
-cat("Loading full_sp model and stan_data...\n")
-APRIL_RUN <- "../../results/c2_run_20260414"
-model_path <- file.path(APRIL_RUN, "full_sp", "fit.rds")
-if (!file.exists(model_path)) {
-  stop("Model file not found at: ", model_path)
-}
-fit <- readRDS(model_path)
+cat("Loading full_sp draws and stan_data via helpers...\n")
+draws <- load_draws("full_sp")
+stan_data <- load_stan_data("full_sp")
 
-stan_data_path <- file.path(APRIL_RUN, "_prepared_data", "stan_data_full_sp.rds")
-if (!file.exists(stan_data_path)) {
-  stop("Stan data file not found")
-}
-stan_data <- readRDS(stan_data_path)
-
-# Extract posterior draws
-cat("Extracting spatial parameters...\n")
-draws <- fit$draws()
-
-# Get number of knots
 n_knots <- stan_data$n_pp_knots
-cat(sprintf("  Number of knots: %d\n", n_knots))
+cat(sprintf("  Number of knots: %d  Vars in draws: %d\n",
+            n_knots, length(variables(draws))))
+
+# Convenience helper: scalar posterior mean
+.mean_of <- function(var) mean(as.numeric(
+  as_draws_matrix(subset_draws(draws, variable = var))))
 
 # ========================================
 # EXTRACT PARAMETERS
 # ========================================
 
 # INTERCEPTS
-ls_intercept_km <- mean(subset(draws, variable="ls_intercept_km"))
-sigma_intercept_spatial <- mean(subset(draws, variable="sigma_intercept_spatial"))
-
-z_intercept_knots <- numeric(n_knots)
-for (i in 1:n_knots) {
-  var_name <- sprintf("z_intercept_spatial[%d]", i)
-  z_intercept_knots[i] <- mean(subset(draws, variable=var_name))
-}
+ls_intercept_km         <- .mean_of("ls_intercept_km")
+sigma_intercept_spatial <- .mean_of("sigma_intercept_spatial")
+z_intercept_knots       <- colMeans(
+  as_draws_matrix(subset_draws(draws, variable = "z_intercept_spatial")))
+stopifnot(length(z_intercept_knots) == n_knots)
 
 cat(sprintf("\nIntercept parameters:\n"))
 cat(sprintf("  Length scale: %.1f km\n", ls_intercept_km))
 cat(sprintf("  Spatial SD: %.1f ‰\n", sigma_intercept_spatial))
 
 # SLOPES
-ls_slope_km <- mean(subset(draws, variable="ls_slope_km"))
-sigma_slope_spatial <- mean(subset(draws, variable="sigma_slope_spatial"))
-beta_oipc <- mean(subset(draws, variable="beta_oipc"))
-
-z_slope_knots <- numeric(n_knots)
-for (i in 1:n_knots) {
-  var_name <- sprintf("z_slope_spatial[%d]", i)
-  z_slope_knots[i] <- mean(subset(draws, variable=var_name))
-}
+ls_slope_km         <- .mean_of("ls_slope_km")
+sigma_slope_spatial <- .mean_of("sigma_slope_spatial")
+beta_oipc           <- .mean_of("beta_oipc")
+z_slope_knots       <- colMeans(
+  as_draws_matrix(subset_draws(draws, variable = "z_slope_spatial")))
+stopifnot(length(z_slope_knots) == n_knots)
 
 cat(sprintf("\nSlope parameters:\n"))
 cat(sprintf("  Length scale: %.1f km\n", ls_slope_km))
