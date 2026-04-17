@@ -3,215 +3,155 @@
 # 5a_model_validation.R
 #
 # Comprehensive model validation and comparison
-# Performs LOO-CV, WAIC, posterior predictive checks, and residual diagnostics
-# Compares performance across different model specifications
+# Performs LOO-CV comparisons, posterior predictive checks, and parameter
+# comparison across fitted models.
 #
-# Input: results/model_fits/*.rds (fitted models)
-# Output: results/model_validation/ (comparison tables, diagnostic plots)
+# Input: results/c2_run_20260414/<model>/{posterior_draws.rds, loo.rds,
+#        diagnostics.rds} (widened rds bundle, post Phase 5 W1/W2)
+# Output: results/loo_* rds, results/ppc_*.pdf, results/model_fit_metrics.csv
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
-library(cmdstanr)
 library(posterior)
 library(loo)
 library(bayesplot)
 
-# Set data directory
-DATA_DIR <- "prepared_data"
+source("scripts/posterior_helpers.R")
+
+# Null-coalesce helper
+`%||%` <- function(a, b) if (is.null(a)) b else a
 
 cat("MODEL VALIDATION AND COMPARISON (Standalone)\n")
 cat("===========================================\n\n")
 
-# Find all fitted models
-model_dirs <- list.dirs("model_output", recursive = FALSE, full.names = FALSE)
-model_dirs <- model_dirs[model_dirs != ""]
-model_dirs <- sort(model_dirs)
+# Find all fitted models by looking at the local April mirror.
+model_dirs <- list.dirs(APRIL_RUN, recursive = FALSE, full.names = FALSE)
+model_dirs <- sort(model_dirs[!grepl("^_", model_dirs)])
+model_dirs <- model_dirs[sapply(model_dirs, function(m)
+  file.exists(file.path(APRIL_RUN, m, "posterior_draws.rds")))]
 
-cat("Found", length(model_dirs), "completed models:\n")
-for (m in model_dirs) {
-  cat("  -", m, "\n")
-}
+cat("Found", length(model_dirs), "models with widened draws:\n")
+for (m in model_dirs) cat("  -", m, "\n")
 
-# Initialize storage
+# 1. LOAD LOO RESULTS ---------------------------------------------------------
 loo_results <- list()
-model_summaries <- list()
-
-cat("\nComputing LOO-CV for all models...\n")
-
-# Process each model
+cat("\nLoading loo.rds for each model...\n")
 for (model_name in model_dirs) {
-  cat("  Processing", model_name, "... ")
-  
-  fit_file <- file.path("model_output", model_name, "fit.rds")
-  loo_file <- file.path("model_output", model_name, "loo.rds")
-  stan_data_file <- file.path(DATA_DIR, paste0("stan_data_", model_name, ".rds"))
-  
-  if (!file.exists(fit_file) || !file.exists(stan_data_file)) {
-    cat("SKIPPED (missing files)\n")
-    next
-  }
-  
-  # Check for existing LOO
-  if (file.exists(loo_file)) {
-    loo_results[[model_name]] <- readRDS(loo_file)
-    cat("(loaded existing)\n")
-  } else {
-    # Load fit and compute LOO
-    fit <- readRDS(fit_file)
-    
-    tryCatch({
-      log_lik <- fit$draws("log_lik", format = "array")
-      loo_results[[model_name]] <- loo(log_lik, cores = 2)
-      
-      # Save for future use
-      saveRDS(loo_results[[model_name]], loo_file)
-      
-      # Check for problematic observations
-      pareto_k <- loo_results[[model_name]]$diagnostics$pareto_k
-      n_bad <- sum(pareto_k > 0.7)
-      if (n_bad > 0) {
-        cat("WARNING:", n_bad, "observations with k > 0.7\n")
-      } else {
-        cat("OK\n")
-      }
-      
-    }, error = function(e) {
-      cat("ERROR:", e$message, "\n")
-    })
+  lo <- tryCatch(load_loo(model_name),
+                 error = function(e) { cat("  ", model_name, ":", conditionMessage(e), "\n"); NULL })
+  if (!is.null(lo)) {
+    loo_results[[model_name]] <- lo
+    n_bad <- sum(lo$diagnostics$pareto_k > 0.7)
+    cat(sprintf("  %-25s  elpd=%7.1f  p_loo=%5.1f  n_k>0.7=%d\n",
+                model_name,
+                lo$estimates["elpd_loo", "Estimate"],
+                lo$estimates["p_loo", "Estimate"],
+                n_bad))
   }
 }
 
-# LOO comparison
+dir.create("results", recursive = TRUE, showWarnings = FALSE)
+
+# LOO comparison across models
 if (length(loo_results) > 1) {
-  cat("\n\nLOO-CV Model Comparison:\n")
+  cat("\n\nLOO-CV Model Comparison (best to worst):\n")
   loo_comp <- loo_compare(loo_results)
   print(loo_comp)
-  
-  # Save
   saveRDS(loo_results, "results/loo_results.rds")
-  saveRDS(loo_comp, "results/loo_comparison.rds")
+  saveRDS(loo_comp,    "results/loo_comparison.rds")
 }
 
-# Posterior predictive checks
+# 2. POSTERIOR PREDICTIVE CHECKS ---------------------------------------------
 cat("\n\nPerforming posterior predictive checks...\n")
-
 for (model_name in names(loo_results)) {
   cat("  PPC for", model_name, "\n")
-  
-  fit <- readRDS(file.path("model_output", model_name, "fit.rds"))
-  stan_data <- readRDS(file.path(DATA_DIR, paste0("stan_data_", model_name, ".rds")))
-  
-  # Get observed values
+  stan_data <- load_stan_data(model_name)
+  draws     <- load_draws(model_name)
   y_obs <- stan_data$d2H_wax
-  
-  if (is.null(y_obs)) {
-    cat("    Warning: Cannot find observed values for PPC\n")
-    next
-  }
-  
-  # Extract posterior predictions
-  y_rep <- fit$draws("d2H_rep", format = "matrix")
-  
-  if (!is.null(y_rep) && nrow(y_rep) > 0) {
-    # Create PPC plot
-    pdf(paste0("results/ppc_", model_name, ".pdf"), width = 10, height = 6)
-    
-    # Density overlay
-    print(ppc_dens_overlay(y_obs, y_rep[1:min(100, nrow(y_rep)), ]))
-    
-    # Scatter plot
-    print(ppc_scatter_avg(y_obs, y_rep))
-    
-    dev.off()
-  }
+  if (is.null(y_obs)) { cat("    No d2H_wax in stan_data\n"); next }
+
+  y_rep <- as_draws_matrix(subset_draws(draws, variable = "d2H_rep"))
+  if (nrow(y_rep) == 0) next
+
+  pdf(paste0("results/ppc_", model_name, ".pdf"), width = 10, height = 6)
+  print(ppc_dens_overlay(y_obs, y_rep[1:min(100, nrow(y_rep)), , drop = FALSE]))
+  print(ppc_scatter_avg(y_obs, y_rep))
+  dev.off()
 }
 
-# Compare key parameters
-cat("\n\nComparing key parameters across models...\n")
+# 3. KEY PARAMETER COMPARISON ------------------------------------------------
+cat("\n\nComparing key parameters across models (back-transformed to ‰)...\n")
 
 param_comparison <- map_df(names(loo_results), function(model_name) {
-  fit <- readRDS(file.path("model_output", model_name, "fit.rds"))
-  stan_data <- readRDS(file.path(DATA_DIR, paste0("stan_data_", model_name, ".rds")))
-  
-  # Get scaling parameters
-  d2h_mean <- stan_data$d2H_wax_mean_original
-  d2h_sd <- stan_data$d2H_wax_sd_original
-  
-  # Extract parameters
-  params <- fit$summary(variables = c("beta_0", "beta_oipc", "sigma"))
-  
+  draws     <- load_draws(model_name)
+  stan_data <- load_stan_data(model_name)
+
+  d2h_mean <- stan_data$d2H_wax_mean_original %||% stan_data$scaling_params$d2H_mean
+  d2h_sd   <- stan_data$d2H_wax_sd_original   %||% stan_data$scaling_params$d2H_sd
+
+  get_summary <- function(var) {
+    d <- as.numeric(as_draws_matrix(subset_draws(draws, variable = var)))
+    list(mean = mean(d), sd = sd(d))
+  }
+  b0    <- get_summary("beta_0")
+  boipc <- get_summary("beta_oipc")
+  sg    <- get_summary("sigma")
+
   data.frame(
-    model = model_name,
-    intercept = params[params$variable == "beta_0", "mean"] * d2h_sd + d2h_mean,
-    intercept_sd = params[params$variable == "beta_0", "sd"] * d2h_sd,
-    slope = params[params$variable == "beta_oipc", "mean"],
-    slope_sd = params[params$variable == "beta_oipc", "sd"],
-    sigma = params[params$variable == "sigma", "mean"] * d2h_sd,
-    sigma_sd = params[params$variable == "sigma", "sd"] * d2h_sd,
+    model        = model_name,
+    intercept    = b0$mean * d2h_sd + d2h_mean,
+    intercept_sd = b0$sd   * d2h_sd,
+    slope        = boipc$mean,
+    slope_sd     = boipc$sd,
+    sigma        = sg$mean * d2h_sd,
+    sigma_sd     = sg$sd   * d2h_sd,
     stringsAsFactors = FALSE
   )
 })
 
 write.csv(param_comparison, "results/parameter_comparison.csv", row.names = FALSE)
 
-# Model fit metrics
+# 4. MODEL FIT METRICS --------------------------------------------------------
 cat("\n\nComputing model fit metrics...\n")
 
 fit_metrics_list <- list()
-
 for (model_name in names(loo_results)) {
-  tryCatch({
-    fit <- readRDS(file.path("model_output", model_name, "fit.rds"))
-    stan_data <- readRDS(file.path(DATA_DIR, paste0("stan_data_", model_name, ".rds")))
-    
-    # Get observed values
+  res <- tryCatch({
+    draws     <- load_draws(model_name)
+    stan_data <- load_stan_data(model_name)
     y_obs <- stan_data$d2H_wax
-    
-    if (is.null(y_obs) || length(y_obs) == 0) {
-      cat("  Warning: Cannot find observed values for", model_name, "\n")
-      next
-    }
-    
-    # Get fitted values (mu)
-    mu_summary <- fit$summary(variables = "mu")
-    y_pred <- mu_summary$mean
-    
-    if (length(y_pred) != length(y_obs)) {
-      cat("  Warning: Prediction length mismatch for", model_name, "\n")
-      next
-    }
-    
-    # Calculate R-squared
+    if (is.null(y_obs) || length(y_obs) == 0) stop("no d2H_wax")
+
+    mu_mat <- as_draws_matrix(subset_draws(draws, variable = "mu"))
+    y_pred <- colMeans(mu_mat)
+    if (length(y_pred) != length(y_obs)) stop("length mismatch")
+
     ss_res <- sum((y_obs - y_pred)^2)
     ss_tot <- sum((y_obs - mean(y_obs))^2)
-    r_squared <- 1 - ss_res/ss_tot
-    
-    # Get LOO info
+    r_squared <- 1 - ss_res / ss_tot
+    rmse <- sqrt(mean((y_obs - y_pred)^2))
+
     loo_obj <- loo_results[[model_name]]
-    
-    fit_metrics_list[[model_name]] <- data.frame(
+    data.frame(
       model = model_name,
       r_squared = r_squared,
-      rmse = sqrt(mean((y_obs - y_pred)^2)),
+      rmse = rmse,
       looic = loo_obj$estimates["looic", "Estimate"],
-      elpd = loo_obj$estimates["elpd_loo", "Estimate"],
+      elpd  = loo_obj$estimates["elpd_loo", "Estimate"],
       p_loo = loo_obj$estimates["p_loo", "Estimate"],
       n_obs = length(y_obs),
       n_bad_k = sum(loo_obj$diagnostics$pareto_k > 0.7),
       stringsAsFactors = FALSE
     )
-    
   }, error = function(e) {
-    cat("  Error with", model_name, ":", e$message, "\n")
+    cat("  Error with", model_name, ":", e$message, "\n"); NULL
   })
+  if (!is.null(res)) fit_metrics_list[[model_name]] <- res
 }
 
-# Combine and save results
 if (length(fit_metrics_list) > 0) {
-  fit_metrics <- bind_rows(fit_metrics_list)
-  fit_metrics <- fit_metrics %>% arrange(looic)
+  fit_metrics <- bind_rows(fit_metrics_list) %>% arrange(looic)
   write.csv(fit_metrics, "results/model_fit_metrics.csv", row.names = FALSE)
-  
   cat("\nModel fit metrics saved for", nrow(fit_metrics), "models\n")
 } else {
   cat("\nERROR: No fit metrics could be calculated\n")
