@@ -11,8 +11,18 @@
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
-library(cmdstanr)
 library(posterior)
+source("scripts/posterior_helpers.R")
+
+# Minimal shim for the fit$summary() pattern used throughout this script.
+# Given a diagnostics summary tibble, pulls the matching variable rows.
+.summary_of <- function(summ, vars) {
+  if (length(vars) == 1) {
+    summ[summ$variable == vars, , drop = FALSE]
+  } else {
+    summ[summ$variable %in% vars, , drop = FALSE]
+  }
+}
 library(viridis)
 library(sf)
 library(rnaturalearth)
@@ -29,9 +39,9 @@ cat("===========================\n")
 output_dir <- "model_analysis/spatial_pattern_diagnostics"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Get all fitted models
-model_dirs <- list.dirs("model_output", recursive = FALSE)
-model_names <- basename(model_dirs)
+# Get all fitted models (April mirror, excluding _prepared_data)
+model_names <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+model_names <- model_names[!grepl("^_", model_names)]
 
 cat("Found", length(model_names), "fitted models\n\n")
 
@@ -57,21 +67,15 @@ for (model_name in model_names) {
       next
     }
     
-    # Load model and data
-    fit_file <- file.path("model_output", model_name, "fit.rds")
-    stan_data_file <- file.path("prepared_data", 
-                                paste0("stan_data_", model_name, ".rds"))
-    
-    if (!file.exists(fit_file) || !file.exists(stan_data_file)) {
-      cat("  Skipping - files not found\n")
-      next
-    }
-    
-    fit <- readRDS(fit_file)
-    stan_data <- readRDS(stan_data_file)
-    
-    # Get all variables
-    all_vars <- fit$metadata()$variables
+    bundle <- tryCatch(
+      list(draws = load_draws(model_name),
+           summ  = load_summaries(model_name),
+           stan_data = load_stan_data(model_name)),
+      error = function(e) { cat("  Skipping -", conditionMessage(e), "\n"); NULL })
+    if (is.null(bundle)) next
+    draws <- bundle$draws; summ <- bundle$summ; stan_data <- bundle$stan_data
+
+    all_vars <- summ$variable
     unique_vars <- unique(gsub("\\[.*\\]", "", all_vars))
     
     cat("  Model has", length(all_vars), "variables\n")
@@ -123,15 +127,15 @@ for (model_name in model_names) {
     
     if (has_spatial_slopes) {
       # Extract raw spatial slopes at knots
-      slope_summary <- fit$summary(variables = slope_vars)
+      slope_summary <- .summary_of(summ, slope_vars)
       z_slope_means <- slope_summary$mean[1:n_knots]
       
       # Get sigma_slope - CORRECTED NAME
-      sigma_slope_summary <- fit$summary(variables = "sigma_slope_spatial")
+      sigma_slope_summary <- .summary_of(summ, "sigma_slope_spatial")
       sigma_slope <- sigma_slope_summary$mean
       
       # Get beta_oipc (global slope)
-      beta_oipc_summary <- fit$summary(variables = "beta_oipc")
+      beta_oipc_summary <- .summary_of(summ, "beta_oipc")
       beta_oipc <- beta_oipc_summary$mean
       
       # Calculate actual slopes at knots
@@ -144,7 +148,7 @@ for (model_name in model_names) {
     } else {
       cat("  No spatial slopes found\n")
       # Use global slope for all knots
-      beta_oipc_summary <- fit$summary(variables = "beta_oipc")
+      beta_oipc_summary <- .summary_of(summ, "beta_oipc")
       beta_oipc <- beta_oipc_summary$mean
       knot_slopes <- rep(beta_oipc, n_knots)
     }
@@ -156,15 +160,15 @@ for (model_name in model_names) {
     
     if (has_spatial_intercepts) {
       # Extract raw spatial intercepts at knots
-      intercept_summary <- fit$summary(variables = alpha_vars)
+      intercept_summary <- .summary_of(summ, alpha_vars)
       z_intercept_means <- intercept_summary$mean[1:n_knots]
       
       # Get sigma_intercept - CORRECTED NAME
-      sigma_intercept_summary <- fit$summary(variables = "sigma_intercept_spatial")
+      sigma_intercept_summary <- .summary_of(summ, "sigma_intercept_spatial")
       sigma_intercept <- sigma_intercept_summary$mean
       
       # Get beta_0 (global intercept)
-      beta_0_summary <- fit$summary(variables = "beta_0")
+      beta_0_summary <- .summary_of(summ, "beta_0")
       beta_0 <- beta_0_summary$mean
       
       # Get scaling parameters from stan_data
@@ -187,7 +191,7 @@ for (model_name in model_names) {
       cat("  Skipping detailed intercept analysis\n")
       
       # Use global intercept
-      beta_0_summary <- fit$summary(variables = "beta_0")
+      beta_0_summary <- .summary_of(summ, "beta_0")
       beta_0 <- beta_0_summary$mean
       d2h_mean <- stan_data$scaling_params$d2H_mean
       d2h_sd <- stan_data$scaling_params$d2H_sd
@@ -200,7 +204,7 @@ for (model_name in model_names) {
     # Extract length scales
     ls_vars <- grep("ls_.*_km", unique_vars, value = TRUE)
     if (length(ls_vars) > 0) {
-      ls_summary <- fit$summary(variables = ls_vars[1])
+      ls_summary <- .summary_of(summ, ls_vars[1])
       ls_intercept <- ls_slope <- ls_summary$mean
     } else {
       ls_intercept <- ls_slope <- 0
@@ -338,16 +342,16 @@ for (model_name in model_names) {
 
     if (has_alpha || has_slope) {
       if (has_alpha) {
-        alpha_mean <- fit$summary(variables = "alpha_spatial")$mean
-        beta_0_mean <- fit$summary(variables = "beta_0")$mean
+        alpha_mean <- .summary_of(summ, "alpha_spatial")$mean
+        beta_0_mean <- .summary_of(summ, "beta_0")$mean
         gp_intercept_obs <- alpha_mean[1:N] - beta_0_mean
       } else {
         gp_intercept_obs <- rep(0, N)
       }
 
       if (has_slope) {
-        slope_mean <- fit$summary(variables = "beta_oipc_spatial")$mean
-        beta_oipc_mean <- fit$summary(variables = "beta_oipc")$mean
+        slope_mean <- .summary_of(summ, "beta_oipc_spatial")$mean
+        beta_oipc_mean <- .summary_of(summ, "beta_oipc")$mean
         gp_slope_obs <- slope_mean[1:N] - beta_oipc_mean
       } else {
         gp_slope_obs <- rep(0, N)
@@ -508,7 +512,7 @@ for (model_name in model_names) {
     # Calculate posterior SD of predictions if available
     if ("mu" %in% unique_vars) {
       # Extract mu draws and calculate SD
-      mu_draws <- fit$draws("mu", format = "matrix")
+      mu_draws <- as_draws_matrix(subset_draws(draws, variable = "mu"))
       mu_sd <- apply(mu_draws, 2, sd)
       
       # Create uncertainty map
