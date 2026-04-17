@@ -6,9 +6,10 @@
 #───────────────────────────────────────────────────────────────────────────────
 
 library(tidyverse)
-library(cmdstanr)
 library(posterior)
 library(patchwork)  # For combining plots with / operator
+
+source("scripts/posterior_helpers.R")
 
 cat("\nSPATIAL CONFOUNDING DIAGNOSTIC (Quick Check)\n")
 cat(strrep("=", 50), "\n\n")
@@ -19,8 +20,9 @@ data_dir <- "prepared_data"
 output_dir <- "model_analysis/spatial_confounding"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Get all spatial models (those ending in _sp)
-all_models <- list.dirs(model_dir, full.names = FALSE, recursive = FALSE)
+# Get all spatial models (those ending in _sp) from April mirror
+all_models <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+all_models <- all_models[!grepl("^_", all_models)]
 spatial_models <- all_models[grepl("_sp$", all_models)]
 
 cat("Found", length(spatial_models), "spatial models:\n")
@@ -40,20 +42,12 @@ for (model_name in spatial_models) {
   cat("ANALYZING:", model_name, "\n")
   cat(strrep("═", 70), "\n")
   
-  # Load model fit and data
-  fit_file <- file.path(model_dir, model_name, "fit.rds")
-  data_file <- file.path(data_dir, paste0("stan_data_", model_name, ".rds"))
-  
-  if (!file.exists(fit_file) | !file.exists(data_file)) {
-    cat("  ⚠ Files not found, skipping\n")
-    next
-  }
-  
-  fit <- readRDS(fit_file)
-  stan_data <- readRDS(data_file)
-  
-  # Get available variables - use stan_variables not variables!
-  all_vars <- fit$metadata()$stan_variables
+  bundle <- tryCatch(
+    list(draws = load_draws(model_name), stan_data = load_stan_data(model_name)),
+    error = function(e) { cat("  ⚠", conditionMessage(e), "\n"); NULL })
+  if (is.null(bundle)) next
+  draws <- bundle$draws; stan_data <- bundle$stan_data
+  all_vars <- variables(draws)
   
   # ─────────────────────────────────────────────────────────────────────────
   # Extract spatial effect using RESIDUALS approach
@@ -66,40 +60,34 @@ for (model_name in spatial_models) {
   # This captures what the GP is actually explaining
   
   # Get posterior predictions - using mu (fitted values without observation noise)
-  if ("mu" %in% all_vars) {
-    mu_draws <- fit$draws("mu", format = "matrix")
-    y_pred_full <- colMeans(mu_draws)  # Full model prediction (with spatial)
+  vars_prefix <- unique(gsub("\\[.*\\]$", "", all_vars))
+  if ("mu" %in% vars_prefix) {
+    mu_draws <- as_draws_matrix(subset_draws(draws, variable = "mu"))
+    y_pred_full <- colMeans(mu_draws)
     cat("  ✓ Found mu (fitted values)\n")
-  } else if ("d2H_rep" %in% all_vars) {
-    # Fallback to d2H_rep if mu not available
-    y_rep <- fit$draws("d2H_rep", format = "matrix")
-    y_pred_full <- colMeans(y_rep)  # Full model prediction (with spatial)
+  } else if ("d2H_rep" %in% vars_prefix) {
+    y_rep <- as_draws_matrix(subset_draws(draws, variable = "d2H_rep"))
+    y_pred_full <- colMeans(y_rep)
     cat("  ✓ Found d2H_rep (using as fallback)\n")
   } else {
-    cat("  ⚠ Neither mu nor d2H_rep found\n")
-    next
+    cat("  ⚠ Neither mu nor d2H_rep found\n"); next
   }
 
   # Get spatial effect directly from alpha_spatial
   spatial_effect <- NULL
   spatial_var_name <- "derived_from_residuals"
 
-  if ("alpha_spatial" %in% all_vars) {
-    # Direct extraction of spatial effects
-    alpha_spatial_draws <- fit$draws("alpha_spatial", format = "matrix")
-    # Take column means to get posterior mean at each site
+  if ("alpha_spatial" %in% vars_prefix) {
+    alpha_spatial_draws <- as_draws_matrix(subset_draws(draws, variable = "alpha_spatial"))
     spatial_effect <- colMeans(alpha_spatial_draws)
     spatial_var_name <- "alpha_spatial (direct GP contribution)"
     cat("  ✓ Extracted spatial effect from alpha_spatial\n")
     cat(sprintf("    Dimensions: %d draws x %d sites -> %d posterior means\n",
                 nrow(alpha_spatial_draws), ncol(alpha_spatial_draws), length(spatial_effect)))
-    
-  } else {
-    # Alternative: compute spatial effect from mu and non-spatial prediction
-    cat("  ⚠ No alpha_spatial found, trying alternative methods\n")
 
-    # Check if we can compute it from mu and a baseline model
-    if ("mu" %in% all_vars) {
+  } else {
+    cat("  ⚠ No alpha_spatial found, trying alternative methods\n")
+    if ("mu" %in% vars_prefix) {
       # The spatial effect could be approximated by comparing to a non-spatial baseline
       # For now, we'll use the residuals as a proxy
       y_obs <- stan_data$d2H_wax
