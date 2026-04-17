@@ -44,6 +44,16 @@ if (!file.exists(sediment_path)) {
 sediment_data <- readRDS(sediment_path)
 cat("  Loaded sediment data: ", nrow(sediment_data), " observations\n")
 
+# Load stan_data for the spatial model to access standardization constants.
+# We need d2H_sd to back-transform alpha_spatial (standardized) to ‰.
+stan_data_path <- file.path(APRIL_RUN, "_prepared_data", "stan_data_baseline_sp.rds")
+if (!file.exists(stan_data_path)) {
+  stop("stan_data not found at: ", stan_data_path)
+}
+stan_data_sp <- readRDS(stan_data_path)
+d2H_sd <- stan_data_sp$scaling_params$d2H_sd
+cat(sprintf("  d2H_sd (standardization factor): %.3f ‰\n", d2H_sd))
+
 # ========================================
 # EXTRACT MODEL PARAMETERS
 # ========================================
@@ -69,32 +79,45 @@ cat(sprintf("  Spatial model slope: %.3f (95%% CI: %.3f-%.3f)\n",
             slope_mean_sp, slope_ci_sp[1], slope_ci_sp[2]))
 
 # ========================================
-# EXTRACT SPATIAL EFFECTS (CRITICAL FIX)
+# EXTRACT SPATIAL INTERCEPT EFFECTS (back-transformed to ‰)
 # ========================================
+#
+# Stan defines `alpha_spatial[i]` on the *standardized* response scale
+# (4d_leaf_wax_spatial_model.stan:316, 331-335). The quantity already
+# includes the global intercept beta_0 added to a mean-zero GP residual.
+# The GP residual contribution at observation i, in standardized units, is:
+#
+#     alpha_spatial[i] - beta_0
+#
+# To plot or subtract this in original per-mille units, multiply by the
+# d2H_wax standardization factor saved in stan_data$scaling_params$d2H_sd
+# (same factor Stan uses at line 488 to build `sigma_intercept_spatial`
+# in original units). The prior version of this script multiplied
+# `alpha_spatial` (still including beta_0) by `sigma_intercept_spatial`
+# — a units error that mixed a standardized-scale quantity with an
+# original-scale SD. See manuscript/FIGURES.md for the correction note.
 
-cat("\nExtracting spatial intercept effects...\n")
+cat("\nExtracting spatial intercept effects (back-transformed to ‰)...\n")
 
-# Get number of observations
 n_obs <- nrow(sediment_data)
 
-# Get sigma_intercept_spatial for scaling
-sigma_intercept_spatial <- mean(subset(draws_sp, variable="sigma_intercept_spatial"))
-cat(sprintf("  Sigma intercept spatial: %.2f ‰\n", sigma_intercept_spatial))
+# Posterior means of alpha_spatial[i] and beta_0 on the standardized scale.
+beta_0_mean <- mean(subset(draws_sp, variable = "beta_0"))
+cat(sprintf("  beta_0 (standardized): %.4f\n", beta_0_mean))
 
-# Extract z-scores and scale them
-alpha_spatial_z <- numeric(n_obs)
+alpha_spatial_std <- numeric(n_obs)
 for (i in 1:n_obs) {
-  alpha_spatial_z[i] <- mean(subset(draws_sp, variable=sprintf("alpha_spatial[%d]", i)))
+  alpha_spatial_std[i] <- mean(subset(draws_sp, variable = sprintf("alpha_spatial[%d]", i)))
 }
 
-# CRITICAL: Scale the z-scores by sigma to get actual spatial effects in permille
-alpha_spatial <- alpha_spatial_z * sigma_intercept_spatial
+# GP residual contribution, in original ‰ units:
+#   (alpha_spatial - beta_0) × d2H_sd
+alpha_spatial <- (alpha_spatial_std - beta_0_mean) * d2H_sd
 
-# Scale check - these should now be in proper permille scale
-cat(sprintf("  Spatial intercept range: %.1f to %.1f ‰\n",
+cat(sprintf("  Spatial intercept contribution range: %.1f to %.1f ‰\n",
             min(alpha_spatial), max(alpha_spatial)))
-cat(sprintf("  Spatial intercept mean: %.3f ‰\n", mean(alpha_spatial)))
-cat(sprintf("  Spatial intercept SD: %.3f ‰\n", sd(alpha_spatial)))
+cat(sprintf("  Spatial intercept contribution mean:  %.3f ‰\n", mean(alpha_spatial)))
+cat(sprintf("  Spatial intercept contribution SD:    %.3f ‰\n", sd(alpha_spatial)))
 
 # ========================================
 # ASSIGN CONTINENTS
