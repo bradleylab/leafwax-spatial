@@ -21,7 +21,6 @@ is one command: `make tables` from the repo root (W7 Makefile).
 | ----------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------- | :----: | ------------------------------------------------------------------------------------------- |
 | `Table_S1_priors.tex`                           | **MANUAL** — documents prior specifications                            | none (from `config.yaml` + Stan) |   N*   | *Update only if prior specs change. Apr: `beta_precip` prior widened vs Dec config.        |
 | `Table_S2_regional_performance.tex`             | wrapper `\input{Table_S2_regional_performance_body.tex}`               | 14 × `posterior_draws.rds`       |   Y    | Body produced by `5b_overfitting_diagnostics.R` tail. Companion CSV lives in `manuscript/tables/`. |
-| `table_S3_compilations-UNRELIABLE.tex`          | **MANUAL** (marked UNRELIABLE)                                         | n/a                             |   —    | Name flags for deletion or rebuild against `data/HrenBrandon/`.                             |
 
 ## Markdown table drafts
 
@@ -85,5 +84,7 @@ Table 2's values (or provide both with the estimator named).
   `.tex` body by hand.
 - `Table_S1_priors.tex` remains hand-maintained; flag any prior edit
   against `config.yaml`.
-- `table_S3_compilations-UNRELIABLE.tex` still pending delete / rebuild
-  decision (cleanup pass).
+- `table_S3_compilations-UNRELIABLE.tex` deleted in the W7 cleanup pass
+  (marked UNRELIABLE in its filename, no pipeline producer, author has
+  not prioritized rebuilding it against `data/HrenBrandon/`). Resurrect
+  from git history if it becomes needed.
