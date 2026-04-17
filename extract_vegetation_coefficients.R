@@ -200,10 +200,12 @@ for (model_name in spatial_veg_models) {
   if (file.exists(fit_file)) {
     fit <- readRDS(fit_file)
 
-    # Extract GP variance components
-    if ("sigma_gp_intercept" %in% fit$metadata()$variables) {
-      sigma_int <- mean(as.vector(fit$draws("sigma_gp_intercept", format = "matrix")))
-      sigma_slope <- mean(as.vector(fit$draws("sigma_gp_slope", format = "matrix")))
+    # Extract GP variance components. Stan exports sigma_intercept_spatial /
+    # sigma_slope_spatial (4d_leaf_wax_spatial_model.stan:482-483); the legacy
+    # names sigma_gp_intercept / sigma_gp_slope never existed in this model.
+    if ("sigma_intercept_spatial" %in% fit$metadata()$variables) {
+      sigma_int <- mean(as.vector(fit$draws("sigma_intercept_spatial", format = "matrix")))
+      sigma_slope <- mean(as.vector(fit$draws("sigma_slope_spatial", format = "matrix")))
       sigma_obs <- mean(as.vector(fit$draws("sigma", format = "matrix")))
 
       # Calculate variance proportions
@@ -233,9 +235,9 @@ for (model_name in spatial_veg_models) {
 baseline_sp_file <- "model_output/baseline_sp/fit.rds"
 if (file.exists(baseline_sp_file)) {
   fit_baseline <- readRDS(baseline_sp_file)
-  if ("sigma_gp_intercept" %in% fit_baseline$metadata()$variables) {
-    sigma_int_base <- mean(as.vector(fit_baseline$draws("sigma_gp_intercept", format = "matrix")))
-    sigma_slope_base <- mean(as.vector(fit_baseline$draws("sigma_gp_slope", format = "matrix")))
+  if ("sigma_intercept_spatial" %in% fit_baseline$metadata()$variables) {
+    sigma_int_base <- mean(as.vector(fit_baseline$draws("sigma_intercept_spatial", format = "matrix")))
+    sigma_slope_base <- mean(as.vector(fit_baseline$draws("sigma_slope_spatial", format = "matrix")))
     sigma_obs_base <- mean(as.vector(fit_baseline$draws("sigma", format = "matrix")))
     total_var_base <- sigma_int_base^2 + sigma_slope_base^2 + sigma_obs_base^2
     gp_prop_base <- (sigma_int_base^2 + sigma_slope_base^2) / total_var_base

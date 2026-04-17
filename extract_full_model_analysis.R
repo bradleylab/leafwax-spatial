@@ -16,10 +16,17 @@ cat("====================================\n\n")
 cat("1. MODEL PERFORMANCE METRICS\n")
 cat(strrep("-", 60), "\n\n")
 
-# Models to compare
-full_models <- c("full", "full_sp", "full_interact", "full_interact_sp")
-comparison_models <- c("baseline", "baseline_sp", "baseline_env_sp", "baseline_veg_sp")
-all_models <- c(full_models, comparison_models)
+# Models to compare — full 14-model roster per manuscript/TABLES.md (Table 1).
+# Order matches config.yaml for stable table row ordering.
+all_models <- c(
+  "baseline", "baseline_sp",
+  "baseline_env", "baseline_env_sp",
+  "baseline_veg", "baseline_veg_sp",
+  "full", "full_sp",
+  "full_interact", "full_interact_sp",
+  "elevation_only_sp", "elevation_c4_sp",
+  "c4_only_sp", "elevation_c4_interact_sp"
+)
 
 performance_metrics <- list()
 
@@ -98,15 +105,18 @@ for (model_name in full_models) {
   fit <- readRDS(fit_file)
   config <- readRDS(config_file)
 
-  # Parameters to extract
+  # Parameters to extract. Names must match 4d_leaf_wax_spatial_model.stan exactly.
+  # Stan exports `beta_precip` (not `beta_precip_amount`) and `beta_oipc_x_*`
+  # (not `beta_oipc_*`). There are no `beta_precip_*` interaction terms in the
+  # model; those extraction requests were stale and have been removed.
   params_to_extract <- c("beta_oipc", "beta_c4", "beta_tree", "beta_shrub",
-                        "beta_grass", "beta_precip_amount")
+                        "beta_grass", "beta_precip")
 
-  # Add interaction terms if applicable
+  # Add OIPC interaction terms if applicable (no precip interactions in Stan)
   if (grepl("interact", model_name)) {
-    params_to_extract <- c(params_to_extract, "beta_oipc_c4", "beta_precip_c4",
-                          "beta_oipc_tree", "beta_oipc_shrub", "beta_oipc_grass",
-                          "beta_precip_tree", "beta_precip_shrub", "beta_precip_grass")
+    params_to_extract <- c(params_to_extract,
+                          "beta_oipc_x_c4",
+                          "beta_oipc_x_tree", "beta_oipc_x_shrub", "beta_oipc_x_grass")
   }
 
   for (param in params_to_extract) {
@@ -136,14 +146,15 @@ for (model_name in full_models) {
     }
   }
 
-  # Extract elevation effects (B-spline coefficients)
-  if ("beta_elevation" %in% fit$metadata()$variables) {
-    elev_draws <- fit$draws("beta_elevation", format = "matrix")
-    # Get mean effect across knots
-    elev_mean <- mean(elev_draws)
+  # Elevation enters via B-spline coefficients `beta_elev_bspline` (a vector),
+  # not a scalar `beta_elevation`. Summarize mean magnitude across coefficients.
+  if ("beta_elev_bspline" %in% fit$metadata()$variables) {
+    elev_draws <- fit$draws("beta_elev_bspline", format = "matrix")
+    # Mean absolute coefficient magnitude and across-coefficient SD
+    elev_mean_abs <- mean(abs(elev_draws))
     elev_sd <- sd(elev_draws)
 
-    cat(sprintf("  Elevation (avg)     : %7.3f (SD = %.3f)\n", elev_mean, elev_sd))
+    cat(sprintf("  Elevation (|β| avg) : %7.3f (SD = %.3f)\n", elev_mean_abs, elev_sd))
   }
 }
 
@@ -156,8 +167,18 @@ coefficients_df <- bind_rows(coefficient_list)
 cat("\n\n3. VARIANCE DECOMPOSITION ANALYSIS\n")
 cat(strrep("-", 60), "\n")
 
-spatial_models <- c("full_sp", "full_interact_sp", "baseline_sp",
-                   "baseline_env_sp", "baseline_veg_sp")
+# All 9 spatial models per manuscript/TABLES.md (Table 3 variance decomposition).
+spatial_models <- c(
+  "baseline_sp",
+  "baseline_env_sp",
+  "baseline_veg_sp",
+  "full_sp",
+  "full_interact_sp",
+  "elevation_only_sp",
+  "elevation_c4_sp",
+  "c4_only_sp",
+  "elevation_c4_interact_sp"
+)
 
 variance_components <- list()
 
