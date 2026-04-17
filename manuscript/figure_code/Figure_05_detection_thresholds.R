@@ -1,17 +1,38 @@
 library(leafwax)
 library(ggplot2)
+library(posterior)
+
+source("posterior_helpers.R")
 
 # Calculate detection thresholds for various scenarios
 confidence_levels <- seq(0.5, 0.99, by = 0.01)
 rho_values <- c(0, 0.3, 0.5, 0.7, 0.9)
 
-# For spatial model (sigma = 15.2‰)
-sigma_spatial <- 15.2
-sigma_analytical <- 3
-sigma_combined_spatial <- sqrt(sigma_spatial^2 + sigma_analytical^2)
+# Residual σ (original per-mille units) for the spatial full_sp model and
+# the non-spatial baseline model. Stan exports `sigma` on the standardized
+# scale (4d_leaf_wax_spatial_model.stan:225-ish) and `sigma_residual_original =
+# sigma * d2H_wax_sd_original` at line 479. We prefer the exported original-
+# scale quantity where available; otherwise back-transform.
+.sigma_original <- function(model) {
+  draws <- load_draws(model)
+  vars  <- variables(draws)
+  if ("sigma_residual_original" %in% vars) {
+    return(mean(as.numeric(
+      as_draws_matrix(subset_draws(draws, variable = "sigma_residual_original")))))
+  }
+  sigma_std <- mean(as.numeric(
+    as_draws_matrix(subset_draws(draws, variable = "sigma"))))
+  d2H_sd <- load_stan_data(model)$scaling_params$d2H_sd
+  sigma_std * d2H_sd
+}
 
-# For non-spatial model (sigma = 21‰)  
-sigma_nonspatial <- 21
+sigma_spatial    <- .sigma_original("full_sp")
+sigma_nonspatial <- .sigma_original("baseline")
+cat(sprintf("sigma (spatial, full_sp)    = %.2f ‰\n", sigma_spatial))
+cat(sprintf("sigma (non-spatial, base)   = %.2f ‰\n", sigma_nonspatial))
+
+sigma_analytical <- 3  # measurement repeatability, fixed
+sigma_combined_spatial    <- sqrt(sigma_spatial^2    + sigma_analytical^2)
 sigma_combined_nonspatial <- sqrt(sigma_nonspatial^2 + sigma_analytical^2)
 
 # Calculate thresholds
