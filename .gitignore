@@ -7,6 +7,7 @@
 !*.stan
 !*.py
 !*.sh
+!Makefile
 
 # Allowlist the scripts/ helpers subdir
 !scripts/
