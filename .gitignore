@@ -11,6 +11,10 @@
 # Allowlist the scripts/ helpers subdir
 !scripts/
 !scripts/**
+
+# Allowlist SLURM submission scripts
+!slurm/
+!slurm/*.sh
 !.gitignore
 !README.md
 !LICENSE
