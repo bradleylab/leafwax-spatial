@@ -4,10 +4,11 @@
 # Run from figures/ directory
 
 library(tidyverse)
-library(cmdstanr)
+library(posterior)
 
-# Source common functions
+# Source common functions + helper API (rds-only, no fit.rds reads).
 source("common_functions.R")
+source("posterior_helpers.R")
 load_project_config()
 
 cat("\nCREATING MULTIPLE VERSIONS OF FIGURE 1\n")
@@ -16,17 +17,15 @@ cat("======================================\n\n")
 # Create directories if needed
 create_directories()
 
-# Load data
-# April 2026 run paths (results/c2_run_20260414/ git-ignored)
-# common_functions.R sets PROJECT_ROOT = manuscript/, so go up one more to repo root
-APRIL_RUN <- file.path(PROJECT_ROOT, "..", "results", "c2_run_20260414")
-sediment <- readRDS(file.path(APRIL_RUN, "3_sediment_ready_for_modeling.rds"))
-stan_data <- readRDS(file.path(APRIL_RUN, "_prepared_data", "stan_data_baseline.rds"))
-scaling <- stan_data$scaling_params
+# Load data from the April run via helpers.
+sediment  <- load_sediment()
+stan_data <- load_stan_data("baseline")
+scaling   <- stan_data$scaling_params
 
-# Load baseline model to get fitted lambda
-fit_baseline <- readRDS(file.path(APRIL_RUN, "baseline", "fit.rds"))
-lambda_fitted <- fit_baseline$summary("effective_scale_km")$mean
+# Widened baseline draws (draws_array) — this replaces the old
+# readRDS(..../baseline/fit.rds) + cmdstanr chain-CSV access.
+draws_baseline <- load_draws("baseline")
+lambda_fitted  <- mean(subset_draws(draws_baseline, variable = "effective_scale_km"))
 cat("Fitted effective scale from baseline model:", round(lambda_fitted, 1), "km\n\n")
 
 # Initialize results storage
@@ -209,9 +208,9 @@ results_list$equal <- data.frame(
 
 # Version iv: Bayesian fit with fitted lambda
 cat("Creating version (iv): Bayesian baseline model\n")
-# Get predictions from Bayesian model
-y_rep <- fit_baseline$draws("d2H_rep", format = "matrix")
-mu <- fit_baseline$draws("mu", format = "matrix")
+# Get predictions from Bayesian model (draws_array -> draws_matrix -> colMeans)
+y_rep <- as_draws_matrix(subset_draws(draws_baseline, variable = "d2H_rep"))
+mu    <- as_draws_matrix(subset_draws(draws_baseline, variable = "mu"))
 y_pred <- colMeans(mu)
 
 # Back-transform
@@ -219,16 +218,18 @@ y_obs_orig <- stan_data$d2H_wax * scaling$d2H_sd + scaling$d2H_mean
 y_pred_orig <- y_pred * scaling$d2H_sd + scaling$d2H_mean
 
 # Get OIPC weighted by fitted scale
-# First get the fitted scale weights
-scale_weights_draws <- fit_baseline$draws("scale_weights", format = "matrix")
-scale_weights_fitted <- colMeans(scale_weights_draws)
+scale_weights_mat <- as_draws_matrix(
+  subset_draws(draws_baseline, variable = "scale_weights"))
+scale_weights_fitted <- colMeans(scale_weights_mat)
 oipc_fitted <- stan_data$oipc_values %*% scale_weights_fitted
 oipc_fitted_orig <- as.numeric(oipc_fitted * scaling$oipc_sd + scaling$oipc_mean)
 
-# Get Bayesian parameters
-bayes_params <- fit_baseline$summary(c("beta_0", "beta_oipc", "sigma"))
-bayes_intercept_std <- bayes_params$mean[1]
-bayes_slope <- bayes_params$mean[2]
+# Get Bayesian parameter posterior means
+bayes_params <- summarise_draws(
+  subset_draws(draws_baseline, variable = c("beta_0", "beta_oipc", "sigma")),
+  mean)
+bayes_intercept_std <- bayes_params$mean[bayes_params$variable == "beta_0"]
+bayes_slope         <- bayes_params$mean[bayes_params$variable == "beta_oipc"]
 
 # Convert intercept to OIPC=0
 oipc_mean_std <- -scaling$oipc_mean / scaling$oipc_sd
