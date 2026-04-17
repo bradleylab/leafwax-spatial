@@ -23,8 +23,9 @@ library(scales)
 # 1) Read sediment data
 #───────────────────────────────────────────────────────────────────────────────
 
-samples_csv <- "results/3_sediment_ready_for_modeling.csv"
-samples_df  <- read_csv(samples_csv, show_col_types = FALSE)
+# April 2026 run: sediment frame only exists as .rds (no CSV export)
+samples_rds <- "results/c2_run_20260414/3_sediment_ready_for_modeling.rds"
+samples_df  <- as_tibble(readRDS(samples_rds))
 
 # Convert to sf
 samples_sf <- st_as_sf(

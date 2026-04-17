@@ -18,8 +18,10 @@ cat("\n=== Figure 3: Spatial Confounding in δ²Hwax-δ²Hprecip Relationship ==
 
 cat("Loading models and data...\n")
 
+APRIL_RUN <- "../../results/c2_run_20260414"
+
 # Load baseline (non-spatial) model
-baseline_path <- "../../model_output/baseline/fit.rds"
+baseline_path <- file.path(APRIL_RUN, "baseline", "fit.rds")
 if (!file.exists(baseline_path)) {
   stop("Baseline model not found at: ", baseline_path)
 }
@@ -27,7 +29,7 @@ fit_baseline <- readRDS(baseline_path)
 cat("  Loaded baseline (non-spatial) model\n")
 
 # Load baseline_sp (spatial) model
-baseline_sp_path <- "../../model_output/baseline_sp/fit.rds"
+baseline_sp_path <- file.path(APRIL_RUN, "baseline_sp", "fit.rds")
 if (!file.exists(baseline_sp_path)) {
   stop("Baseline spatial model not found at: ", baseline_sp_path)
 }
@@ -35,7 +37,7 @@ fit_baseline_sp <- readRDS(baseline_sp_path)
 cat("  Loaded baseline_sp (spatial) model\n")
 
 # Load sediment data
-sediment_path <- "../../results/3_sediment_ready_for_modeling.rds"
+sediment_path <- file.path(APRIL_RUN, "3_sediment_ready_for_modeling.rds")
 if (!file.exists(sediment_path)) {
   stop("Sediment data not found at: ", sediment_path)
 }

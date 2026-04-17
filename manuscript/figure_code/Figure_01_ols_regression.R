@@ -17,12 +17,15 @@ cat("======================================\n\n")
 create_directories()
 
 # Load data
-sediment <- readRDS(file.path(PROJECT_ROOT, "results/3_sediment_ready_for_modeling.rds"))
-stan_data <- readRDS(file.path(PROJECT_ROOT, "prepared_data/stan_data_baseline.rds"))
+# April 2026 run paths (results/c2_run_20260414/ git-ignored)
+# common_functions.R sets PROJECT_ROOT = manuscript/, so go up one more to repo root
+APRIL_RUN <- file.path(PROJECT_ROOT, "..", "results", "c2_run_20260414")
+sediment <- readRDS(file.path(APRIL_RUN, "3_sediment_ready_for_modeling.rds"))
+stan_data <- readRDS(file.path(APRIL_RUN, "_prepared_data", "stan_data_baseline.rds"))
 scaling <- stan_data$scaling_params
 
 # Load baseline model to get fitted lambda
-fit_baseline <- readRDS(file.path(PROJECT_ROOT, "model_output/baseline/fit.rds"))
+fit_baseline <- readRDS(file.path(APRIL_RUN, "baseline", "fit.rds"))
 lambda_fitted <- fit_baseline$summary("effective_scale_km")$mean
 cat("Fitted effective scale from baseline model:", round(lambda_fitted, 1), "km\n\n")
 
