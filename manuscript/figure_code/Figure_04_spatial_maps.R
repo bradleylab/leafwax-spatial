@@ -17,16 +17,14 @@ cat("\n=== Figure 3: Spatial Patterns in Intercepts and Slopes ===\n\n")
 # ========================================
 
 cat("Loading full_sp model and stan_data...\n")
-model_path <- "../../model_output/full_sp/fit.rds"
+APRIL_RUN <- "../../results/c2_run_20260414"
+model_path <- file.path(APRIL_RUN, "full_sp", "fit.rds")
 if (!file.exists(model_path)) {
   stop("Model file not found at: ", model_path)
 }
 fit <- readRDS(model_path)
 
-stan_data_path <- "../../prepared_data_consolidated/stan_data_full_sp.rds"
-if (!file.exists(stan_data_path)) {
-  stan_data_path <- "../../prepared_data_0923/stan_data_full_sp.rds"
-}
+stan_data_path <- file.path(APRIL_RUN, "_prepared_data", "stan_data_full_sp.rds")
 if (!file.exists(stan_data_path)) {
   stop("Stan data file not found")
 }
