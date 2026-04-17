@@ -376,6 +376,23 @@ Global defaults: `stan_seed = 314`, `warmup_ratio = 0.5`,
 Diagnostics pulled via `fit$diagnostic_summary()` at
 `4c_fit_models.R:202`.
 
+### 6.1 Fit-step outputs
+
+Each call to `4c_fit_models.R` writes the following into
+`model_output/<model_name>/`:
+
+| File | Contents | Purpose |
+|---|---|---|
+| `fit.rds` | `CmdStanFit` stub with absolute paths to the per-chain CSVs written during sampling. | Kept for HPC-local reanalysis. Not read by downstream analysis. |
+| `posterior_draws.rds` | `draws_array` with the widened variable set: all scalars in `params_to_check`, plus `mu`, `d2H_rep`, `log_lik`, `scale_weights`, and (for GP models) `alpha_spatial`, `beta_oipc_spatial`, `z_intercept_spatial`, `z_slope_spatial`. | Per-draw posterior used by every figure and table producer. |
+| `diagnostics.rds` | `list` with `summary` (per-chain divergences / E-BFMI), `param_summary` (key scalars), `all_params_summary` (mean/sd/q5/q95/rhat/ess for every parameter). | Summary-level reads when per-draw is overkill. |
+| `loo.rds` | `psis_loo` from `loo::loo(log_lik_array)`. | Table 1 LOOIC / SE / p_eff / n_hi_k. |
+| `runtime_info.rds` | Elapsed sampling time. | Runtime reporting. |
+
+Downstream analysis reads only `posterior_draws.rds`, `diagnostics.rds`,
+and `loo.rds`. It never reads `fit.rds` or chain CSVs, which keeps every
+figure and table reproducible on any machine with R and the rds files.
+
 ---
 
 ## 7. Standardization
