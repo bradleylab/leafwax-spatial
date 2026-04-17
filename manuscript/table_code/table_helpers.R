@@ -40,6 +40,8 @@ emit_standalone_tex <- function(df,
                                 note = NULL,
                                 placement = "htbp",
                                 centering = TRUE,
+                                landscape = FALSE,
+                                size_macro = NULL,
                                 source_script = NULL) {
   if (is.null(source_script)) {
     source_script <- sub(".*/", "", sys.call(-1)[[1]])
@@ -64,10 +66,12 @@ emit_standalone_tex <- function(df,
 
   parts <- c(
     .AUTOGEN_BANNER(source_script),
+    if (landscape) "\\begin{landscape}" else NULL,
     sprintf("\\begin{table}[%s]", placement),
     if (centering) "\\centering" else NULL,
     sprintf("\\caption{%s}", caption),
     sprintf("\\label{%s}", label),
+    if (!is.null(size_macro)) sprintf("\\%s", size_macro) else NULL,
     as.character(tabular),
     if (!is.null(note)) {
       c("\\begin{minipage}{\\linewidth}",
@@ -76,7 +80,8 @@ emit_standalone_tex <- function(df,
         sprintf("\\textit{Note:} %s", note),
         "\\end{minipage}")
     } else NULL,
-    "\\end{table}"
+    "\\end{table}",
+    if (landscape) "\\end{landscape}" else NULL
   )
 
   writeLines(parts, path)

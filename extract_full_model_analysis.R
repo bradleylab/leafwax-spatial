@@ -1,8 +1,10 @@
 # Comprehensive analysis of full models for Section 3.4
 library(tidyverse)
 library(posterior)
+library(loo)
 
 source("scripts/posterior_helpers.R")
+source("manuscript/table_code/table_helpers.R")
 
 # Create output directory
 output_dir <- "model_analysis/tables"
@@ -35,6 +37,11 @@ all_models <- c(
 full_models <- c("full", "full_sp", "full_interact", "full_interact_sp")
 
 performance_metrics <- list()
+# Carry loo + summary bundles so Table 1 producer (section 8) can compute
+# ΔLOOIC via loo_compare() and pull max_rhat / min_ess_bulk from diagnostics
+# without re-reading the rds bundles.
+loo_cache         <- list()
+diagnostics_cache <- list()
 
 for (model_name in all_models) {
   # Helpers raise a clear error if any piece is missing; wrap in tryCatch
@@ -51,6 +58,11 @@ for (model_name in all_models) {
 
   loo_result <- bundle$loo
   stan_data  <- bundle$stan_data
+  loo_cache[[model_name]]         <- loo_result
+  diagnostics_cache[[model_name]] <- tryCatch(
+    readRDS(file.path(APRIL_RUN, model_name, "diagnostics.rds")),
+    error = function(e) NULL
+  )
 
   # Posterior predictive means: y_rep is a draws matrix with one column per
   # observation; colMeans gives the per-obs posterior mean.
@@ -418,6 +430,137 @@ write.csv(cor_matrix,
           file.path(output_dir, "predictor_correlations.csv"))
 
 cat("\n\nAll outputs saved to:", output_dir, "\n")
+
+#───────────────────────────────────────────────────────────────────────────────
+# 8. TABLE 1 PRODUCER — manuscript/tables/table1_model_performance.tex
+#───────────────────────────────────────────────────────────────────────────────
+#
+# Columns (matches the hand-authored .tex pre-W6): Model, Predictors, Max Rhat,
+# Min ESS, LOOIC, SE, ΔLOOIC, SE(Δ), p_eff, n_hi_k. Numbers come from:
+#   loo.rds           — LOOIC, SE, p_loo (= p_eff), pareto_k (n_hi_k = sum k>0.7)
+#   diagnostics.rds   — max_rhat, min_ess_bulk
+#   loo_compare()     — ΔLOOIC + SE(Δ), measured against the lowest LOOIC in
+#                       the set (elpd_diff / se_diff scaled by -2).
+#
+# `Predictors` is a hand-maintained latex string per model (the model names
+# themselves encode structure but the manuscript needs a reader-facing
+# predictor list). Model-name latex escaping lives in .latex_model_name().
+
+cat("\n\n8. TABLE 1 PRODUCER\n")
+cat(strrep("-", 60), "\n")
+
+predictors_latex <- list(
+  baseline                 = "$\\delta^2$H$_p$",
+  baseline_sp              = "$\\delta^2$H$_p$ + GP",
+  baseline_env             = "$\\delta^2$H$_p$, elev, precip",
+  baseline_env_sp          = "$\\delta^2$H$_p$, elev, precip + GP",
+  baseline_veg             = "$\\delta^2$H$_p$, PFT, C4",
+  baseline_veg_sp          = "$\\delta^2$H$_p$, PFT, C4 + GP",
+  full                     = "$\\delta^2$H$_p$, PFT, C4, elev, precip",
+  full_sp                  = "$\\delta^2$H$_p$, PFT, C4, elev, precip + GP",
+  full_interact            = "$\\delta^2$H$_p$, PFT $\\times$ $\\delta^2$H$_p$, C4 $\\times$ $\\delta^2$H$_p$, elev, precip",
+  full_interact_sp         = "$\\delta^2$H$_p$, PFT $\\times$ $\\delta^2$H$_p$, C4 $\\times$ $\\delta^2$H$_p$, elev, precip + GP",
+  elevation_only_sp        = "$\\delta^2$H$_p$, elev + GP",
+  elevation_c4_sp          = "$\\delta^2$H$_p$, elev, C4 + GP",
+  c4_only_sp               = "$\\delta^2$H$_p$, C4 + GP",
+  elevation_c4_interact_sp = "$\\delta^2$H$_p$, C4 $\\times$ $\\delta^2$H$_p$, elev + GP"
+)
+
+.latex_model_name <- function(name) {
+  # Mirror the hand-authored table style: trailing `_sp` renders as a math
+  # subscript so "baseline_sp" appears as baseline$_{\text{sp}}$; any other
+  # underscore is escaped as \_. fixed = TRUE keeps gsub from treating the
+  # replacement as a regex backreference.
+  if (grepl("_sp$", name)) {
+    base <- sub("_sp$", "", name)
+    base <- gsub("_", "\\_", base, fixed = TRUE)
+    paste0(base, "$\\_{\\text{sp}}$")
+  } else {
+    gsub("_", "\\_", name, fixed = TRUE)
+  }
+}
+
+# loo_compare on all cached psis_loo objects; rows come back sorted by
+# best → worst with elpd_diff = 0 for the best. Names preserved.
+if (length(loo_cache) >= 2) {
+  comp <- loo_compare(loo_cache)
+  # Rownames are "model1", "model2", ... in loo>=2.4; older loo uses the
+  # names directly. Defensive: if rownames look like "model<i>", remap.
+  if (all(grepl("^model[0-9]+$", rownames(comp)))) {
+    rownames(comp) <- names(loo_cache)[as.integer(sub("model", "", rownames(comp)))]
+  }
+  comp_df <- as.data.frame(comp)
+  comp_df$model <- rownames(comp)
+} else {
+  comp_df <- data.frame(model = names(loo_cache),
+                        elpd_diff = 0, se_diff = 0,
+                        stringsAsFactors = FALSE)
+}
+
+.hi_k_count <- function(loo_result) {
+  # psis_loo puts pareto_k under $diagnostics$pareto_k (loo >= 2.0).
+  pk <- loo_result$diagnostics$pareto_k
+  if (is.null(pk)) return(NA_integer_)
+  sum(pk > 0.7)
+}
+
+table1_rows <- lapply(all_models, function(m) {
+  if (!(m %in% names(loo_cache))) return(NULL)
+  lo   <- loo_cache[[m]]
+  diag <- diagnostics_cache[[m]]
+  delta_row <- comp_df[comp_df$model == m, , drop = FALSE]
+  # ΔLOOIC = -2 * elpd_diff; SE(Δ) = 2 * se_diff. Best model has 0/0.
+  delta_looic <- if (nrow(delta_row) == 1) -2 * delta_row$elpd_diff else NA_real_
+  se_delta    <- if (nrow(delta_row) == 1)  2 * delta_row$se_diff   else NA_real_
+
+  data.frame(
+    model       = .latex_model_name(m),
+    predictors  = if (!is.null(predictors_latex[[m]])) predictors_latex[[m]] else "—",
+    max_rhat    = if (!is.null(diag$max_rhat))     round(diag$max_rhat, 3)      else NA_real_,
+    min_ess     = if (!is.null(diag$min_ess_bulk)) round(diag$min_ess_bulk, 0)  else NA_real_,
+    looic       = round(lo$estimates["looic", "Estimate"], 1),
+    se_looic    = round(lo$estimates["looic", "SE"], 1),
+    delta_looic = round(delta_looic, 1),
+    se_delta    = round(se_delta, 1),
+    p_eff       = round(lo$estimates["p_loo", "Estimate"], 1),
+    n_hi_k      = .hi_k_count(lo),
+    stringsAsFactors = FALSE,
+    check.names = FALSE
+  )
+})
+table1_df <- bind_rows(table1_rows)
+
+# CSV sibling for the numeric audit (W6e). Human-readable row per model.
+write.csv(table1_df,
+          file.path(output_dir, "table1_model_performance.csv"),
+          row.names = FALSE)
+
+col_names <- c("Model", "Predictors", "Max $\\hat{R}$", "Min ESS",
+               "LOOIC", "SE", "$\\Delta$LOOIC", "SE",
+               "$p_{\\text{eff}}$", "$n_{\\text{hi-k}}$")
+
+note_text <- paste(
+  "$\\hat{R}$ = Gelman-Rubin convergence diagnostic; ESS = effective sample size;",
+  "LOOIC = leave-one-out information criterion; SE = standard error;",
+  "$\\Delta$LOOIC reported vs the lowest-LOOIC model;",
+  "$p_{\\text{eff}}$ = effective number of parameters;",
+  "$n_{\\text{hi-k}}$ = count of observations with Pareto-$k > 0.7$;",
+  "GP = Gaussian process; $\\delta^2$H$_p$ = $\\delta^2$H$_{\\text{precip}}$; elev = elevation."
+)
+
+emit_standalone_tex(
+  table1_df,
+  path      = "manuscript/tables/table1_model_performance.tex",
+  caption   = "Model performance metrics for all candidate models",
+  label     = "tab:model_performance",
+  col.names = col_names,
+  align     = c("l", "p{4.5cm}", rep("c", 8)),
+  note      = note_text,
+  landscape = TRUE,
+  size_macro = "footnotesize",
+  source_script = "extract_full_model_analysis.R"
+)
+cat("wrote manuscript/tables/table1_model_performance.tex\n")
 
 #───────────────────────────────────────────────────────────────────────────────
 # SUMMARY REPORT
