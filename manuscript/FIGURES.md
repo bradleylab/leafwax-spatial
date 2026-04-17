@@ -9,11 +9,11 @@ point at the April 2026 run (`results/c2_run_20260414/`).
 
 | Figure (.R)                                   | Input `fit.rds` (April run)                       | Other inputs                                                                                  | Output PDF (manuscript/figures/main_figs/)       | Regen? | Notes                                                                                           |
 | --------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------ | :----: | ----------------------------------------------------------------------------------------------- |
-| `Figure_01_ols_regression.R`                  | `baseline/fit.rds`                                | `3_sediment_ready_for_modeling.rds`, `_prepared_data/stan_data_baseline.rds`, `common_functions.R` |  Figure 1 (OLS regression panels)                |   Y    | Sources `common_functions.R` (ported to `figure_code/`, re-rooted for new layout).             |
-| `Figure_02_all_environmental_variables_noborders.R` | none                                       | `results/c2_run_20260414/3_sediment_ready_for_modeling.rds`, `input_data/GlobalPrecip/d2h_MA.tif`, other rasters | 8-panel environmental Figure 2   |   Y    | Was CSV-based; switched to rds read (no CSV was produced by April run).                         |
-| `figure_03_spatial_confounding_revised.R`     | `baseline/fit.rds`, `baseline_sp/fit.rds`         | `3_sediment_ready_for_modeling.rds`                                                            | Figure 3 (spatial confounding)                   |   Y    | There is also a stale `figure_03_spatial_confounding.png` (not an `.R`) — delete or rename.     |
-| `Figure_04_spatial_maps.R`                    | `full_sp/fit.rds`                                  | `_prepared_data/stan_data_full_sp.rds`                                                         | Figure 4 (spatial intercepts/slopes)             |   Y    | Fallback to `prepared_data_0923/` removed — no such dir in April run.                           |
-| `Figure_05_detection_thresholds.R`            | **none** (analytical)                              | hardcoded σ_spatial = 15.2 ‰, σ_nonspatial = 21 ‰                                              | Figure 5 (detection thresholds)                  |   Y*   | *σ values are from pre-April fits. Must be refreshed against April `full_sp` and `baseline` σ_obs before regenerating. |
+| `Figure_01_ols_regression.R`                  | `baseline/posterior_draws.rds`                     | `3_sediment_ready_for_modeling.rds`, `_prepared_data/stan_data_baseline.rds`, `common_functions.R` | Figure 1 (OLS regression panels)                 |   Y    | Sources `common_functions.R` (in `figure_code/`). Emitted under `main_figs/` via `make figures`. |
+| `Figure_02_all_environmental_variables_noborders.R` | none (analytical)                          | `3_sediment_ready_for_modeling.rds`, `input_data/GlobalPrecip/d2h_MA.tif`, other rasters        | 8-panel environmental Figure 2                    |   Y    | CSV-based inputs replaced with rds read.                                                        |
+| `figure_03_spatial_confounding_revised.R`     | `baseline/posterior_draws.rds`, `baseline_sp/posterior_draws.rds` | `3_sediment_ready_for_modeling.rds`                                        | Figure 3 (spatial confounding)                   |   Y    | Fixed units bug (Phase 5 W3 corrections log below).                                              |
+| `Figure_04_spatial_maps.R`                    | `full_sp/posterior_draws.rds`                      | `_prepared_data/stan_data_full_sp.rds`                                                         | Figure 4 (spatial intercepts/slopes)              |   Y    | Script now emits `Figure_04.{pdf,png}` (W7 cleanup fixed the legacy `Figure_03` name).          |
+| `Figure_05_detection_thresholds.R`            | `full_sp/posterior_draws.rds`, `baseline/posterior_draws.rds` | `_prepared_data/stan_data_full_sp.rds`, `_prepared_data/stan_data_baseline.rds` | Figure 5 (detection thresholds) |   Y    | σ no longer hardcoded — reads Stan `sigma_residual_original` (fallback to `sigma × d2H_sd`).    |
 
 ## Supplement figures
 
@@ -28,10 +28,15 @@ point at the April 2026 run (`results/c2_run_20260414/`).
 
 ## Per-artifact regeneration checklist
 
-All main figures read from `results/c2_run_20260414/`. Path updates already
-applied in this phase. Supplement producers require tracing through the
-archive. After tracing, lift supplement `.R` files into `figure_code/` or a
-dedicated subdir.
+All main figures read from `results/c2_run_20260414/` via the
+`posterior_helpers.R` API — no script reads `fit.rds` or chain CSVs.
+Regeneration is a single command: `make figures` from the repo root
+(W7 Makefile). Outputs land in `manuscript/figures/main_figs/`; scratch
+copies under `manuscript/figure_code/` are gitignored.
+
+Supplement figure producers still require tracing through the archive.
+After tracing, lift supplement `.R` files into `figure_code/` (or a
+dedicated subdir) and add Makefile rules.
 
 ## Corrections log
 
@@ -66,8 +71,9 @@ commit. Downstream regenerated figures should be compared against the prior
    `z_slope_spatial`, `scale_weights` (plus existing scalars); `loo.rds`
    emitted in the same step. Every figure and analysis script migrated to
    the `posterior_helpers.R` API. No script reads `fit.rds` anymore.
-2. `Figure_05_detection_thresholds.R` hardcodes σ from the Dec-2025 run. Must be
-   refreshed from April `full_sp`/`baseline` `sigma_obs` before regen.
+2. ~~`Figure_05_detection_thresholds.R` hardcodes σ from the Dec-2025 run.~~
+   **RESOLVED (Phase 5 W5).** Reads `sigma_residual_original` per draw
+   from `full_sp/posterior_draws.rds` and `baseline/posterior_draws.rds`.
 3. Supplement S1, S5 producers unidentified — need to trace or mark MANUAL.
 4. `common_functions.R` did not exist in `figure_code/`; copied + re-rooted
    for the manuscript/ layout this phase.
