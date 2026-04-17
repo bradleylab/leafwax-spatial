@@ -118,13 +118,17 @@ $(FIG1A): manuscript/figure_code/Figure_01_ols_regression.R \
 
 $(FIG1_OTHER): $(FIG1A)
 
-# Figure 2 — environmental variables. Reads sediment rds + raster inputs.
+# Figure 2 — environmental variables. Unlike the other figure scripts,
+# this one hardcodes repo-root-relative paths (results/… and
+# results/2f_TerraClimate_*.tif), so it must run from the repo root,
+# not from manuscript/figure_code/. Output lands in whichever cwd runs
+# the ggsave(); the recipe copies and cleans up.
 $(MAIN_FIGS)/Figure_02_all_environmental_variables.png: \
     manuscript/figure_code/Figure_02_all_environmental_variables_noborders.R \
     $(SEDIMENT_RDS)
-	cd manuscript/figure_code && $(RSCRIPT) Figure_02_all_environmental_variables_noborders.R
+	$(RSCRIPT) manuscript/figure_code/Figure_02_all_environmental_variables_noborders.R
 	mkdir -p $(MAIN_FIGS)
-	cp manuscript/figure_code/Figure_02_all_environmental_variables.png $(MAIN_FIGS)/
+	mv Figure_02_all_environmental_variables.png $(MAIN_FIGS)/
 
 # Figure 3 — spatial confounding. Reads baseline + baseline_sp draws.
 FIG3_PDF := $(MAIN_FIGS)/figure_03_spatial_confounding.pdf
