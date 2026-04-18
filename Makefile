@@ -188,8 +188,70 @@ FIGURES_ALL := $(FIG1_OUT) \
                $(FIG4_OUT) \
                $(MAIN_FIGS)/Figure_05_detection_thresholds.png
 
-.PHONY: figures
+# ─────────────────────────────────────────────────────────────────────────────
+# Supplement figures — S1 analytic, S2 correlations, S3 residuals, S4 OLS
+# spatial-scale, S5 elevation. Each rule runs its figure_code script and
+# copies the rendered .pdf + .png into manuscript/figures/supplement_figs/.
+# ─────────────────────────────────────────────────────────────────────────────
+
+SUP_FIGS := manuscript/figures/supplement_figs
+
+# S1: purely analytic (no rds inputs)
+$(SUP_FIGS)/Figure_S1_spatial_weighting.pdf: \
+    manuscript/figure_code/Figure_S1_spatial_weighting.R
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S1_spatial_weighting.R
+	mkdir -p $(SUP_FIGS)
+	cp manuscript/figure_code/Figure_S1_spatial_weighting.pdf $(SUP_FIGS)/
+	cp manuscript/figure_code/Figure_S1_spatial_weighting.png $(SUP_FIGS)/
+
+# S2: pairwise correlations (reads sediment rds via posterior_helpers)
+$(SUP_FIGS)/Figure_S2_pairwise_correlations.pdf: \
+    manuscript/figure_code/Figure_S2_pairwise_correlations.R \
+    $(POST_HELPERS_FIG) $(SEDIMENT_RDS)
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S2_pairwise_correlations.R
+	mkdir -p $(SUP_FIGS)
+	cp manuscript/figure_code/Figure_S2_pairwise_correlations.pdf $(SUP_FIGS)/
+	cp manuscript/figure_code/Figure_S2_pairwise_correlations.png $(SUP_FIGS)/
+
+# S3: global OLS residuals map (sediment rds only)
+$(SUP_FIGS)/Figure_S3_residuals.pdf: \
+    manuscript/figure_code/Figure_S3_residuals.R \
+    $(SEDIMENT_RDS)
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S3_residuals.R
+	mkdir -p $(SUP_FIGS)
+	cp manuscript/figure_code/Figure_S3_residuals.pdf $(SUP_FIGS)/
+	cp manuscript/figure_code/Figure_S3_residuals.png $(SUP_FIGS)/
+
+# S4: OLS R² vs integration scale (baseline stan_data + diagnostics)
+$(SUP_FIGS)/Figure_S4_ols_spatial_scale.pdf: \
+    manuscript/figure_code/Figure_S4_ols_spatial_scale.R \
+    $(POST_HELPERS_FIG) $(SEDIMENT_RDS) \
+    $(PREP)/stan_data_baseline.rds \
+    $(APRIL)/baseline/diagnostics.rds
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S4_ols_spatial_scale.R
+	mkdir -p $(SUP_FIGS)
+	cp manuscript/figure_code/Figure_S4_ols_spatial_scale.pdf $(SUP_FIGS)/
+	cp manuscript/figure_code/Figure_S4_ols_spatial_scale.png $(SUP_FIGS)/
+
+# S5: elevation effects across all `include_elevation == 1` models
+# (reads per-model stan_data + diagnostics.rds for beta_elev_bspline)
+$(SUP_FIGS)/Figure_S5_elevation.pdf: \
+    manuscript/figure_code/Figure_S5_elevation.R \
+    $(POST_HELPERS_FIG) $(SEDIMENT_RDS) $(ALL_DIAG) $(ALL_STAND)
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S5_elevation.R
+	mkdir -p $(SUP_FIGS)
+	cp manuscript/figure_code/Figure_S5_elevation.pdf $(SUP_FIGS)/
+	cp manuscript/figure_code/Figure_S5_elevation.png $(SUP_FIGS)/
+
+SUP_FIGURES_ALL := $(SUP_FIGS)/Figure_S1_spatial_weighting.pdf \
+                   $(SUP_FIGS)/Figure_S2_pairwise_correlations.pdf \
+                   $(SUP_FIGS)/Figure_S3_residuals.pdf \
+                   $(SUP_FIGS)/Figure_S4_ols_spatial_scale.pdf \
+                   $(SUP_FIGS)/Figure_S5_elevation.pdf
+
+.PHONY: figures supplement-figures
 figures: $(FIGURES_ALL)
+supplement-figures: $(SUP_FIGURES_ALL)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Numeric audit + full pipeline
@@ -200,7 +262,7 @@ audit: tables
 	$(RSCRIPT) manuscript/table_code/check_tables_numeric.R
 
 .PHONY: pipeline
-pipeline: tables figures audit
+pipeline: tables figures supplement-figures audit
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Cleanup
