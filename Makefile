@@ -91,9 +91,12 @@ tables: $(TABLES_ALL)
 # Figures
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Figure 1 — OLS regression panels. Writes to manuscript/figure_code/main/
-# (inside the script's cwd); recipe copies into main_figs/. Canonical
-# target is panel A; panels B/C/D depend on A.
+# Each figure script writes directly into manuscript/figures/main_figs/
+# (via ../figures/main_figs/ relative to its cwd, or the full path when
+# the script runs from the repo root). No intermediate scratch files —
+# the target path is the output path.
+
+# Figure 1 — OLS regression panels (canonical target = panel A).
 FIG1A := $(MAIN_FIGS)/Figure1a_point_fitting.pdf
 FIG1_OTHER := $(MAIN_FIGS)/Figure1b_10km_scale.pdf \
               $(MAIN_FIGS)/Figure1c_equal_weights.pdf \
@@ -105,30 +108,19 @@ $(FIG1A): manuscript/figure_code/Figure_01_ols_regression.R \
           $(APRIL)/baseline/posterior_draws.rds \
           $(PREP)/stan_data_baseline.rds \
           $(SEDIMENT_RDS)
-	cd manuscript/figure_code && $(RSCRIPT) Figure_01_ols_regression.R
 	mkdir -p $(MAIN_FIGS)
-	cp manuscript/figure_code/main/Figure1a_point_fitting.pdf $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1b_10km_scale.pdf $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1c_equal_weights.pdf $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1d_bayesian_fitted.pdf $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1a_point_fitting.png $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1b_10km_scale.png $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1c_equal_weights.png $(MAIN_FIGS)/
-	cp manuscript/figure_code/main/Figure1d_bayesian_fitted.png $(MAIN_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) Figure_01_ols_regression.R
 
 $(FIG1_OTHER): $(FIG1A)
 
-# Figure 2 — environmental variables. Unlike the other figure scripts,
-# this one hardcodes repo-root-relative paths (results/… and
-# results/2f_TerraClimate_*.tif), so it must run from the repo root,
-# not from manuscript/figure_code/. Output lands in whichever cwd runs
-# the ggsave(); the recipe copies and cleans up.
+# Figure 2 — environmental variables. Runs from repo root because the
+# script hardcodes repo-root-relative raster paths; emits directly into
+# manuscript/figures/main_figs/.
 $(MAIN_FIGS)/Figure_02_all_environmental_variables.png: \
     manuscript/figure_code/Figure_02_all_environmental_variables_noborders.R \
     $(SEDIMENT_RDS)
-	$(RSCRIPT) manuscript/figure_code/Figure_02_all_environmental_variables_noborders.R
 	mkdir -p $(MAIN_FIGS)
-	mv Figure_02_all_environmental_variables.png $(MAIN_FIGS)/
+	$(RSCRIPT) manuscript/figure_code/Figure_02_all_environmental_variables_noborders.R
 
 # Figure 3 — spatial confounding. Reads baseline + baseline_sp draws.
 FIG3_PDF := $(MAIN_FIGS)/figure_03_spatial_confounding.pdf
@@ -142,18 +134,12 @@ $(FIG3_PDF): manuscript/figure_code/figure_03_spatial_confounding_revised.R \
              $(PREP)/stan_data_baseline.rds \
              $(PREP)/stan_data_baseline_sp.rds \
              $(SEDIMENT_RDS)
-	cd manuscript/figure_code && $(RSCRIPT) figure_03_spatial_confounding_revised.R
 	mkdir -p $(MAIN_FIGS)
-	cp manuscript/figure_code/figure_03_spatial_confounding.pdf $(MAIN_FIGS)/
-	cp manuscript/figure_code/figure_03_spatial_confounding.png $(MAIN_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) figure_03_spatial_confounding_revised.R
 
 $(FIG3_PNG): $(FIG3_PDF)
 
-# Figure 4 — spatial maps. Currently emits Figure_03.{pdf,png} because of a
-# legacy title string in Figure_04_spatial_maps.R (cleanup-pass item); the
-# recipe renames on copy so the canonical file in main_figs/ carries the
-# correct index. If the script is fixed to emit Figure_04.* directly, drop
-# the renames here.
+# Figure 4 — spatial maps (full_sp intercept / slope GP fields).
 FIG4_PDF := $(MAIN_FIGS)/Figure_04.pdf
 FIG4_PNG := $(MAIN_FIGS)/Figure_04.png
 FIG4_OUT := $(FIG4_PDF) $(FIG4_PNG)
@@ -163,10 +149,8 @@ $(FIG4_PDF): manuscript/figure_code/Figure_04_spatial_maps.R \
              $(APRIL)/full_sp/posterior_draws.rds \
              $(PREP)/stan_data_full_sp.rds \
              $(SEDIMENT_RDS)
-	cd manuscript/figure_code && $(RSCRIPT) Figure_04_spatial_maps.R
 	mkdir -p $(MAIN_FIGS)
-	cp manuscript/figure_code/Figure_04.pdf $(MAIN_FIGS)/Figure_04.pdf
-	cp manuscript/figure_code/Figure_04.png $(MAIN_FIGS)/Figure_04.png
+	cd manuscript/figure_code && $(RSCRIPT) Figure_04_spatial_maps.R
 
 $(FIG4_PNG): $(FIG4_PDF)
 
@@ -178,9 +162,8 @@ $(MAIN_FIGS)/Figure_05_detection_thresholds.png: \
     $(APRIL)/baseline/posterior_draws.rds \
     $(PREP)/stan_data_full_sp.rds \
     $(PREP)/stan_data_baseline.rds
-	cd manuscript/figure_code && $(RSCRIPT) Figure_05_detection_thresholds.R
 	mkdir -p $(MAIN_FIGS)
-	cp manuscript/figure_code/detection_thresholds.png $(MAIN_FIGS)/Figure_05_detection_thresholds.png
+	cd manuscript/figure_code && $(RSCRIPT) Figure_05_detection_thresholds.R
 
 FIGURES_ALL := $(FIG1_OUT) \
                $(MAIN_FIGS)/Figure_02_all_environmental_variables.png \
@@ -189,9 +172,9 @@ FIGURES_ALL := $(FIG1_OUT) \
                $(MAIN_FIGS)/Figure_05_detection_thresholds.png
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Supplement figures — S1 analytic, S2 correlations, S3 residuals, S4 OLS
-# spatial-scale, S5 elevation. Each rule runs its figure_code script and
-# copies the rendered .pdf + .png into manuscript/figures/supplement_figs/.
+# Supplement figures — each script writes directly to
+# manuscript/figures/supplement_figs/ (via ../figures/supplement_figs/
+# relative to its cwd). No scratch files.
 # ─────────────────────────────────────────────────────────────────────────────
 
 SUP_FIGS := manuscript/figures/supplement_figs
@@ -199,28 +182,22 @@ SUP_FIGS := manuscript/figures/supplement_figs
 # S1: purely analytic (no rds inputs)
 $(SUP_FIGS)/Figure_S1_spatial_weighting.pdf: \
     manuscript/figure_code/Figure_S1_spatial_weighting.R
-	cd manuscript/figure_code && $(RSCRIPT) Figure_S1_spatial_weighting.R
 	mkdir -p $(SUP_FIGS)
-	cp manuscript/figure_code/Figure_S1_spatial_weighting.pdf $(SUP_FIGS)/
-	cp manuscript/figure_code/Figure_S1_spatial_weighting.png $(SUP_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S1_spatial_weighting.R
 
 # S2: pairwise correlations (reads sediment rds via posterior_helpers)
 $(SUP_FIGS)/Figure_S2_pairwise_correlations.pdf: \
     manuscript/figure_code/Figure_S2_pairwise_correlations.R \
     $(POST_HELPERS_FIG) $(SEDIMENT_RDS)
-	cd manuscript/figure_code && $(RSCRIPT) Figure_S2_pairwise_correlations.R
 	mkdir -p $(SUP_FIGS)
-	cp manuscript/figure_code/Figure_S2_pairwise_correlations.pdf $(SUP_FIGS)/
-	cp manuscript/figure_code/Figure_S2_pairwise_correlations.png $(SUP_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S2_pairwise_correlations.R
 
 # S3: global OLS residuals map (sediment rds only)
 $(SUP_FIGS)/Figure_S3_residuals.pdf: \
     manuscript/figure_code/Figure_S3_residuals.R \
     $(SEDIMENT_RDS)
-	cd manuscript/figure_code && $(RSCRIPT) Figure_S3_residuals.R
 	mkdir -p $(SUP_FIGS)
-	cp manuscript/figure_code/Figure_S3_residuals.pdf $(SUP_FIGS)/
-	cp manuscript/figure_code/Figure_S3_residuals.png $(SUP_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S3_residuals.R
 
 # S4: OLS R² vs integration scale (baseline stan_data + diagnostics)
 $(SUP_FIGS)/Figure_S4_ols_spatial_scale.pdf: \
@@ -228,20 +205,16 @@ $(SUP_FIGS)/Figure_S4_ols_spatial_scale.pdf: \
     $(POST_HELPERS_FIG) $(SEDIMENT_RDS) \
     $(PREP)/stan_data_baseline.rds \
     $(APRIL)/baseline/diagnostics.rds
-	cd manuscript/figure_code && $(RSCRIPT) Figure_S4_ols_spatial_scale.R
 	mkdir -p $(SUP_FIGS)
-	cp manuscript/figure_code/Figure_S4_ols_spatial_scale.pdf $(SUP_FIGS)/
-	cp manuscript/figure_code/Figure_S4_ols_spatial_scale.png $(SUP_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S4_ols_spatial_scale.R
 
 # S5: elevation effects across all `include_elevation == 1` models
 # (reads per-model stan_data + diagnostics.rds for beta_elev_bspline)
 $(SUP_FIGS)/Figure_S5_elevation.pdf: \
     manuscript/figure_code/Figure_S5_elevation.R \
     $(POST_HELPERS_FIG) $(SEDIMENT_RDS) $(ALL_DIAG) $(ALL_STAND)
-	cd manuscript/figure_code && $(RSCRIPT) Figure_S5_elevation.R
 	mkdir -p $(SUP_FIGS)
-	cp manuscript/figure_code/Figure_S5_elevation.pdf $(SUP_FIGS)/
-	cp manuscript/figure_code/Figure_S5_elevation.png $(SUP_FIGS)/
+	cd manuscript/figure_code && $(RSCRIPT) Figure_S5_elevation.R
 
 SUP_FIGURES_ALL := $(SUP_FIGS)/Figure_S1_spatial_weighting.pdf \
                    $(SUP_FIGS)/Figure_S2_pairwise_correlations.pdf \
@@ -270,15 +243,7 @@ pipeline: tables figures supplement-figures audit
 
 .PHONY: clean-figures clean-tables clean
 clean-figures:
-	rm -rf $(MAIN_FIGS)
-	rm -rf manuscript/figure_code/main
-	rm -f  manuscript/figure_code/Figure_03.pdf \
-	       manuscript/figure_code/Figure_03.png \
-	       manuscript/figure_code/figure_03_spatial_confounding.pdf \
-	       manuscript/figure_code/figure_03_spatial_confounding.png \
-	       manuscript/figure_code/Figure_02_all_environmental_variables.png \
-	       manuscript/figure_code/detection_thresholds.png \
-	       manuscript/figure_code/Rplots.pdf
+	rm -rf $(MAIN_FIGS) $(SUP_FIGS)
 
 clean-tables:
 	rm -f $(TABLES_ALL) \

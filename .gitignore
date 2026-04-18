@@ -52,16 +52,15 @@
 check_all_knots.R
 results/
 
-# Figure scratch outputs live inside manuscript/figure_code/ while scripts
-# run there (cwd-coupled). The Makefile copies the canonical outputs into
-# manuscript/figures/main_figs/; the scratch copies are ephemeral and
-# should not be committed.
-manuscript/figure_code/*.pdf
-manuscript/figure_code/*.png
-manuscript/figure_code/main/
+# Figure scripts now write directly into manuscript/figures/main_figs/
+# or manuscript/figures/supplement_figs/, so figure_code/ itself stays
+# code-only — except for these scratch files that a couple of scripts
+# write next to themselves (Figure 1's comparison CSV, R's fallback
+# Rplots.pdf).
 manuscript/figure_code/Rplots.pdf
+manuscript/figure_code/Figure1_comparison_table.csv
 
-# Likewise the model_analysis/ scratch tree where extract_*.R / 5b drop
-# their CSVs — gitignored results/ already covers the April run, but the
-# CSV siblings for the table audit land here on a regenerate pass.
+# model_analysis/ is the scratch tree where extract_*.R / 5b drop their
+# companion CSVs. Gitignored results/ already covers the April run data;
+# the CSVs land here on a regenerate pass.
 model_analysis/

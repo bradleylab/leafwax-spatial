@@ -447,13 +447,13 @@ print(combined_plot)
 # type="cairo" for PNG) so Unicode glyphs — ‰, δ, subscripts — render on
 # Linux hosts where the default bitmap font lacks them.
 ggsave(
-  "Figure_02_all_environmental_variables.pdf",
+  "manuscript/figures/main_figs/Figure_02_all_environmental_variables.pdf",
   plot = combined_plot,
   width = 12, height = 16,
   device = cairo_pdf
 )
 ggsave(
-  "Figure_02_all_environmental_variables.png",
+  "manuscript/figures/main_figs/Figure_02_all_environmental_variables.png",
   plot = combined_plot,
   width = 12, height = 16,
   dpi = 300,

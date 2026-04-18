@@ -306,12 +306,12 @@ final_plot <- plot_grid(
 cat("\nSaving figure...\n")
 
 # Save as PDF (publication quality)
-output_pdf <- "figure_03_spatial_confounding.pdf"
+output_pdf <- "../figures/main_figs/figure_03_spatial_confounding.pdf"
 ggsave(output_pdf, final_plot, width = 12, height = 6, dpi = 300)
 cat(sprintf("  Saved PDF: %s\n", output_pdf))
 
 # Save as PNG (for quick viewing)
-output_png <- "figure_03_spatial_confounding.png"
+output_png <- "../figures/main_figs/figure_03_spatial_confounding.png"
 ggsave(output_png, final_plot, width = 12, height = 6, dpi = 300)
 cat(sprintf("  Saved PNG: %s\n", output_png))
 

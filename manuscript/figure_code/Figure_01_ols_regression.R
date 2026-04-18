@@ -149,8 +149,8 @@ x_point <- sediment$oipc_d2h20[valid_idx]
 y_point <- sediment$d2H_wax[valid_idx]
 
 result_i <- create_ols_plot(x_point, y_point, "OLS regression (point values)")
-ggsave("main/Figure1a_point_fitting.png", result_i$plot, width = 10, height = 8, dpi = 300, bg = "white")
-ggsave("main/Figure1a_point_fitting.pdf", result_i$plot, width = 10, height = 8, bg = "white")
+ggsave("../figures/main_figs/Figure1a_point_fitting.png", result_i$plot, width = 10, height = 8, dpi = 300, bg = "white")
+ggsave("../figures/main_figs/Figure1a_point_fitting.pdf", result_i$plot, width = 10, height = 8, bg = "white")
 
 results_list$point <- data.frame(
   method = "Point values only",
@@ -173,8 +173,8 @@ oipc_10km_orig <- oipc_10km * scaling$oipc_sd + scaling$oipc_mean
 y_all <- sediment$d2H_wax
 
 result_ii <- create_ols_plot(oipc_10km_orig, y_all, "OLS regression (10 km integration)")
-ggsave("main/Figure1b_10km_scale.png", result_ii$plot, width = 10, height = 8, dpi = 300, bg = "white")
-ggsave("main/Figure1b_10km_scale.pdf", result_ii$plot, width = 10, height = 8, bg = "white")
+ggsave("../figures/main_figs/Figure1b_10km_scale.png", result_ii$plot, width = 10, height = 8, dpi = 300, bg = "white")
+ggsave("../figures/main_figs/Figure1b_10km_scale.pdf", result_ii$plot, width = 10, height = 8, bg = "white")
 
 results_list$km10 <- data.frame(
   method = "10 km integration",
@@ -193,8 +193,8 @@ oipc_equal <- stan_data$oipc_values %*% equal_weights
 oipc_equal_orig <- as.numeric(oipc_equal * scaling$oipc_sd + scaling$oipc_mean)
 
 result_iii <- create_ols_plot(oipc_equal_orig, y_all, "OLS regression (equal weights)")
-ggsave("main/Figure1c_equal_weights.png", result_iii$plot, width = 10, height = 8, dpi = 300, bg = "white")
-ggsave("main/Figure1c_equal_weights.pdf", result_iii$plot, width = 10, height = 8, bg = "white")
+ggsave("../figures/main_figs/Figure1c_equal_weights.png", result_iii$plot, width = 10, height = 8, dpi = 300, bg = "white")
+ggsave("../figures/main_figs/Figure1c_equal_weights.pdf", result_iii$plot, width = 10, height = 8, bg = "white")
 
 results_list$equal <- data.frame(
   method = "Equal weights (1-400 km)",
@@ -306,8 +306,8 @@ p_bayes <- ggplot(plot_df, aes(x, y)) +
   scale_x_continuous(expand = expansion(mult = 0.02)) +
   scale_y_continuous(expand = expansion(mult = 0.02))
 
-ggsave("main/Figure1d_bayesian_fitted.png", p_bayes, width = 10, height = 8, dpi = 300, bg = "white")
-ggsave("main/Figure1d_bayesian_fitted.pdf", p_bayes, width = 10, height = 8, bg = "white")
+ggsave("../figures/main_figs/Figure1d_bayesian_fitted.png", p_bayes, width = 10, height = 8, dpi = 300, bg = "white")
+ggsave("../figures/main_figs/Figure1d_bayesian_fitted.pdf", p_bayes, width = 10, height = 8, bg = "white")
 
 results_list$bayesian <- data.frame(
   method = "Bayesian (fitted weights)",
@@ -321,13 +321,14 @@ results_list$bayesian <- data.frame(
 
 # Combine results and save
 results_df <- do.call(rbind, results_list)
-write.csv(results_df, "main/Figure1_comparison_table.csv", row.names = FALSE)
+# Scratch CSV — lands next to the script, not in the tracked figures dir.
+write.csv(results_df, "Figure1_comparison_table.csv", row.names = FALSE)
 
 # Print results
 cat("\n")
 print(results_df)
 
-cat("\nFigures saved to main/:\n")
+cat("\nFigures saved to ../figures/main_figs/:\n")
 cat("  - Figure1a_point_fitting.png/pdf\n")
 cat("  - Figure1b_10km_scale.png/pdf\n")
 cat("  - Figure1c_equal_weights.png/pdf\n")

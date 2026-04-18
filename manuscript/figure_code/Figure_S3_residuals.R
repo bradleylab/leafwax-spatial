@@ -52,10 +52,10 @@ p_residual_standalone <- ggplot() +
 
 # Save as the manuscript's Figure S3. Write a PDF + PNG; the Makefile
 # copies them into manuscript/figures/supplement_figs/.
-ggsave("Figure_S3_residuals.png",
+ggsave("../figures/supplement_figs/Figure_S3_residuals.png",
        p_residual_standalone,
        width = 12, height = 7, dpi = 300)
-ggsave("Figure_S3_residuals.pdf",
+ggsave("../figures/supplement_figs/Figure_S3_residuals.pdf",
        p_residual_standalone,
        width = 12, height = 7, device = cairo_pdf)
 
