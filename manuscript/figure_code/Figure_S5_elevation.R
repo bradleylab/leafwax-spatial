@@ -3,19 +3,35 @@
 # Figure_S5_elevation.R — elevation effect on leaf wax d2H across the
 # `include_elevation == 1` models, for the April 2026 run.
 #
-# The pre-April Stan model used a piecewise-linear elevation spline with
-# `beta_elev_spline[k]` coefficients at a fixed set of knots. The April
-# Stan model uses a B-spline: `beta_elev_bspline[1:13]` multiplied by a
-# pre-computed `elevation_bspline_matrix` (N_obs × N_scales × 13). This
-# script builds Figure S5 directly from that representation:
+# Stan elevation model (4d_leaf_wax_spatial_model.stan): a cubic B-spline
+# with n_basis_knots (=9) interior knots + spline_degree (=3) + 1 = 13
+# basis functions. stan_data caches the pre-evaluated basis as
+# `elevation_bspline_matrix` ((N × n_scales) × 13). The sampled
+# coefficients `beta_elev_bspline[1:13]` enter mu[n] as
+#     elev_effect_n = sum_s scale_weights[s]
+#                     × dot(elevation_bspline_matrix[row(s,n), :],
+#                           beta_elev_bspline)
+# (see Stan lines 345–356). This script evaluates exactly that basis ×
+# coefficient product on a prediction grid.
 #
-#   per-observation effect = elevation_bspline_matrix %*% beta_elev_bspline
+# Historical note: an older version of S5 (archive/…/Figure_s5_elevation.R
+# in the pre-GCA tree) used `apply_piecewise_linear(x, knots, coeffs)` to
+# draw straight lines between the coefficient values. That is the control-
+# polygon of the spline, not the spline itself — a cubic B-spline does not
+# pass through its control points. The present script replaces that
+# evaluator with the basis × coefficient dot product Stan uses, so the
+# curve is the same smooth function the likelihood saw. The Stan model
+# itself has used a B-spline throughout.
 #
-# Coefficient uncertainty propagates through the linear combination at each
-# observation, so q05/q95 at each elevation are produced by sampling from
-# the per-coefficient marginals in the diagnostics summary (assumed
-# approximately Gaussian — consistent with the smooth posteriors in the
-# April run; a tight approximation given we only need bands for plotting).
+# Per-elevation uncertainty: the widened posterior_draws.rds does not
+# store `beta_elev_bspline` per draw, only per-coefficient summaries in
+# diagnostics.rds (mean / q5 / q95). The 90% CI at each grid elevation
+# is computed by summing the design-weighted half-widths of each
+# coefficient's symmetric 90% interval (treating coefficients as
+# approximately independent). This is slightly conservative vs. the
+# true joint posterior but adequate for a summary ribbon; if a future
+# refit widens `draws_to_save` to include `beta_elev_bspline`, the
+# ribbon can be tightened to per-draw basis × coefficient evaluations.
 #
 # Inputs per model m:
 #   - stan_data_<m>.rds    : elevation_bspline_matrix, scaling_params,
