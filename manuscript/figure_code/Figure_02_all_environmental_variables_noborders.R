@@ -35,8 +35,21 @@ samples_sf <- st_as_sf(
   remove = FALSE
 )
 
-# Load world boundaries
-world_outline <- ne_countries(scale = "medium", returnclass = "sf")
+# Load continent outlines. GCA style rules disallow country boundaries on
+# global maps, so dissolve ne_countries() by `continent` to get one
+# multipolygon per landmass. Antarctica dropped — none of the sites land
+# there and it wastes map real estate.
+world_outline <- ne_countries(scale = "medium", returnclass = "sf") |>
+  dplyr::filter(continent != "Antarctica") |>
+  dplyr::group_by(continent) |>
+  dplyr::summarise(geometry = sf::st_union(geometry), .groups = "drop") |>
+  sf::st_make_valid()
+
+# Style defaults for continent outlines on raster panels. Thin, neutral
+# lines that don't compete with viridis fills.
+continents_layer <- ggplot2::geom_sf(
+  data = world_outline, fill = NA, color = "gray40", linewidth = 0.25
+)
 
 #───────────────────────────────────────────────────────────────────────────────
 # 2) Panel A: OIPC δ2H precipitation
@@ -67,9 +80,10 @@ panel_a <- ggplot() +
       direction      = "horizontal"
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
-  labs(title = "A: δ²H precipitation", x = NULL, y = "Latitude") +
+  labs(title = bquote(bold("A:")~delta^{2}*"H precipitation"), x = NULL, y = "Latitude") +
   theme_minimal(base_size = 8) +
   theme(
     panel.grid.major = element_line(color = "white", linewidth = 0.2),
@@ -114,6 +128,7 @@ panel_b <- ggplot() +
       ticks.linewidth = 0.5
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
   labs(title = "B: Annual precipitation", x = NULL, y = NULL) +
@@ -154,6 +169,7 @@ panel_c <- ggplot() +
       direction      = "horizontal"
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
   labs(title = "C: Maximum temperature", x = NULL, y = "Latitude") +
@@ -193,6 +209,7 @@ panel_d <- ggplot() +
       direction      = "horizontal"
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
   labs(title = "D: Vapor pressure deficit", x = NULL, y = NULL) +
@@ -241,6 +258,7 @@ panel_e <- ggplot() +
       direction      = "horizontal"
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
   labs(title = "E: Soil moisture", x = NULL, y = "Latitude") +
@@ -285,6 +303,7 @@ panel_f <- ggplot() +
       direction      = "horizontal"
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
   labs(title = "F: Elevation", x = NULL, y = NULL) +
@@ -317,7 +336,7 @@ panel_g <- ggplot() +
     option = "viridis",
     direction = 1,
     limits = c(0, 1),
-    name = "C₄ fraction",
+    name = expression(C[4]~"fraction"),
     guide = guide_colorbar(
       title.position = "top",
       title.hjust    = 0.5,
@@ -326,9 +345,10 @@ panel_g <- ggplot() +
       direction      = "horizontal"
     )
   ) +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
-  labs(title = "G: C₄ vegetation fraction", x = "Longitude", y = "Latitude") +
+  labs(title = bquote(bold("G:")~C[4]~"vegetation fraction"), x = "Longitude", y = "Latitude") +
   theme_minimal(base_size = 8) +
   theme(
     panel.grid.major = element_line(color = "white", linewidth = 0.2),
@@ -376,6 +396,7 @@ panel_h <- ggplot() +
     height = res(pft_rast)[2]
   ) +
   scale_fill_identity() +
+  continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
   labs(title = "H: Plant Functional Type", x = "Longitude", y = NULL) +
@@ -422,12 +443,21 @@ print(combined_plot)
 # 11) Save the combined figure
 #───────────────────────────────────────────────────────────────────────────────
 
+# Save both PDF and PNG. Use the Cairo device family (cairo_pdf for PDF,
+# type="cairo" for PNG) so Unicode glyphs — ‰, δ, subscripts — render on
+# Linux hosts where the default bitmap font lacks them.
 ggsave(
-  "Figure_02_all_environmental_variables.png", 
+  "Figure_02_all_environmental_variables.pdf",
   plot = combined_plot,
-  width = 12, 
-  height = 16, 
-  dpi = 300
+  width = 12, height = 16,
+  device = cairo_pdf
+)
+ggsave(
+  "Figure_02_all_environmental_variables.png",
+  plot = combined_plot,
+  width = 12, height = 16,
+  dpi = 300,
+  type = "cairo"
 )
 
 # Print summary statistics
