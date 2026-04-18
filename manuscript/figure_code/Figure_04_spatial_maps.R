@@ -412,12 +412,12 @@ final_plot <- plot_grid(
 
 # Save as PDF. Output filename matches the manuscript's Figure 4 label
 # (legacy script title said Figure 3; corrected in W7 cleanup pass).
-output_pdf <- "Figure_04.pdf"
+output_pdf <- "../figures/main_figs/Figure_04.pdf"
 cat(sprintf("\nSaving figure to %s...\n", output_pdf))
 ggsave(output_pdf, final_plot, width = 10, height = 12, dpi = 300)
 
 # Save as PNG for quick viewing
-output_png <- "Figure_04.png"
+output_png <- "../figures/main_figs/Figure_04.png"
 ggsave(output_png, final_plot, width = 10, height = 12, dpi = 150)
 cat(sprintf("Also saved as %s\n", output_png))
 

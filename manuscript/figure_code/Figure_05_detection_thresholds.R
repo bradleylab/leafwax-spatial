@@ -81,6 +81,7 @@ p <- ggplot(results, aes(x = confidence, y = threshold,
                                 override.aes = list(size = 1.5)))
 
 # Save as PNG
-ggsave("detection_thresholds.png", plot = p, width = 8, height = 6, dpi = 300)
+ggsave("../figures/main_figs/Figure_05_detection_thresholds.png",
+       plot = p, width = 8, height = 6, dpi = 300)
 
 print(p)

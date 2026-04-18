@@ -167,13 +167,13 @@ figure_3 <- plot_grid(
 # manuscript (`Figure_S1_spatial_weighting`). The Makefile copies this
 # PNG + PDF into manuscript/figures/supplement_figs/. Purely analytic —
 # no rds dependencies.
-ggsave("Figure_S1_spatial_weighting.png",
+ggsave("../figures/supplement_figs/Figure_S1_spatial_weighting.png",
        figure_3,
        width = 10,
        height = 9,
        dpi = 300,
        bg = "white")
-ggsave("Figure_S1_spatial_weighting.pdf",
+ggsave("../figures/supplement_figs/Figure_S1_spatial_weighting.pdf",
        figure_3,
        width = 10,
        height = 9,

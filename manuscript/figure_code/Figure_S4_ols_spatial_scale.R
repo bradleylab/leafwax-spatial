@@ -156,96 +156,15 @@ p_r2 <- ggplot(results, aes(x = scale_km, y = r_squared)) +
     panel.grid.minor = element_blank()
   )
 
-# Create subplot: Slope vs scale
-p_slope <- ggplot(results, aes(x = scale_km, y = slope)) +
-  geom_line(color = "darkblue", linewidth = 1) +
-  geom_point(size = 2, color = "darkblue") +
-  geom_hline(yintercept = 1, linetype = "dotted", color = "gray50") +
-  
-  labs(
-    title = "Regression Slope vs Integration Scale",
-    x = "Spatial Integration Scale (km)",
-    y = "Slope"
-  ) +
-  
-  scale_x_continuous(breaks = seq(0, 100, by = 10)) +
-  theme_minimal(base_size = 12)
-
-# Create subplot: RMSE vs scale
-p_rmse <- ggplot(results, aes(x = scale_km, y = rmse)) +
-  geom_line(color = "darkgreen", linewidth = 1) +
-  geom_point(size = 2, color = "darkgreen") +
-  
-  # Highlight minimum
-  geom_point(data = optimal_rmse,
-             aes(x = scale_km, y = rmse),
-             color = "darkgreen", size = 4, shape = 16) +
-  
-  labs(
-    title = "RMSE vs Integration Scale",
-    x = "Spatial Integration Scale (km)",
-    y = "RMSE (‰)"
-  ) +
-  
-  scale_x_continuous(breaks = seq(0, 100, by = 10)) +
-  theme_minimal(base_size = 12)
-
-# Save the canonical supplement plot (R² panel) alongside a combined
-# multi-panel version. Only the R² PDF is wired into the Makefile and
-# tracked as Figure_S4 in the manuscript; the combined PNG + results
-# csv are kept as diagnostic side-output in the cwd.
-ggsave("Figure_S4_ols_spatial_scale.png", p_r2,
-       width = 10, height = 7, dpi = 300, bg = "white")
-ggsave("Figure_S4_ols_spatial_scale.pdf", p_r2,
-       width = 10, height = 7, device = cairo_pdf)
-
-library(patchwork)
-p_combined <- p_r2 / (p_slope | p_rmse) +
-  plot_layout(heights = c(2, 1)) +
-  plot_annotation(
-    title = "Spatial Integration Scale Analysis",
-    theme = theme(plot.title = element_text(face = "bold", size = 18))
-  )
-ggsave("Figure_S4_ols_spatial_scale_combined.png", p_combined,
-       width = 12, height = 10, dpi = 300, bg = "white")
-
-write.csv(results, "Figure_S4_ols_spatial_scale_results.csv", row.names = FALSE)
-
-# Create a zoomed plot for scales 0-30 km
-results_zoom <- results %>% filter(scale_km <= 30)
-
-p_r2_zoom <- ggplot(results_zoom, aes(x = scale_km, y = r_squared)) +
-  geom_line(color = "black", linewidth = 1.2) +
-  geom_point(size = 3, color = "black") +
-  
-  # Highlight key scales
-  geom_point(data = results_zoom %>% filter(scale_km %in% c(0, 5, 10, 15, 20)),
-             aes(x = scale_km, y = r_squared),
-             color = "blue", size = 4, shape = 16) +
-  
-  # Add value labels for key points
-  geom_text(data = results_zoom %>% filter(scale_km %in% c(0, 5, 10, 15, 20)),
-            aes(x = scale_km, y = r_squared, 
-                label = paste0(round(r_squared, 3))),
-            vjust = -1, hjust = 0.5, size = 3.5) +
-  
-  labs(
-    title = "R² vs Spatial Scale (0-30 km zoom)",
-    x = "Spatial Integration Scale (km)",
-    y = expression(R^2)
-  ) +
-  
-  scale_x_continuous(breaks = seq(0, 30, by = 5)) +
-  scale_y_continuous(labels = number_format(accuracy = 0.001)) +
-  
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(face = "bold", size = 16),
-    panel.grid.minor.x = element_blank()
-  )
-
-ggsave("Figure_S4_ols_spatial_scale_zoom.png", p_r2_zoom,
-       width = 10, height = 7, dpi = 300, bg = "white")
+# Save the canonical supplement plot (R² vs integration scale) straight
+# into manuscript/figures/supplement_figs/. Combined and zoom variants
+# were dropped in the figure-output consolidation — the script remains
+# self-contained and a reviewer can resurrect them by commenting the
+# save calls back in.
+ggsave("../figures/supplement_figs/Figure_S4_ols_spatial_scale.png",
+       p_r2, width = 10, height = 7, dpi = 300, bg = "white")
+ggsave("../figures/supplement_figs/Figure_S4_ols_spatial_scale.pdf",
+       p_r2, width = 10, height = 7, device = cairo_pdf)
 
 # Print summary statistics
 cat("\n\nSummary of results:\n")

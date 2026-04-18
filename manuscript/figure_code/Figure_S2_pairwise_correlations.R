@@ -39,7 +39,7 @@ predictors <- predictors %>% select(where(is.numeric))
 cor_matrix <- cor(predictors, use = "complete.obs")
 
 # Emit PDF (cairo_pdf for Unicode) + PNG at the manuscript supplement name.
-cairo_pdf("Figure_S2_pairwise_correlations.pdf", width = 10, height = 10)
+cairo_pdf("../figures/supplement_figs/Figure_S2_pairwise_correlations.pdf", width = 10, height = 10)
 corrplot(cor_matrix,
          method    = "color",
          type      = "upper",
@@ -52,7 +52,7 @@ corrplot(cor_matrix,
          mar       = c(0, 0, 2, 0))
 invisible(dev.off())
 
-png("Figure_S2_pairwise_correlations.png",
+png("../figures/supplement_figs/Figure_S2_pairwise_correlations.png",
     width = 10, height = 10, units = "in", res = 300)
 corrplot(cor_matrix,
          method    = "color",

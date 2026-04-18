@@ -203,9 +203,9 @@ p_dist <- ggplot(sediment, aes(x = elevation_gmted)) +
 
 p_combined <- p_effects / p_dist + plot_layout(heights = c(2, 1))
 
-ggsave("Figure_S5_elevation.png", p_combined,
+ggsave("../figures/supplement_figs/Figure_S5_elevation.png", p_combined,
        width = 12, height = 10, dpi = 300, bg = "white")
-ggsave("Figure_S5_elevation.pdf", p_combined,
+ggsave("../figures/supplement_figs/Figure_S5_elevation.pdf", p_combined,
        width = 12, height = 10, device = cairo_pdf)
 
 cat("\n═══════════════════════════════════════════════════════════════\n")
