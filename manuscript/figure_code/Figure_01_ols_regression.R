@@ -239,26 +239,30 @@ bayes_intercept <- (bayes_intercept_std + bayes_slope * oipc_mean_std) * scaling
 bayes_r2 <- 1 - var(y_obs_orig - y_pred_orig) / var(y_obs_orig)
 bayes_rmse <- sqrt(mean((y_obs_orig - y_pred_orig)^2))
 
-# Create plot data using the fitted predictions
-plot_df <- data.frame(
-  x = oipc_fitted_orig,
-  y = y_obs_orig,
-  y_pred = y_pred_orig
-) %>%
-  arrange(x)
-
-# For prediction bands, we'll use the posterior predictive draws
+# Per-observation 95% posterior predictive interval on original δ²H scale.
+# Build this alongside x / y *before* sorting, then arrange the entire
+# frame by x. Previously pred_interval was attached after arrange(), which
+# paired each sorted-x row with the unsorted j-th prediction interval —
+# a sort-permutation mismatch that made the ribbon zig-zag between
+# unrelated observations.
 pred_interval <- t(apply(y_rep * scaling$d2H_sd + scaling$d2H_mean, 2, quantile, c(0.025, 0.975)))
+plot_df <- data.frame(
+  x       = oipc_fitted_orig,
+  y       = y_obs_orig,
+  y_pred  = y_pred_orig,
+  pi_lwr  = pred_interval[, 1],
+  pi_upr  = pred_interval[, 2]
+) %>% arrange(x)
 
 # Create the Bayesian plot
 p_bayes <- ggplot(plot_df, aes(x, y)) +
   theme_minimal(base_size = 14) +
-  
-  # Add prediction interval as a polygon (smoothed)
+
+  # 95% posterior predictive interval — wide because it folds in the
+  # residual sigma, not a fit-uncertainty envelope.
   geom_ribbon(
-    data = plot_df %>% mutate(pi_lwr = pred_interval[,1], pi_upr = pred_interval[,2]),
     aes(ymin = pi_lwr, ymax = pi_upr),
-    fill = "#377EB8",
+    fill  = "#377EB8",
     alpha = 0.15
   ) +
   
