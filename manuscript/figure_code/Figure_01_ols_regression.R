@@ -5,6 +5,7 @@
 
 library(tidyverse)
 library(posterior)
+library(cowplot)
 
 # Source common functions + helper API (rds-only, no fit.rds reads).
 source("common_functions.R")
@@ -309,6 +310,23 @@ p_bayes <- ggplot(plot_df, aes(x, y)) +
 ggsave("../figures/main_figs/Figure1d_bayesian_fitted.png", p_bayes, width = 10, height = 8, dpi = 300, bg = "white")
 ggsave("../figures/main_figs/Figure1d_bayesian_fitted.pdf", p_bayes, width = 10, height = 8, bg = "white")
 
+# Combined 2x2 panel version with A/B/C/D labels
+combined_fig1 <- plot_grid(
+  result_i$plot   + labs(title = NULL, subtitle = result_i$plot$labels$subtitle),
+  result_ii$plot  + labs(title = NULL, subtitle = result_ii$plot$labels$subtitle),
+  result_iii$plot + labs(title = NULL, subtitle = result_iii$plot$labels$subtitle),
+  p_bayes         + labs(title = NULL, subtitle = p_bayes$labels$subtitle),
+  labels    = c("A", "B", "C", "D"),
+  label_size = 16,
+  ncol      = 2,
+  nrow      = 2,
+  align     = "hv"
+)
+ggsave("../figures/main_figs/Figure_01_combined.png", combined_fig1,
+       width = 16, height = 12, dpi = 300, bg = "white")
+ggsave("../figures/main_figs/Figure_01_combined.pdf", combined_fig1,
+       width = 16, height = 12, bg = "white")
+
 results_list$bayesian <- data.frame(
   method = "Bayesian (fitted weights)",
   n = nrow(plot_df),
@@ -333,6 +351,7 @@ cat("  - Figure1a_point_fitting.png/pdf\n")
 cat("  - Figure1b_10km_scale.png/pdf\n")
 cat("  - Figure1c_equal_weights.png/pdf\n")
 cat("  - Figure1d_bayesian_fitted.png/pdf\n")
+cat("  - Figure_01_combined.png/pdf\n")
 cat("  - Figure1_comparison_table.csv\n")
 
 # Show scale weights from Bayesian model
