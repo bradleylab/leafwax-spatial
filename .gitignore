@@ -64,3 +64,7 @@ manuscript/figure_code/Figure1_comparison_table.csv
 # companion CSVs. Gitignored results/ already covers the April run data;
 # the CSVs land here on a regenerate pass.
 model_analysis/
+
+# Working manuscript drafts (.docx). Keep the directory structure local;
+# don't version binary Word files in git.
+manuscript/drafts/
