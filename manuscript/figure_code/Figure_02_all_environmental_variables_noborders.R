@@ -83,7 +83,7 @@ panel_a <- ggplot() +
   continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
-  labs(title = bquote(bold("A:")~delta^{2}*"H precipitation"), x = NULL, y = "Latitude") +
+  labs(title = bquote(bold("A:"~delta^{2}*"H precipitation")), x = NULL, y = "Latitude") +
   theme_minimal(base_size = 8) +
   theme(
     panel.grid.major = element_line(color = "white", linewidth = 0.2),
@@ -348,7 +348,7 @@ panel_g <- ggplot() +
   continents_layer +
   geom_sf(data = samples_sf, color = "red", size = 0.4, alpha = 0.8) +
   coord_sf(xlim = c(-180, 180), ylim = c(-75, 90), expand = FALSE) +
-  labs(title = bquote(bold("G:")~C[4]~"vegetation fraction"), x = "Longitude", y = "Latitude") +
+  labs(title = bquote(bold("G:"~C[4]~"vegetation fraction")), x = "Longitude", y = "Latitude") +
   theme_minimal(base_size = 8) +
   theme(
     panel.grid.major = element_line(color = "white", linewidth = 0.2),

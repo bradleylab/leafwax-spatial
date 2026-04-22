@@ -340,8 +340,6 @@ p_slope <- ggplot() +
     limits = c(color_min_slope, color_max_slope),
     oob = scales::squish,
     name = "Slope Coefficient",
-    breaks = seq(0.44, 0.46, by = 0.01),
-    labels = sprintf("%.2f", seq(0.44, 0.46, by = 0.01)),
     guide = guide_colorbar(barwidth = 10, barheight = 0.3)
   ) +
 
@@ -381,44 +379,12 @@ combined_plot <- plot_grid(
   align = "v"
 )
 
-# Add overall title
-title_grob <- ggdraw() +
-  draw_label(
-    "Figure 3: Spatial Patterns in Model Parameters (Full_sp Model)",
-    fontface = "bold",
-    size = 12,
-    x = 0.5,
-    hjust = 0.5
-  )
-
-subtitle_grob <- ggdraw() +
-  draw_label(
-    sprintf("Matérn 3/2 GP with %d knots | Length scale: %.0f km | 313:1 ratio (intercept:slope variation)",
-            n_knots, ls_intercept_km),
-    size = 10,
-    x = 0.5,
-    hjust = 0.5,
-    color = "gray30"
-  )
-
-# Final plot with title
-final_plot <- plot_grid(
-  title_grob,
-  subtitle_grob,
-  combined_plot,
-  ncol = 1,
-  rel_heights = c(0.05, 0.03, 1)
-)
-
-# Save as PDF. Output filename matches the manuscript's Figure 4 label
-# (legacy script title said Figure 3; corrected in W7 cleanup pass).
 output_pdf <- "../figures/main_figs/Figure_04.pdf"
 cat(sprintf("\nSaving figure to %s...\n", output_pdf))
-ggsave(output_pdf, final_plot, width = 10, height = 12, dpi = 300)
+ggsave(output_pdf, combined_plot, width = 10, height = 11, dpi = 300)
 
-# Save as PNG for quick viewing
 output_png <- "../figures/main_figs/Figure_04.png"
-ggsave(output_png, final_plot, width = 10, height = 12, dpi = 150)
+ggsave(output_png, combined_plot, width = 10, height = 11, dpi = 150)
 cat(sprintf("Also saved as %s\n", output_png))
 
 # ========================================
