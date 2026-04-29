@@ -25,8 +25,13 @@
 !.github/
 !.github/**
 
-# Allowlist canonical input dataset
+# Allowlist canonical input dataset.
+# Within input_data/, only global_data_c29.csv is tracked. The four
+# environmental rasters (C4 NUS NetCDF + OIPC δ²H + GMTED elevation)
+# are ~308 MB total and cannot be hosted in git directly; the README
+# documents how to obtain them.
 !input_data/
+input_data/**
 !input_data/global_data_c29.csv
 
 # NOTE on what is intentionally NOT tracked:
