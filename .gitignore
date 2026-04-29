@@ -29,15 +29,22 @@
 !input_data/
 !input_data/global_data_c29.csv
 
-# Allowlist new project subtrees
-!manuscript/
-!manuscript/**
-!data/
-!data/**
-!archive/
-!archive/**
+# NOTE on what is intentionally NOT tracked:
+#   data/compilation/   — compilation building scripts and intermediate
+#                          CSVs. The shipped product is input_data/, so
+#                          the build-the-input chain is local-only.
+#   data/HrenBrandon/   — compilation source spreadsheets (likewise).
+#   archive/            — historical / superseded compilation lineages.
+#   manuscript/         — narrative docs, drafts, figure_code,
+#                          table_code, generated figures and tables.
+#                          The repo is for replicating analysis numbers
+#                          from input_data/ via the top-level R/Python
+#                          pipeline; the manuscript is delivered
+#                          separately.
+# These directories fall through the leading "/*" / "/*/" ignore. Do
+# NOT add allowlist lines for them.
 
-# Within those subtrees, still exclude junk
+# Within tracked subtrees, still exclude junk
 **/.DS_Store
 **/.Rhistory
 **/.RData
@@ -51,20 +58,4 @@
 # Root-level working files to keep out
 check_all_knots.R
 results/
-
-# Figure scripts now write directly into manuscript/figures/main_figs/
-# or manuscript/figures/supplement_figs/, so figure_code/ itself stays
-# code-only — except for these scratch files that a couple of scripts
-# write next to themselves (Figure 1's comparison CSV, R's fallback
-# Rplots.pdf).
-manuscript/figure_code/Rplots.pdf
-manuscript/figure_code/Figure1_comparison_table.csv
-
-# model_analysis/ is the scratch tree where extract_*.R / 5b drop their
-# companion CSVs. Gitignored results/ already covers the April run data;
-# the CSVs land here on a regenerate pass.
 model_analysis/
-
-# Working manuscript drafts (.docx). Keep the directory structure local;
-# don't version binary Word files in git.
-manuscript/drafts/
