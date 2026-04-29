@@ -665,6 +665,22 @@ cat("Saved full dataset: results/3_sediment_with_all_extractions.rds\n")
 saveRDS(sediment_ready, "results/3_sediment_ready_for_modeling.rds")
 cat("Saved modeling dataset: results/3_sediment_ready_for_modeling.rds\n")
 
+# Stamp input CSV md5 + final n into a sidecar so downstream cache guards
+# (4b_stan_prep.R, slurm/job_prep.sh) can detect stale prep against a new
+# input compilation and force a rebuild.
+input_csv <- "input_data/global_data_c29.csv"
+input_md5 <- unname(tools::md5sum(input_csv))
+sidecar_lines <- c(
+  paste0("input_md5: ", input_md5),
+  paste0("input_csv: ", input_csv),
+  paste0("n_input_rows: ", nrow(sediment)),
+  paste0("n_modeling_rows: ", nrow(sediment_ready)),
+  paste0("written_at: ", format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"))
+)
+writeLines(sidecar_lines, "results/3_sediment_ready_for_modeling.input_md5")
+cat("Wrote input md5 sidecar:\n")
+cat("  results/3_sediment_ready_for_modeling.input_md5 (", input_md5, ")\n", sep = "")
+
 # Save CSV version for external use (remove list columns)
 write_csv(sediment_ready %>% 
             select(-ends_with("_distances"), -ends_with("_values"), -starts_with("pft_")) %>%
@@ -758,7 +774,7 @@ if (sum(sediment_ready$has_measured_elevation) > 0) {
 }
 
 cat("Ready for Bayesian modeling with climate covariates!\n")
-cat("Next step: Run 4b_fit_models.R\n")
+cat("Next step: 4b_stan_prep.R, then 4c_fit_models.R (or SLURM job_fit.sh on C2)\n")
 
 # Show sample of final data
 cat("\nSample of final dataset:\n")

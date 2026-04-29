@@ -166,11 +166,15 @@ for (model_name in names(model_configs)) {
     cat("    PP knots:", config$n_pp_knots, "\n")
   }
   
-  # Check if already prepared
+  # Skip only if the cached stan_data is newer than the upstream prep RDS;
+  # otherwise we would reuse a stan_data built from a stale compilation.
   output_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("stan_data_", model_name, ".rds"))
-  if (file.exists(output_file)) {
-    cat("  ✓ Already prepared - skipping\n\n")
+  if (file.exists(output_file) && file.mtime(output_file) > file.mtime(input_file)) {
+    cat("  ✓ Already prepared (newer than prep RDS) - skipping\n\n")
     next
+  }
+  if (file.exists(output_file)) {
+    cat("  ↻ Cached stan_data older than prep RDS - regenerating\n")
   }
   
   # Prepare data

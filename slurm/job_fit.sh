@@ -41,10 +41,20 @@ module load apptainer
 cd "${WORKDIR}"
 mkdir -p model_output/${MODEL}
 
-# Resume guard: skip if already fitted
-if [ -f "model_output/${MODEL}/fit.rds" ]; then
-    echo "${MODEL}: fit.rds exists, skipping"
+# Resume guard: skip only if fit.rds is newer than its stan_data input,
+# so a stale fit can't silently shadow a freshly rebuilt stan_data.
+FIT_RDS="model_output/${MODEL}/fit.rds"
+STAN_DATA="prepared_data/stan_data_${MODEL}.rds"
+if [ -f "$FIT_RDS" ] && [ -f "$STAN_DATA" ] && [ "$FIT_RDS" -nt "$STAN_DATA" ]; then
+    echo "${MODEL}: fit.rds newer than stan_data, skipping"
     exit 0
+fi
+if [ -f "$FIT_RDS" ]; then
+    echo "${MODEL}: fit.rds exists but is older than (or has no) stan_data — refitting"
+fi
+if [ ! -f "$STAN_DATA" ]; then
+    echo "${MODEL}: ERROR — stan_data missing at $STAN_DATA. Run prep first."
+    exit 1
 fi
 
 echo "=== Fitting model: ${MODEL} ==="

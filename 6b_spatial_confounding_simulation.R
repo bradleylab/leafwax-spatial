@@ -34,26 +34,40 @@ cat("Start time:", format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z"), "\n\n")
 
 # Run from repo root
 
-# ─── Load data and model ───
-stan_data <- readRDS("prepared_data/stan_data_baseline_veg_sp.rds")
-config <- readRDS("prepared_data/config_baseline_veg_sp.rds")
-orig_draws <- readRDS(
-  "model_output/baseline_veg_sp_fixed_range/posterior_draws.rds"
-)
+SRC_MODEL <- "baseline_sp"
+draws_path     <- file.path("model_output", SRC_MODEL, "posterior_draws.rds")
+stan_data_path <- file.path("prepared_data",
+                            paste0("stan_data_", SRC_MODEL, ".rds"))
+config_path    <- file.path("prepared_data",
+                            paste0("config_", SRC_MODEL, ".rds"))
+
+for (p in c(draws_path, stan_data_path, config_path)) {
+  if (!file.exists(p)) {
+    stop("Required input missing: ", p,
+         "\n  Source model = '", SRC_MODEL, "'. Fit it first.")
+  }
+}
+
+cat("Source model for confounding simulation:", SRC_MODEL, "\n")
+stan_data <- readRDS(stan_data_path)
+config <- readRDS(config_path)
+orig_draws <- readRDS(draws_path)
 
 cat("Compiling Stan model...\n")
 model <- cmdstan_model("4d_leaf_wax_spatial_model.stan")
 cat("Model compiled.\n\n")
 
 # ─── Parameters from fitted model ───
-lambda_km <- mean(orig_draws$lambda_decay)
-ls_km <- mean(orig_draws$ls_intercept_km)
+# orig_draws is a posterior::draws_array — extract by name.
+lambda_km <- mean(posterior::extract_variable(orig_draws, "lambda_decay"))
+ls_km <- mean(posterior::extract_variable(orig_draws, "ls_intercept_km"))
 coord_scale_km <- mean(stan_data$coord_scaling) * 111.0
 ls_std <- ls_km / coord_scale_km
 
 # sigma_intercept_spatial is back-transformed to original units in generated
 # quantities, so dividing by d2H_wax_sd_original gives standardized units
-sigma_int_std <- mean(orig_draws$sigma_intercept_spatial) /
+sigma_int_std <- mean(posterior::extract_variable(orig_draws,
+                                                  "sigma_intercept_spatial")) /
   stan_data$d2H_wax_sd_original
 sigma_resid <- 0.3
 

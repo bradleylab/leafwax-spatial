@@ -1,30 +1,50 @@
 # posterior_helpers.R — root-level twin of manuscript/figure_code/posterior_helpers.R
 # with an APRIL_RUN path resolved from the repo root (one level up from scripts/).
 #
-# Used by extract_*.R, analyze_*.R, and 5*_*.R when they live at the repo root.
-# Keep the two helper files in sync.
+# Sourced by 5*_*.R and 7_paleo_inversion.R. Keep this file and the manuscript
+# twin in sync.
+#
+# APRIL_RUN selection (in priority order):
+#   1. Environment variable LEAFWAX_RUN_DIR (absolute or relative path)
+#   2. results/c2_run_20260429   (default — current v10 run dir)
+#
+# The variable is still named APRIL_RUN for backward compatibility with 5a-5e
+# callers; semantically it is "the C2 run mirror to read posteriors from".
+# Override at the shell:
+#   LEAFWAX_RUN_DIR=results/c2_run_20260414 Rscript 5a_model_validation.R
 
 library(posterior)
 
-APRIL_RUN <- normalizePath(
-  file.path("..", "results", "c2_run_20260414"),
-  mustWork = FALSE
-)
-# When sourced from the repo root (not from scripts/), fall back.
-if (!dir.exists(APRIL_RUN)) {
-  APRIL_RUN <- normalizePath(
-    file.path("results", "c2_run_20260414"),
+DEFAULT_RUN_NAME <- "c2_run_20260429"
+
+.resolve_run_dir <- function() {
+  env_override <- Sys.getenv("LEAFWAX_RUN_DIR", unset = "")
+  if (nzchar(env_override)) {
+    return(normalizePath(env_override, mustWork = FALSE))
+  }
+  # Try ../results/<run> first (sourced from scripts/), then results/<run>
+  candidate <- normalizePath(
+    file.path("..", "results", DEFAULT_RUN_NAME),
     mustWork = FALSE
   )
+  if (!dir.exists(candidate)) {
+    candidate <- normalizePath(
+      file.path("results", DEFAULT_RUN_NAME),
+      mustWork = FALSE
+    )
+  }
+  candidate
 }
+
+APRIL_RUN <- .resolve_run_dir()
 PREPARED_DATA <- file.path(APRIL_RUN, "_prepared_data")
 
 load_draws <- function(model) {
   path <- file.path(APRIL_RUN, model, "posterior_draws.rds")
   if (!file.exists(path)) {
     stop("posterior_draws.rds missing for '", model, "' at ", path,
-         "\nRun 4c_fit_models.R on C2 against this model's output dir ",
-         "(Phase 5 W2).")
+         "\nRun 4c_fit_models.R on C2 against this model's output dir, ",
+         "or set LEAFWAX_RUN_DIR to the correct mirror.")
   }
   readRDS(path)
 }
@@ -45,8 +65,8 @@ load_loo <- function(model) {
   path <- file.path(APRIL_RUN, model, "loo.rds")
   if (!file.exists(path)) {
     stop("loo.rds missing for '", model, "' at ", path,
-         "\nRun 4c_fit_models.R on C2 against this model's output dir ",
-         "(Phase 5 W2).")
+         "\nRun 4c_fit_models.R on C2 against this model's output dir, ",
+         "or set LEAFWAX_RUN_DIR to the correct mirror.")
   }
   readRDS(path)
 }

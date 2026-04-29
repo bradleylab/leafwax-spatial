@@ -1002,6 +1002,19 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
                     round(100 * n / length(mat), 1), "%)\n")
     n
   }
+
+  # Count rows where EVERY scale is NA — these get the hardcoded default
+  # (0 / 0.1 / 0.33) rather than a row mean. Surfacing so coverage gaps
+  # in the input compilation don't pass through silently.
+  count_all_na_rows <- function(mat, name, default) {
+    rows <- which(rowSums(is.na(mat)) == ncol(mat))
+    if (length(rows) > 0) {
+      cat("  All-scales-NA fallback:", name, "—", length(rows),
+          "row(s) (", round(100 * length(rows) / nrow(mat), 2),
+          "%) → default = ", default, "\n", sep = "")
+    }
+    length(rows)
+  }
   if (include_c4) count_na(c4_weighted_matrix_std, "C4")
   count_na(oipc_weighted_matrix_std, "OIPC")
   count_na(oipc_se_weighted_matrix_std, "OIPC_SE")
@@ -1016,6 +1029,30 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     count_na(oipc_x_shrub_matrix_std, "OIPC×Shrub")
     count_na(oipc_x_grass_matrix_std, "OIPC×Grass")
   }
+
+  cat("\n  --- Rows hitting hardcoded-default fallback (no row-mean rescue) ---\n")
+  if (include_c4) count_all_na_rows(c4_weighted_matrix_std, "C4", 0)
+  count_all_na_rows(oipc_weighted_matrix_std, "OIPC", 0)
+  count_all_na_rows(oipc_se_weighted_matrix_std, "OIPC_SE", 0.1)
+  count_all_na_rows(elev_weighted_matrix_std, "elevation", 0)
+  if (include_precip) count_all_na_rows(precip_weighted_matrix_std, "precip", 0)
+  if (include_temp)   count_all_na_rows(temp_weighted_matrix_std, "temp", 0)
+  if (include_vpd)    count_all_na_rows(vpd_weighted_matrix_std, "vpd", 0)
+  if (include_soil)   count_all_na_rows(soil_weighted_matrix_std, "soil", 0)
+  if (include_pft) {
+    # PFT array is N × 3 × n_scales; check per-class
+    for (p_idx in seq_len(dim(pft_weighted_array)[2])) {
+      pft_mat <- pft_weighted_array[, p_idx, , drop = TRUE]
+      pft_label <- paste0("PFT[", p_idx, "]")
+      rows <- which(rowSums(is.na(pft_mat)) == ncol(pft_mat))
+      if (length(rows) > 0) {
+        cat("  All-scales-NA fallback: ", pft_label, " — ", length(rows),
+            " row(s) (", round(100 * length(rows) / nrow(pft_mat), 2),
+            "%) → default = 0.33\n", sep = "")
+      }
+    }
+  }
+  cat("\n")
 
   for (i in 1:N) {
     if (include_c4)    c4_weighted_matrix_std       <- fill_na_row(c4_weighted_matrix_std, i, 0)
