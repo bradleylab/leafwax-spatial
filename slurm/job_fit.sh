@@ -36,7 +36,8 @@ MODELS=(
 
 MODEL=${MODELS[$SLURM_ARRAY_TASK_ID]}
 
-module load apptainer
+module load ris
+module load apptainer/1.3.4
 
 cd "${WORKDIR}"
 mkdir -p model_output/${MODEL}

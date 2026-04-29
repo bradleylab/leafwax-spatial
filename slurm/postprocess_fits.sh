@@ -10,7 +10,8 @@
 #SBATCH --error=logs/pp_%A_%a.err
 
 set -eo pipefail
-module load apptainer
+module load ris
+module load apptainer/1.3.4
 
 WORKDIR=/scratch2/fs1/alexander.s.bradley/leafwax_run
 SIF=${WORKDIR}/leafwax-spatial.sif

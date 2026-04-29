@@ -103,10 +103,14 @@ for (model_name in model_names) {
   stan_data <- readRDS(stan_data_file)
   config <- readRDS(config_file)
 
-  # Check if model already fitted
+  # Skip-load only if fit.rds is newer than its stan_data input. A bare
+  # file.exists() check would silently reuse a stale fit after stan_data
+  # was rebuilt against a new compilation.
   fit_file <- file.path(output_dir, "fit.rds")
-  if (file.exists(fit_file)) {
-    cat("✓ Model already fit - loading existing results\n")
+  fit_is_current <- file.exists(fit_file) &&
+    file.mtime(fit_file) > file.mtime(stan_data_file)
+  if (fit_is_current) {
+    cat("✓ Model already fit (newer than stan_data) - loading existing results\n")
     fit <- readRDS(fit_file)
     status <- "completed"
     # Load runtime info if available
