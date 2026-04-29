@@ -13,7 +13,7 @@
 library(tidyverse)
 library(posterior)
 source("scripts/posterior_helpers.R")
-source("manuscript/table_code/table_helpers.R")
+source("scripts/table_helpers.R")
 library(loo)
 library(sf)
 library(viridis)
