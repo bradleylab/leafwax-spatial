@@ -6,7 +6,7 @@
 #
 # APRIL_RUN selection (in priority order):
 #   1. Environment variable LEAFWAX_RUN_DIR (absolute or relative path)
-#   2. results/c2_run_20260429   (default — current v10 run dir)
+#   2. results/c2_run_20260501   (default — current v10 run mirror)
 #
 # The variable is still named APRIL_RUN for backward compatibility with 5a-5e
 # callers; semantically it is "the C2 run mirror to read posteriors from".
@@ -15,7 +15,7 @@
 
 library(posterior)
 
-DEFAULT_RUN_NAME <- "c2_run_20260429"
+DEFAULT_RUN_NAME <- "c2_run_20260501"
 
 .resolve_run_dir <- function() {
   env_override <- Sys.getenv("LEAFWAX_RUN_DIR", unset = "")
