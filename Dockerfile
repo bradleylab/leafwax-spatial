@@ -44,6 +44,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install core R packages needed by the pipeline
 # Order matters: dependencies first, then packages that depend on them
+# Post-fit scripts (5c, 5e, 7) added geoR/ape/ggpubr/corrplot/cowplot/
+# patchwork/rnaturalearth/viridis over time; backfilled here so the full
+# pipeline runs in-container (not just the fit step).
 RUN R -e ' \
     install.packages(c( \
         "yaml", \
@@ -55,7 +58,16 @@ RUN R -e ' \
         "ncdf4", \
         "posterior", \
         "loo", \
-        "bayesplot" \
+        "bayesplot", \
+        "geoR", \
+        "ape", \
+        "ggpubr", \
+        "corrplot", \
+        "cowplot", \
+        "patchwork", \
+        "viridis", \
+        "rnaturalearth", \
+        "rnaturalearthdata" \
     ), repos = "https://cloud.r-project.org", Ncpus = 4) \
 '
 
