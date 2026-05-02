@@ -67,7 +67,16 @@ RUN R -e ' \
         "patchwork", \
         "viridis", \
         "rnaturalearth", \
-        "rnaturalearthdata" \
+        "rnaturalearthdata", \
+        "broom", \
+        "car", \
+        "factoextra", \
+        "glmnet", \
+        "gstat", \
+        "knitr", \
+        "ncf", \
+        "openxlsx", \
+        "spdep" \
     ), repos = "https://cloud.r-project.org", Ncpus = 4) \
 '
 
