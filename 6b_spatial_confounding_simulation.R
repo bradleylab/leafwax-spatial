@@ -217,7 +217,9 @@ fit_and_save <- function(stan_data_orig, d2h_sim, scenario_name,
     elapsed_mins = fit_time,
     start_time = fit_start,
     end_time = Sys.time(),
-    git_commit = system("git rev-parse HEAD", intern = TRUE),
+    git_commit = tryCatch(system("git rev-parse HEAD", intern = TRUE),
+                          error = function(e) NA_character_,
+                          warning = function(w) NA_character_),
     version = "v2_restandardized"
   ), file.path(outdir, "runtime_info.rds"))
 

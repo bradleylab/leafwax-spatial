@@ -144,7 +144,9 @@ fit_and_save <- function(stan_data_sim, scenario_name, true_params, model, confi
     elapsed_mins = fit_time,
     start_time = fit_start,
     end_time = Sys.time(),
-    git_commit = system("git rev-parse HEAD", intern = TRUE)
+    git_commit = tryCatch(system("git rev-parse HEAD", intern = TRUE),
+                          error = function(e) NA_character_,
+                          warning = function(w) NA_character_)
   ), file.path(outdir, "runtime_info.rds"))
   
   # Report recovery
@@ -165,13 +167,15 @@ fit_and_save <- function(stan_data_sim, scenario_name, true_params, model, confi
 }
 
 # ─── Use realistic parameter values from existing posteriors ───
-# Take posterior means as "realistic" values for simulation
-lambda_km <- mean(orig_draws$lambda_decay)
-ls_km <- mean(orig_draws$ls_intercept_km)
+# Take posterior means as "realistic" values for simulation.
+# orig_draws is a posterior::draws_array — extract by name.
+lambda_km <- mean(posterior::extract_variable(orig_draws, "lambda_decay"))
+ls_km <- mean(posterior::extract_variable(orig_draws, "ls_intercept_km"))
 coord_scale_km <- mean(stan_data$coord_scaling) * 111.0
 ls_std <- ls_km / coord_scale_km  # Convert to standardized units
 
-sigma_int_orig <- mean(orig_draws$sigma_intercept_spatial)  # In permil
+sigma_int_orig <- mean(posterior::extract_variable(orig_draws,
+                                                   "sigma_intercept_spatial"))
 sigma_int_std <- sigma_int_orig / stan_data$d2H_wax_sd_original  # Standardized
 
 # Compute weighted OIPC for all observations

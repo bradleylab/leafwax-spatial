@@ -155,7 +155,10 @@ for (exp_id in to_run) {
   saveRDS(fit$diagnostic_summary(), file.path(outdir, "diagnostics.rds"))
   saveRDS(fit$loo(), file.path(outdir, "loo.rds"))
   saveRDS(list(experiment = exp_id, elapsed_mins = fit_time,
-               git_commit = system("git rev-parse HEAD", intern = TRUE)),
+               git_commit = tryCatch(
+                 system("git rev-parse HEAD", intern = TRUE),
+                 error = function(e) NA_character_,
+                 warning = function(w) NA_character_)),
           file.path(outdir, "runtime_info.rds"))
 
   results_summary[[exp_id]] <- data.frame(
