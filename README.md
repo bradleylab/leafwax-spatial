@@ -1,5 +1,7 @@
 # Leaf wax hydrogen isotope spatial calibration
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20172576.svg)](https://doi.org/10.5281/zenodo.20172575)
+
 Companion code to Bradley (2026), submitted to *Geochimica et Cosmochimica Acta*.
 
 Hierarchical Bayesian spatial model that calibrates sedimentary leaf-wax
@@ -141,9 +143,27 @@ MIT — see [LICENSE](LICENSE).
 
 ## Citation
 
-> Bradley, A.S. (2026). Spatial modeling improves the calibration of leaf
-> wax hydrogen isotopes to precipitation. *Geochimica et Cosmochimica Acta*
-> (submitted).
+Cite both the software archive and the related manuscript:
 
-A Zenodo DOI for this code archive will appear here once the first GitHub
-Release is created.
+```bibtex
+@software{bradley_leafwax_spatial_2026,
+  author  = {Bradley, Alexander S.},
+  title   = {leafwax-spatial: hierarchical Bayesian spatial calibration
+             of leaf-wax hydrogen isotopes},
+  year    = {2026},
+  doi     = {10.5281/zenodo.20172575},
+  url     = {https://doi.org/10.5281/zenodo.20172575}
+}
+
+@unpublished{bradley_leafwax_paper_2026,
+  author = {Bradley, Alexander S.},
+  title  = {Spatial modeling improves the calibration of leaf wax
+            hydrogen isotopes to precipitation},
+  year   = {2026},
+  note   = {Manuscript in preparation}
+}
+```
+
+The `@software` DOI is the concept DOI — it always resolves to the
+latest version. To cite a specific release, replace it with that
+release's version DOI from the Zenodo deposit page.
