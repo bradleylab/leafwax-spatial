@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite both this software archive and the related manuscript."
+type: software
+title: "leafwax-spatial: hierarchical Bayesian spatial calibration of leaf-wax hydrogen isotopes"
+authors:
+  - family-names: Bradley
+    given-names: Alex
+    orcid: "https://orcid.org/0000-0002-4044-2802"
+    affiliation: "Department of Earth, Environmental, and Planetary Sciences, Washington University in St. Louis"
+    email: abradley@wustl.edu
+abstract: >-
+  Companion code for fitting hierarchical Bayesian spatial models that
+  calibrate sedimentary leaf-wax n-C29 alkane hydrogen isotope ratios
+  against precipitation isotope composition and environmental covariates.
+  Implements 14 model variants in Stan with a Matern 3/2 Gaussian process
+  predictive-process approximation on 125 globally distributed knots.
+  Compares spatial and non-spatial calibrations across n = 1,129 surface
+  sediment and soil sites from 73 publications.
+keywords:
+  - leaf wax
+  - hydrogen isotopes
+  - paleoclimate
+  - Bayesian calibration
+  - Stan
+  - Gaussian process
+  - spatial autocorrelation
+  - hierarchical model
+  - precipitation isotopes
+license: MIT
+version: "1.0.0"
+date-released: "2026-05-13"
+repository-code: "https://github.com/bradleylab/leafwax-spatial"
+references:
+  - type: unpublished
+    title: >-
+      Spatial modeling improves the calibration of leaf wax hydrogen
+      isotopes to precipitation
+    authors:
+      - family-names: Bradley
+        given-names: Alex
+        orcid: "https://orcid.org/0000-0002-4044-2802"
+    year: 2026

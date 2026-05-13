@@ -26,11 +26,11 @@ leave-one-out cross-validation.
 | `slurm/` | SLURM submission scripts (one production example) |
 | `Dockerfile`, `.github/workflows/build-container.yml` | Containerized environment + CI |
 | `config.yaml` | MCMC settings + 14 model specifications |
-| `input_data/global_data_c29.csv` | Compiled δ²H<sub>wax</sub> dataset (1,136 sites, 73 publications) |
+| `input_data/global_data_c29.csv` | Compiled δ²H<sub>wax</sub> dataset (1,136 rows from 73 publications; the modeling pipeline retains 1,129 after filtering, the n reported in Bradley 2026) |
 
-The repo intentionally does **not** include manuscript drafts, figure/table
-generation code, or the upstream pipeline that builds the input compilation.
-Everything you need to reproduce the model fits and the diagnostics from the
+The repo does **not** include manuscript drafts, figure/table generation
+code, or the upstream pipeline that builds the input compilation.
+Everything needed to reproduce the model fits and the diagnostics from the
 input CSV is in the numbered scripts.
 
 ## Quick start (containerized)
@@ -129,9 +129,11 @@ and output directories. Every numbered script begins by sourcing
 - **Manuscript.** Figure code, table code, narrative drafts, and rendered
   artifacts are not part of this repo.
 - **Model fits.** `results/` and `model_output/` are git-ignored. Producing
-  fresh fits from a clean clone takes the wall-clock time noted above; an
-  archived deposit of the published-version fits will accompany the
-  manuscript on Zenodo (DOI to be assigned at acceptance).
+  fresh fits from a clean clone takes the wall-clock time noted above. The
+  published-version posterior draws are archived at Zenodo:
+  [10.5281/zenodo.20085465](https://doi.org/10.5281/zenodo.20085465)
+  (`leafwax v10 model posteriors`, CC-BY-4.0). The leafwax R package
+  downloads these posteriors on first use; manual download is not required.
 
 ## License
 
@@ -139,4 +141,9 @@ MIT — see [LICENSE](LICENSE).
 
 ## Citation
 
-> Bradley, A.S. (2026). [Title]. *Geochimica et Cosmochimica Acta*. [DOI pending]
+> Bradley, A.S. (2026). Spatial modeling improves the calibration of leaf
+> wax hydrogen isotopes to precipitation. *Geochimica et Cosmochimica Acta*
+> (submitted).
+
+A Zenodo DOI for this code archive will appear here once the first GitHub
+Release is created.

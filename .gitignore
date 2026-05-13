@@ -19,6 +19,7 @@
 !.gitignore
 !README.md
 !LICENSE
+!CITATION.cff
 !CLAUDE.md
 !config.yaml
 !Dockerfile
