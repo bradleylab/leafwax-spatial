@@ -27,8 +27,8 @@ keywords:
   - hierarchical model
   - precipitation isotopes
 license: MIT
-version: "1.0.1"
-date-released: "2026-05-13"
+version: "1.0.2"
+date-released: "2026-05-16"
 repository-code: "https://github.com/bradleylab/leafwax-spatial"
 url: "https://doi.org/10.5281/zenodo.20172575"
 identifiers:
