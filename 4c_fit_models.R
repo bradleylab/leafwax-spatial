@@ -218,7 +218,11 @@ for (model_name in model_names) {
     }
     if (stan_data$include_c4 == 1) {
       params_to_check <- c(params_to_check, "beta_c4")
-      if (stan_data$include_pft == 1) {
+      # The C4 interaction is active whenever include_veg_interactions && include_c4
+      # (see 4d_leaf_wax_spatial_model.stan:306), independent of PFT. Gating this
+      # on include_pft skipped saving beta_oipc_x_c4 for C4-interaction models
+      # without PFT (e.g. elevation_c4_interact_sp). Gate on the interaction flag.
+      if (stan_data$include_veg_interactions == 1) {
         params_to_check <- c(params_to_check, "beta_oipc_x_c4")
       }
     }
