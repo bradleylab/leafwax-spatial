@@ -16,7 +16,8 @@ leave-one-out cross-validation.
 | Path | Contents |
 |---|---|
 | `0_*.R` | Project configuration loader |
-| `1_*.R`, `2*_*.{R,py}` | Environmental raster extraction (C₄ NUS, MODIS PFT, TerraClimate) |
+| `1_*.R`, `2a_*` … `2f_*` | Environmental raster extraction (C₄ NUS, MODIS PFT, TerraClimate) |
+| `2g_*.R` … `2i_*.R` | Calibration data audit, sample-level archive classification, frozen-dataset build |
 | `3_prep_data.R`, `3b_*` … `3h_*` | Data preparation + diagnostics |
 | `4a_*.R` … `4c_*.R`, `4d_*.stan` | Stan data assembly + model fitting |
 | `5a_*.R` … `5e_*_weighted.R` | Post-fit validation + diagnostics |
@@ -85,6 +86,12 @@ Rscript 2c_reproject_modis.R
 Rscript 2d_downsample_modis.R
 python3 2e_download_terraclimate.py    # TerraClimate annual means
 Rscript 2f_process_terraclimate.R
+
+# Calibration data audit + freeze (produces data/frozen/leafwax_d2h_c29_calibration_v1)
+Rscript 2g_data_audit.R                # duplicate detection + coordinate archive split
+Rscript 2h_archive_overrides.R         # sample-level archive classes (fetches Gensel PANGAEA)
+Rscript 2i_freeze_calibration.R        # apply decisions -> frozen calibration dataset
+
 Rscript 3_prep_data.R                  # joins all covariates + spatial averaging
 
 # Model fitting (loops 14 model variants)
