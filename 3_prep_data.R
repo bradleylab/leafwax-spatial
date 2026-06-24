@@ -6,7 +6,8 @@
 # Extracts environmental covariates at sediment sites with optimized sampling
 # Creates model-ready dataset with all necessary predictors
 #
-# Input: site_locations.csv, environmental rasters (OIPC, C4, elevation, climate)
+# Input: data/frozen/leafwax_d2h_c29_calibration_v1.csv (frozen audited compilation),
+#        environmental rasters (OIPC, C4, elevation, climate)
 # Output: results/3_sediment_ready_for_modeling.rds
 #         results/3_sediment_ready_for_modeling.csv
 #───────────────────────────────────────────────────────────────────────────────
@@ -21,6 +22,12 @@ cat("================================================================\n\n")
 #───────────────────────────────────────────────────────────────────────────────
 # Parameters
 #───────────────────────────────────────────────────────────────────────────────
+# Calibration input: the FROZEN, audited compilation (built by 2i_freeze_calibration.R
+# from input_data/global_data_c29.csv with the NLM-grounded duplicate + archive
+# decisions applied). Carries archive_class (soil / lake / fluvial / marine sediment)
+# for medium-aware downstream use. See HANDOFF.md / data/frozen/*_dictionary.md.
+INPUT_CSV <- "data/frozen/leafwax_d2h_c29_calibration_v1.csv"
+
 max_radius_deg <- 5
 lat_threshold <- 50
 elev_threshold <- 1500
@@ -37,7 +44,7 @@ MAX_PFT_PIXELS <- NULL   # No limit
 #───────────────────────────────────────────────────────────────────────────────
 cat("Step 1: Loading sediment data...\n")
 
-sediment <- read_csv("input_data/global_data_c29.csv", col_types = cols(.default = col_guess())) %>%
+sediment <- read_csv(INPUT_CSV, col_types = cols(.default = col_guess())) %>%
   mutate(
     d2H_wax = as.numeric(d2H_wax),
     latitude = as.numeric(latitude),
@@ -52,8 +59,9 @@ sediment <- read_csv("input_data/global_data_c29.csv", col_types = cols(.default
       TRUE ~ d2H_wax_err
     )
   ) %>%
+  # Frozen input is already n-C29-only and finite-filtered (2i); these guards are
+  # belt-and-suspenders. `chain` is no longer a column in the frozen file.
   filter(
-    chain == 29,
     !is.na(d2H_wax),
     !is.na(latitude),
     !is.na(longitude)
@@ -668,7 +676,7 @@ cat("Saved modeling dataset: results/3_sediment_ready_for_modeling.rds\n")
 # Stamp input CSV md5 + final n into a sidecar so downstream cache guards
 # (4b_stan_prep.R, slurm/job_prep.sh) can detect stale prep against a new
 # input compilation and force a rebuild.
-input_csv <- "input_data/global_data_c29.csv"
+input_csv <- INPUT_CSV
 input_md5 <- unname(tools::md5sum(input_csv))
 sidecar_lines <- c(
   paste0("input_md5: ", input_md5),

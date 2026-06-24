@@ -101,6 +101,13 @@ ppc_settings:
 # Non-spatial models: iter=2000, adapt_delta=0.95, max_treedepth=15
 # Spatial _veg models: iter=3000, adapt_delta=0.95, max_treedepth=14
 # Spatial _env/full models: iter=3000-4000, adapt_delta=0.99, max_treedepth=12
+#
+# Retune 2026-06-23 (after the frozen-data refresh; see HANDOFF.md), targeting the
+# only three models with diagnostic flags in the 2026-05-01 run:
+#   baseline_env      iter 2000 -> 6000        (Rhat 1.011, ESS 857 -> lift mixing)
+#   full_sp           adapt_delta 0.99 -> 0.995 (8 residual divergences)
+#   full_interact_sp  adapt_delta 0.99 -> 0.995 (1 residual divergence)
+# The other 11 models were clean (0 div, Rhat < 1.008, ESS > 1000) and are unchanged.
 
 model_configs:
   # ── Non-spatial models (fast, ~1-2 hrs each) ──
@@ -142,7 +149,7 @@ model_configs:
     include_veg_interactions: false
     n_pp_knots: 0
     chains: 8
-    iter: 2000
+    iter: 6000          # retuned 2026-06-23: was 2000; lifts ESS (was 857) + Rhat (was 1.011) on the elevation B-spline coef
     adapt_delta: 0.95
     max_treedepth: 15
 
@@ -284,7 +291,7 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 4000
-    adapt_delta: 0.99
+    adapt_delta: 0.995   # retuned 2026-06-23: was 0.99; targets the 8 residual divergences
     max_treedepth: 12
 
   full_interact_sp:
@@ -298,5 +305,5 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 4000
-    adapt_delta: 0.99
+    adapt_delta: 0.995   # retuned 2026-06-23: was 0.99; targets the 1 residual divergence
     max_treedepth: 12

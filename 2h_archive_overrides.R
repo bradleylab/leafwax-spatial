@@ -13,6 +13,13 @@
 #   - Hren & Brandon 2026  : leaf-wax δ²H samples are soils (paper Fig. 2,
 #       "Soil sample location map for n-alkane δ²H data"); 9 rows tagged by
 #       river drainage are flagged for the operator, not silently reclassified.
+#   - Bai 2014 / Schwab 2015 / Lu 2020 / Feng 2019 / Jaeschke 2018 : whole-study
+#       soil override (their Sediment-tagged rows would otherwise heuristic to
+#       lake sediment); each medium confirmed from the paper full text via the
+#       NotebookLM "Leafwax" notebook (2026-06-23). DOI-keyed to avoid homograph
+#       leakage (Bai 2011 vs 2014; Gaviria-Lugo vs Lu).
+#   - Garcin 2012 : one coastal lake row (Debundscha) the 2g heuristic mis-files
+#       marine -> lake sediment (Garcin = 11 lake surface sediments, NLM).
 #
 # PROPOSAL ONLY. Non-destructive: reads input_data/global_data_c29.csv (read
 # only) + the PANGAEA file, writes data/audit/archive_overrides_proposal.csv.
@@ -89,11 +96,52 @@ res <- t(mapply(classify, targets$source, targets$location, targets$sample_type)
 targets$archive_class <- res[, 1]
 targets$evidence <- res[, 2]
 
-out <- targets %>%
+# ---- NLM-confirmed soil studies (whole-study override, keyed by DOI) ---------
+# Five studies the coordinate heuristic would mis-file as lake sediment (their
+# rows are sample_type=Sediment, on land) but whose leaf-wax δ²H samples are
+# terrestrial soils, confirmed from each paper's full text via the NotebookLM
+# "Leafwax" notebook (2026-06-23). DOI-keyed so the Bai 2011/2014 and
+# Gaviria-Lugo/Lu near-homographs cannot leak in (a coordinate/substring match
+# would: see Lessons/coordinate-collision-not-proof-of-duplicate.md).
+soil_doi <- c(
+  Bai2014      = "10.1016/j.orggeochem.2014.05.013",
+  Schwab2015   = "10.1016/j.orggeochem.2014.09.007",
+  Lu2020       = "10.1016/j.orggeochem.2020.104015",
+  Feng2019     = "10.1016/j.chemgeo.2019.05.005",
+  Jaeschke2018 = "10.1016/j.orggeochem.2018.06.006"
+)
+soil_ev <- c(
+  Bai2014      = "Bai et al. 2014: superficial soils 0-5 cm (NLM full-text, Table 1).",
+  Schwab2015   = "Schwab et al. 2015: Cameroon catchment topsoils 0-5 cm (NLM full-text).",
+  Lu2020       = "Lu et al. 2020: NE China surface soils (NLM full-text).",
+  Feng2019     = "Feng et al. 2019: 36 surface soils, A horizon 0-5 cm (NLM full-text).",
+  Jaeschke2018 = "Jaeschke et al. 2018: 54 topsoils 0-15 cm, land-use transect (NLM full-text, Table 2)."
+)
+norm_doi <- function(x) tolower(gsub("https://doi.org/", "", trimws(x), fixed = TRUE))
+d$.doi <- norm_doi(d$DOI)
+recl <- d %>% filter(.doi %in% tolower(soil_doi))
+recl$archive_class <- "soil"
+recl$evidence <- soil_ev[names(soil_doi)[match(recl$.doi, tolower(soil_doi))]]
+
+# ---- Garcin 2012: one coastal lake mis-filed marine by the heuristic ---------
+# Garcin et al. 2012 is 11 lake surface sediments (NLM full-text); the Debundscha
+# row rounds near the coast so 2g's land/ocean heuristic calls it marine. Select
+# it from 2g's output (not a hardcoded id) and reclass to lake sediment.
+ap <- read.csv(file.path(repo_root, "data", "audit", "archive_type_proposal.csv"),
+               stringsAsFactors = FALSE)
+garc_marine <- ap$obs_id[grepl("Garcin", ap$source) & ap$archive_type == "marine sediment"]
+garc <- d %>% filter(obs_id %in% garc_marine)
+garc$archive_class <- "lake sediment"
+garc$evidence <- "Garcin et al. 2012: 11 lake surface sediments (NLM full-text); coastal site mis-filed marine by coord heuristic."
+
+mk_out <- function(df) df %>%
   mutate(heuristic_sample_type = sample_type) %>%
   select(obs_id, source, compilation, location, latitude, longitude, chain,
-         d2H_wax, heuristic_sample_type, archive_class, evidence) %>%
+         d2H_wax, heuristic_sample_type, archive_class, evidence)
+
+out <- bind_rows(mk_out(targets), mk_out(recl), mk_out(garc)) %>%
   arrange(source, location)
+stopifnot(!anyDuplicated(out$obs_id))   # 2i requires unique override obs_id
 
 write.csv(out, file.path(repo_root, "data", "audit", "archive_overrides_proposal.csv"),
           row.names = FALSE)
@@ -106,3 +154,11 @@ cat("\n=== Gaviria-Lugo expected 26 fluvial / 12 soil / 29 marine / 3 review ===
 print(table(out$archive_class[grepl("Gaviria", out$source)]))
 cat("\n=== Gensel split (lake vs fluvial) ===\n")
 print(table(out$archive_class[grepl("Gensel", out$source)]))
+cat("\n=== NLM soil reclass (DOI-keyed; expect all 'soil') ===\n")
+print(table(recl$archive_class))
+cat("rows reclassified to soil:", nrow(recl),
+    "( of which were sample_type=Sediment:",
+    sum(recl$sample_type == "Sediment"), ")\n")
+cat("\n=== Garcin de-marine ===\n")
+cat("Garcin rows mis-filed marine -> lake:", nrow(garc),
+    if (nrow(garc)) paste0(" (", paste(garc$obs_id, collapse = ", "), ")") else "", "\n")
