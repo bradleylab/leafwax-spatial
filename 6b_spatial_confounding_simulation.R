@@ -21,6 +21,12 @@ library(posterior)
 library(loo)
 library(MASS)
 
+# In the container CmdStan lives at a fixed path; set it explicitly because
+# apptainer --containall does not reliably propagate CMDSTAN to cmdstanr's
+# discovery. Guarded so local runs keep their own auto-detected CmdStan.
+container_cmdstan <- "/root/.cmdstan/cmdstan-2.36.0"
+if (dir.exists(container_cmdstan)) set_cmdstan_path(container_cmdstan)
+
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) > 0 && args[1] != "all") {
   scenarios <- args[1]
