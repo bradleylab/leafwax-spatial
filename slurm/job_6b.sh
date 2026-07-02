@@ -20,7 +20,7 @@ module load ris
 module load apptainer/1.3.4
 
 cd "${WORKDIR}"
-mkdir -p logs
+mkdir -p logs rtmp
 
 SCENARIOS=(rho00 rho03 rho05 empirical)
 SCEN=${SCENARIOS[$SLURM_ARRAY_TASK_ID]}
@@ -32,8 +32,9 @@ echo "Start: $(date)"
 
 apptainer exec --no-home --containall \
     --bind "${WORKDIR}:${WORKDIR}" \
-    --bind /tmp:/tmp \
+    --bind "${WORKDIR}/rtmp:/tmp" \
     --pwd "${WORKDIR}" \
+    --env TMPDIR=/tmp \
     --env CMDSTAN=/root/.cmdstan/cmdstan-2.36.0 \
     "${SIF}" \
     Rscript 6b_spatial_confounding_simulation.R "${SCEN}"
