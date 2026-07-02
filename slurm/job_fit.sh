@@ -7,6 +7,12 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=120G
 #SBATCH --time=96:00:00
+# Node isolation: each model owns its node. Without this, SLURM packs several
+# array tasks onto one node; each spawns 8 CmdStan chains + compiles, and the
+# combined fork/process load trips the per-user process limit -> intermittent
+# "Native call to processx_exec failed" / "all chains finished unexpectedly"
+# (seen 2026-06-24 on co-scheduled nodes; MaxRSS was only ~2.3G so not OOM).
+#SBATCH --exclusive
 #SBATCH --array=0-13
 #SBATCH --output=logs/fit_%A_%a.out
 #SBATCH --error=logs/fit_%A_%a.err

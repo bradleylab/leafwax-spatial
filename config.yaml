@@ -291,8 +291,8 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 4000
-    adapt_delta: 0.995   # retuned 2026-06-23: was 0.99; targets the 8 residual divergences
-    max_treedepth: 12
+    adapt_delta: 0.999   # retuned 2026-06-28: 0.99->0.995->0.999; 0.995 left 2 divergences
+    max_treedepth: 13    # raised 12->13 with adapt_delta 0.999 to avoid treedepth saturation
 
   full_interact_sp:
     name: "full_interact_sp"
@@ -305,5 +305,5 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 4000
-    adapt_delta: 0.995   # retuned 2026-06-23: was 0.99; targets the 1 residual divergence
-    max_treedepth: 12
+    adapt_delta: 0.999   # retuned 2026-06-28: 0.99->0.995->0.999; 0.995 left 4 divergences
+    max_treedepth: 13    # raised 12->13 with adapt_delta 0.999 to avoid treedepth saturation

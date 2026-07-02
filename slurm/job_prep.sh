@@ -21,7 +21,9 @@ module load apptainer/1.3.4
 cd "${WORKDIR}"
 mkdir -p logs prepared_data model_output results
 
-INPUT_CSV="input_data/global_data_c29.csv"
+# 3_prep_data.R reads the FROZEN, audited calibration (not the raw compilation);
+# the skip guard must watch that same file so a stale prep can't be reused.
+INPUT_CSV="data/frozen/leafwax_d2h_c29_calibration_v1.csv"
 PREP_RDS="results/3_sediment_ready_for_modeling.rds"
 PREP_SIDECAR="results/3_sediment_ready_for_modeling.input_md5"
 
