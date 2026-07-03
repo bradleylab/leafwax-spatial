@@ -83,8 +83,12 @@ Continent breakdown (frozen): Asia 551, Americas 373, Africa **142**, Oceania 32
 
 - σ_residual (wax) median **15.6‰**; combined σ_total = √(15.64²+3²) = **15.93‰**.
 - Detection threshold (**δ²H_wax scale**), two-sample: ρ=0 **44.1**, ρ=0.5 **31.2**, ρ=0.8 **19.7**, ρ=0.9 **14.0‰**.
-- **δ²H_precip scale** (÷ local slope ≈0.545): single-sample SD **≈29‰**; two-sample ρ=0 threshold **≈81‰**. ⚠️ Confirm exact precip-scale values via the `leafwax` inversion re-run before quoting (currently derived via ÷slope from wax-scale).
-- Fig 5 endpoints: spatial ρ=0.9 → **14.0‰**; non-spatial ρ=0 → **58.7‰** (σ_baseline 20.96‰).
+- **δ²H_precip scale** — CONFIRMED by per-draw propagation (`scripts/regen_precip_space.R`,
+  `REGENERATED_NUMBERS_precip_space_v10.md`), reconstruction model **baseline_env_sp**:
+  - single-sample reconstruction SD **29.3‰ [24.1, 37.6]** → quote "≈29‰ (24–38‰)" ✓ matches draft.
+  - two-sample threshold: ρ=0 **81.1‰**, ρ=0.5 **58.4**, ρ=0.8 **38.8**, ρ=0.9 **29.5‰** → "≈81‰" ✓.
+  - (full_sp gives SD 30.0, ρ=0 threshold 83.2; baseline_sp 28.2 / 78.0 — model-dependent; the draft's 29/81 = baseline_env_sp.)
+- Fig 5 endpoints (wax scale): spatial ρ=0.9 → **14.0‰**; non-spatial ρ=0 → **58.7‰** (σ_baseline 20.96‰).
 
 ## Confounding simulation (Fig 3, confounding_v2, 2026-07-02) — verified
 
@@ -102,8 +106,27 @@ Empirical headline (main text): true **0.39**, OLS **0.83**, GP **0.66**, ~40% r
 - 3a uniform 0.70 → **0.68 [0.61, 0.75]** (CI covers truth).
 - 3b spatially varying mean 0.65 → **0.67 [0.60, 0.75]** (CI covers truth).
 
-## OPEN — not yet locked
+## Prior / hyperparameter sensitivity (frozen re-run, SLURM 1930423, 2026-07-03)
 
-1. **Prior-sensitivity (6c, SLURM 1930423)** re-running on frozen data (7 variants of baseline_veg_sp). GCA quoted posterior medians 0.614–0.638. Fold in when complete.
-2. **Precip-scale inversion SD (~29‰) + two-sample threshold (~81‰)**: confirm from a `leafwax`-package inversion on the frozen fit, rather than the ÷slope derivation above.
-3. **Prior tables backed up** at `results/c2_run_20260626/tables_prev_20260703/` (pre-frozen for reference).
+7 variants of `baseline_veg_sp` refit on frozen data; β_OIPC posterior median [95% CI]:
+
+| variant | median | 95% CI |
+|---|---:|---|
+| beta_oipc_prior_wider | 0.615 | 0.476–0.750 |
+| beta_oipc_prior_shifted | 0.614 | 0.476–0.748 |
+| beta_oipc_prior_uninformative | 0.615 | 0.482–0.744 |
+| pc_slope_relaxed | 0.629 | 0.494–0.762 |
+| pc_slope_very_relaxed | 0.639 | 0.500–0.779 |
+| ls_longer | 0.627 | 0.497–0.755 |
+| ls_shorter | 0.619 | 0.491–0.746 |
+
+**Range of medians 0.614–0.639**, all CIs overlapping — slope is prior-robust
+(GCA quoted 0.614–0.638; holds on frozen data).
+
+## OPEN — none. Phase 1 numbers are locked.
+
+## RESOLVED
+
+- ✅ Prior-sensitivity re-run on frozen data (medians 0.614–0.639; table above).
+- ✅ Precip-scale reconstruction SD (29‰) + two-sample thresholds (81‰) confirmed via per-draw propagation on frozen `baseline_env_sp` (see detection-thresholds section).
+- Prior tables backed up at `results/c2_run_20260626/tables_prev_20260703/` (pre-frozen, for reference).
