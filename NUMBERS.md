@@ -15,6 +15,24 @@ must draw from this file, not from older drafts or the GCA numbers.
   (→ `model_analysis/tables/*.csv`, `manuscript/drafts/REGENERATED_NUMBERS_v10.md`).
 - Sediment for classical stats: `results/3_sediment_ready_for_modeling.rds` (frozen, 1128 rows).
 
+## How to regenerate (replication)
+
+All commands run from the analysis-repo root with the frozen run selected via
+`LEAFWAX_RUN_DIR` (models) / `LEAFWAX_CONFOUNDING_DIR` (confounding sim). `MO` below
+= `results/c2_run_20260626/model_output`, `RUN` = `results/c2_run_20260626`.
+
+| Artifact | Command | Output |
+|---|---|---|
+| Core tables + main-text scalars (slopes, variance, RMSE, CIs, C₃/C₄, veg coeffs) | `LEAFWAX_RUN_DIR=MO Rscript scripts/regen_tables_v10.R` + `scripts/regen_manuscript_numbers.R` | `model_analysis/tables/*.csv` |
+| Precip-scale reconstruction SD + detection thresholds | `LEAFWAX_RUN_DIR=MO Rscript scripts/regen_precip_space.R` | `manuscript/drafts/REGENERATED_NUMBERS_precip_space_v10.md` |
+| Table S3 (regional in-sample RMSE, 14×6) | `LEAFWAX_RUN_DIR=MO Rscript 5b_overfitting_diagnostics.R` | `manuscript/tables/Table_S2_regional_performance.csv` |
+| Table S4 + Fig 3 (confounding stress test) | `LEAFWAX_CONFOUNDING_DIR=RUN Rscript manuscript/drafts/comms_ee/analysis/make_figures.R NG3` | prints "Figure NG3 source values"; `figures/Figure_3.pdf` |
+| Table S4 caption correlation (real-data ρ) | `5d_spatial_confounding_check.R` logic: `cor(colMeans(alpha_spatial), oipc_values[,1])` on `baseline_env_sp` | 0.4555 |
+| Table S5 (prior sensitivity, 7 variants) | C2 SLURM 1930423 refits of `baseline_veg_sp` | medians 0.614–0.639 |
+| Table S7 + within/between decomposition | `Rscript manuscript/drafts/comms_ee/analysis/within_between_decomposition.R` | `manuscript/drafts/comms_ee/tables/{regional_slopes,within_between_decomposition}.csv` |
+| Fig S4 panels (integration OLS) | baseline `stan_data$oipc_values` (scales 1,3,5,10,20,40,70,100,150 km): A=`oipc_mean`, B=col@10 km, C=equal-weight, D=Bayesian effective scale | slopes 0.833 / 0.797 / 0.815 / 0.779 |
+| Fig 5 (vegetation main effects + interactions) | `LEAFWAX_RUN_DIR=MO Rscript manuscript/drafts/comms_ee/analysis/make_figures.R VEG` | `figures/Figure_5.pdf` |
+
 ## ⚠️ STALE numbers to fix in both manuscripts
 
 | quantity | current draft | frozen truth | source |
@@ -92,12 +110,18 @@ Continent breakdown (frozen): Asia 551, Americas 373, Africa **142**, Oceania 32
 
 ## Confounding simulation (Fig 3, confounding_v2, 2026-07-02) — verified
 
-| scenario | achieved ρ | true.std | GP post.mean | OLS | % bias absorbed |
+| scenario | achieved ρ | true.std | GP post.mean | OLS (oipc[,1]) | % bias absorbed |
 |---|---:|---:|---:|---:|---:|
 | rho00 | 0.000 | 0.474 | 0.511 | 0.734 | 85.8 |
 | rho03 | 0.639 | 0.414 | 0.613 | 0.798 | 48.1 |
 | empirical | 0.726 | 0.394 | 0.664 | 0.826 | 37.5 |
 | rho05 | 0.752 | 0.389 | 0.682 | 0.835 | 34.2 |
+
+**Note on OLS definition:** the table's OLS column uses `oipc_values[,1]` (1 km point).
+The manuscript (Fig 3 / `make_figures.R` NG3 and supplement S2.6.2–3) uses the multi-scale
+**rowMeans(oipc)** predictor, giving OLS = **0.735 / 0.800 / 0.828 / 0.837** (rho00/rho03/
+empirical/rho05) and GP posterior **median** 0.510 / 0.612 / 0.662 / 0.681 (vs the means above).
+Table S4 and the S2.6.2 prose use these rowMeans/median values (empirical OLS 0.828, GP 0.662).
 
 Empirical headline (main text): true **0.39**, OLS **0.83**, GP **0.66**, ~40% removed / ~60% remains.
 
@@ -150,18 +174,15 @@ extracted from `results/c2_run_20260626/confounding_v2_3c_*` via `make_figures.R
   slope **0.779** (baseline posterior median) / R² 0.697 / RMSE 21.2. Only A and D slopes shifted
   (0.832→0.833, 0.778→0.779) vs the pre-freeze figure; the scatter is visually unchanged.
 
-## OPEN
-
-- Table S4 caption note "empirical ρ_c ≈ 0.45 matches the observed real-data
-  intercept↔δ²H_precip correlation": the stale `model_analysis/spatial_confounding/`
-  summary gives baseline_env_sp = 0.455 on the 1129 data; the frozen (1128) value is
-  expected ≈0.45 (one dropped site) but has not been recomputed. Caption "≈0.45" holds
-  regardless (approximate + the scenario is anchored at ρ_c=0.45). Low priority.
+## OPEN — none. Phase 1 + supplement-table numbers are locked.
 
 ## RESOLVED
 
 - ✅ Supplement Tables S3, S5, S7 + Fig S4 regenerated on frozen run and synced to supplement.tex (2026-07-03).
 - ✅ Supplement Table S4 (confounding stress test) synced to frozen confounding_v2 (2026-07-03).
+- ✅ Table S4 caption note verified: real-data `baseline_env_sp` spatial-intercept ↔ δ²H_precip
+  correlation = **0.4555** on frozen 1128 data (alpha_spatial posterior means vs `oipc_values[,1]`,
+  the `5d_spatial_confounding_check.R` definition) — unchanged from the 1129 value, so "≈0.45" holds.
 - ✅ Prior-sensitivity re-run on frozen data (medians 0.614–0.639; table above).
 - ✅ Precip-scale reconstruction SD (29‰) + two-sample thresholds (81‰) confirmed via per-draw propagation on frozen `baseline_env_sp` (see detection-thresholds section).
 - Prior tables backed up at `results/c2_run_20260626/tables_prev_20260703/` (pre-frozen, for reference).
