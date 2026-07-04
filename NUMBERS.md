@@ -178,6 +178,13 @@ extracted from `results/c2_run_20260626/confounding_v2_3c_*` via `make_figures.R
 
 ## RESOLVED
 
+- ✅ Full manuscript number audit (main + supplement vs frozen run, codex + independent, 2026-07-03).
+  Fixed: main R2 slopes (0.779/0.575/0.53–0.62), Fig 1c CI span (−0.38 to 1.84), Fig 2 span (0.53–0.84),
+  supplement simrecovery 3a/3b (0.68/0.67), confounding biases (+0.20/+0.27/+0.29), 92.2%, R² 0.697.
+- ✅ Supplement diagnostics verified on frozen run (subagent, 2026-07-03): OLS inverse example, banded
+  Moran (100 km band 0.57→0.56), elastic-net OIPC coef 0.66→0.65, VIF max-temp 19.8→19.4 / soil 5.6→5.5,
+  density Medium count 431→430 (225+430+473=1128), PI widths 63.9/66.2, PD min eigenvalue 8.5e-5→2.0e-4,
+  divergence-sensitivity ranges (exact match). Elastic-net ordering reworded (max temp is 2nd, excluded for VIF).
 - ✅ Supplement Tables S3, S5, S7 + Fig S4 regenerated on frozen run and synced to supplement.tex (2026-07-03).
 - ✅ Supplement Table S4 (confounding stress test) synced to frozen confounding_v2 (2026-07-03).
 - ✅ Table S4 caption note verified: real-data `baseline_env_sp` spatial-intercept ↔ δ²H_precip
