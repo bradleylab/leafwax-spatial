@@ -30,6 +30,7 @@ All commands run from the analysis-repo root with the frozen run selected via
 | Table S4 caption correlation (real-data ρ) | `5d_spatial_confounding_check.R` logic: `cor(colMeans(alpha_spatial), oipc_values[,1])` on `baseline_env_sp` | 0.4555 |
 | Table S5 (prior sensitivity, 7 variants) | C2 SLURM 1930423 refits of `baseline_veg_sp` | medians 0.614–0.639 |
 | Table S7 + within/between decomposition | `Rscript manuscript/drafts/comms_ee/analysis/within_between_decomposition.R` | `manuscript/drafts/comms_ee/tables/{regional_slopes,within_between_decomposition}.csv` |
+| Overfitting PI widths by density stratum (S2.5.3) | `LEAFWAX_RUN_DIR=MO Rscript manuscript/drafts/comms_ee/analysis/regen_predictive_interval_widths.R` | `manuscript/drafts/comms_ee/tables/predictive_interval_widths.csv`; baseline_env_sp 64.3 dense→65.0 sparse, all 9 spatial models keep ordering (NN-distance terciles). Replaces earlier ad-hoc 63.8/66.1. |
 | Fig S4 panels (integration OLS) | baseline `stan_data$oipc_values` (scales 1,3,5,10,20,40,70,100,150 km): A=`oipc_mean`, B=col@10 km, C=equal-weight, D=Bayesian effective scale | slopes 0.833 / 0.797 / 0.815 / 0.779 |
 | Fig 5 (vegetation main effects + interactions) | `LEAFWAX_RUN_DIR=MO Rscript manuscript/drafts/comms_ee/analysis/make_figures.R VEG` | `figures/Figure_5.pdf` |
 
