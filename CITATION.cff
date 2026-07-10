@@ -14,7 +14,7 @@ abstract: >-
   against precipitation isotope composition and environmental covariates.
   Implements 14 model variants in Stan with a Matern 3/2 Gaussian process
   predictive-process approximation on 125 globally distributed knots.
-  Compares spatial and non-spatial calibrations across n = 1,129 surface
+  Compares spatial and non-spatial calibrations across n = 1,128 surface
   sediment and soil sites from 73 publications.
 keywords:
   - leaf wax
@@ -27,8 +27,8 @@ keywords:
   - hierarchical model
   - precipitation isotopes
 license: MIT
-version: "1.0.2"
-date-released: "2026-05-16"
+version: "1.1.0"
+date-released: "2026-07-09"
 repository-code: "https://github.com/bradleylab/leafwax-spatial"
 url: "https://doi.org/10.5281/zenodo.20172575"
 identifiers:

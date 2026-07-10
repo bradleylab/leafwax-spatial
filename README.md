@@ -29,7 +29,7 @@ leave-one-out cross-validation.
 | `slurm/` | SLURM submission scripts (one production example) |
 | `Dockerfile`, `.github/workflows/build-container.yml` | Containerized environment + CI |
 | `config.yaml` | MCMC settings + 14 model specifications |
-| `input_data/global_data_c29.csv` | Compiled δ²H<sub>wax</sub> dataset (1,136 rows from 73 publications; the modeling pipeline retains 1,129 after filtering, the n reported in Bradley 2026) |
+| `input_data/global_data_c29.csv` | Compiled δ²H<sub>wax</sub> dataset (1,136 rows from 73 publications; the modeling pipeline retains 1,128 after filtering, the n reported in Bradley 2026) |
 
 The repo does **not** include manuscript drafts, figure/table generation
 code, or the upstream pipeline that builds the input compilation.
