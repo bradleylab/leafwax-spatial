@@ -64,7 +64,7 @@ SPATIAL_MODELS <- c(
 )
 
 # Marginals to locate divergences within.
-LOC_VARS <- c("lp__", "log_ls_spatial_raw[1]",
+LOC_VARS <- c("lp__", "log_ls_spatial_km[1]",   # renamed from log_ls_spatial_raw (chordal km param)
               "sigma_intercept_raw[1]", "sigma_slope_raw[1]",
               "sigma_intercept_spatial", "sigma_slope_spatial",
               "ls_intercept_km", "ls_slope_km", "beta_0", "beta_oipc", "sigma")

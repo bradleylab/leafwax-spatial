@@ -6,16 +6,16 @@
 #
 # APRIL_RUN selection (in priority order):
 #   1. Environment variable LEAFWAX_RUN_DIR (absolute or relative path)
-#   2. results/c2_run_20260501   (default — current v10 run mirror)
+#   2. results/c2_run_20260626/model_output   (default frozen refit)
 #
 # The variable is still named APRIL_RUN for backward compatibility with 5a-5e
 # callers; semantically it is "the C2 run mirror to read posteriors from".
 # Override at the shell:
-#   LEAFWAX_RUN_DIR=results/c2_run_20260414 Rscript 5a_model_validation.R
+#   LEAFWAX_RUN_DIR=results/c2_run_20260626/model_output Rscript 5a_model_validation.R
 
 library(posterior)
 
-DEFAULT_RUN_NAME <- "c2_run_20260501"
+DEFAULT_RUN_NAME <- file.path("c2_run_20260626", "model_output")
 
 .resolve_run_dir <- function() {
   env_override <- Sys.getenv("LEAFWAX_RUN_DIR", unset = "")

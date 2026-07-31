@@ -31,7 +31,11 @@ suppressPackageStartupMessages({
 
 source("scripts/posterior_helpers.R")
 
-OUT_PATH   <- "manuscript/drafts/REGENERATED_NUMBERS_precip_space_v10.md"
+# Set LEAFWAX_RETRACE_OUT_DIR to redirect output into a sandbox (re-trace diff);
+# unset writes to the manuscript. Only the output DIR changes, not any number.
+.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
+if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
+OUT_PATH   <- if (nzchar(.retrace_out)) file.path(.retrace_out, "REGENERATED_NUMBERS_precip_space_v10.md") else "manuscript/drafts/REGENERATED_NUMBERS_precip_space_v10.md"
 SIGMA_MEAS <- 3        # representative analytical SD on wax (per mil)
 RHO_GRID   <- c(0, 0.5, 0.8, 0.9)
 FOCUS_MODELS <- c("baseline", "baseline_sp", "baseline_env_sp", "full_sp", "full_interact_sp")

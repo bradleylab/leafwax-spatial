@@ -1,7 +1,7 @@
 # regen_manuscript_numbers.R
 #
 # Recompute every numeric quantity that appears in the manuscript or
-# supplement so we can sanity-check the v10 (c2_run_20260501) run before
+# supplement from the frozen refit (c2_run_20260626/model_output) before
 # updating prose. Output: manuscript/drafts/REGENERATED_NUMBERS_v10.md.
 #
 # Mirrors the structure of REGENERATED_NUMBERS.md (v8, c2_run_20260414)
@@ -26,7 +26,12 @@ suppressPackageStartupMessages({
 
 source("scripts/posterior_helpers.R")
 
-OUT_PATH <- "manuscript/drafts/REGENERATED_NUMBERS_v10.md"
+# Output goes to the manuscript by default; set LEAFWAX_RETRACE_OUT_DIR to
+# redirect into a sandbox (chordal re-trace vs frozen diff, without clobbering the
+# in-review manuscript). Only the output DIR changes; every number is unchanged.
+.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
+if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
+OUT_PATH <- if (nzchar(.retrace_out)) file.path(.retrace_out, "REGENERATED_NUMBERS_v10.md") else "manuscript/drafts/REGENERATED_NUMBERS_v10.md"
 SEED <- 42
 set.seed(SEED)
 
@@ -303,7 +308,7 @@ fig5_nonsp_hi <- 1.96 * sqrt(2 * 1.0) * sqrt(sigma_baseline_mean^2 + sigma_anal^
 # WRITE REPORT ----------------------------------------------------------------
 
 sink(OUT_PATH)
-header(1, "Regenerated numeric quantities — v10 (c2_run_20260501)")
+header(1, "Regenerated numeric quantities — frozen refit (c2_run_20260626)")
 cat(sprintf("Generated %s. Run dir: `%s`.\n\n",
             format(Sys.time(), "%Y-%m-%d %H:%M %Z"),
             APRIL_RUN))

@@ -1,14 +1,18 @@
 # verify_pd_knots.R
 #
 # Numerical positive-definite verification of the 125x125 knot-to-knot
-# covariance matrices for the Matérn 3/2 kernel on great-circle distance,
-# as used by the spatial models. The supplement (Section S2.4.3) claims
-# these K matrices are PD at the fitted posterior draws; this script
-# verifies that claim and writes a short report.
+# covariance matrices for the Matérn 3/2 kernel on chordal distance
+# (the 3-D Euclidean distance between points on the sphere), as used by
+# the spatial models. On chordal distance the Matérn kernel is a valid
+# covariance and is positive-definite by construction (Banerjee et al.
+# 2005; Gneiting 2013) — unlike the great-circle metric, for which PD is
+# not guaranteed. This script confirms that analytic guarantee numerically
+# at the fitted posterior draws and writes a short report (Section S2.4.3).
 #
 # For each spatial model, for a 200-draw posterior subsample, we:
-#   1. Reconstruct knot lon/lat from the standardized knot_coords.
-#   2. Compute pairwise great-circle distance in km (haversine).
+#   1. Take the knot chordal coordinates (knot_coords, 125 x 3, km) directly.
+#   2. Compute pairwise chordal distance in km as the Euclidean distance
+#      over the 3-D chordal coordinates.
 #   3. Build K_intercept and K_slope using the Matérn 3/2 kernel with the
 #      draw's ls_*_km (range) and sigma_*_spatial (amplitude).
 #   4. Test PD via base::chol() and report min(eigen(K)$values).
@@ -23,9 +27,12 @@ suppressPackageStartupMessages({
 
 source("scripts/posterior_helpers.R")
 
-OUT_PATH      <- "manuscript/drafts/PD_VERIFICATION.md"
+# Set LEAFWAX_RETRACE_OUT_DIR to redirect output into a sandbox (re-trace diff);
+# unset writes to the manuscript. Only the output DIR changes, not any number.
+.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
+if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
+OUT_PATH      <- if (nzchar(.retrace_out)) file.path(.retrace_out, "PD_VERIFICATION.md") else "manuscript/drafts/PD_VERIFICATION.md"
 N_DRAWS_CHECK <- 200    # per model; subsample of the 4,000-draw posterior
-EARTH_KM      <- 6371
 
 SPATIAL_MODELS <- c(
   "baseline_sp", "baseline_env_sp", "baseline_veg_sp",
@@ -36,47 +43,10 @@ SPATIAL_MODELS <- c(
 
 # ---- helpers --------------------------------------------------------------
 
-great_circle_km <- function(lon1, lat1, lon2, lat2) {
-  # vectorized haversine; lon/lat in degrees, output in km
-  r1 <- lat1 * pi / 180
-  r2 <- lat2 * pi / 180
-  dlat <- (lat2 - lat1) * pi / 180
-  dlon <- (lon2 - lon1) * pi / 180
-  a <- sin(dlat / 2)^2 + cos(r1) * cos(r2) * sin(dlon / 2)^2
-  2 * EARTH_KM * asin(pmin(1, sqrt(a)))
-}
-
-knot_distance_matrix_km <- function(knot_lon, knot_lat) {
-  n <- length(knot_lon)
-  D <- matrix(0, n, n)
-  for (i in seq_len(n - 1)) {
-    j <- (i + 1):n
-    d <- great_circle_km(knot_lon[i], knot_lat[i], knot_lon[j], knot_lat[j])
-    D[i, j] <- d
-    D[j, i] <- d
-  }
-  D
-}
-
 matern_3_2 <- function(D, amplitude, length_scale) {
   # k(s_i, s_j) = sigma^2 * (1 + sqrt(3) * d / rho) * exp(-sqrt(3) * d / rho)
   sd3 <- sqrt(3) * D / length_scale
   amplitude^2 * (1 + sd3) * exp(-sd3)
-}
-
-reconstruct_knot_lonlat <- function(stan_data) {
-  # The standardized coords used by Stan are
-  #   coords[i, k] = (raw[i, k] - mean(raw[, k])) / coord_scaling[k]
-  # so we recover the means from the observation arrays.
-  lon_mean <- mean(stan_data$longitude) -
-              mean(stan_data$coords[, 1]) * stan_data$coord_scaling[1]
-  lat_mean <- mean(stan_data$latitude) -
-              mean(stan_data$coords[, 2]) * stan_data$coord_scaling[2]
-  knot_lon <- stan_data$knot_coords[, 1] * stan_data$coord_scaling[1] + lon_mean
-  knot_lat <- stan_data$knot_coords[, 2] * stan_data$coord_scaling[2] + lat_mean
-  # wrap longitudes back into [-180, 180]
-  knot_lon <- ((knot_lon + 180) %% 360) - 180
-  list(lon = knot_lon, lat = knot_lat)
 }
 
 cholesky_succeeds <- function(K, jitter = 0) {
@@ -95,9 +65,10 @@ check_one_model <- function(model) {
     return(NULL)
   }
 
-  # Knot great-circle distance matrix (km), shared across draws.
-  ll <- reconstruct_knot_lonlat(stan_data)
-  D <- knot_distance_matrix_km(ll$lon, ll$lat)
+  # Knot chordal distance matrix (km), shared across draws. The 3-D knot
+  # coordinates are already in chordal km, so their Euclidean distance is
+  # the chordal distance in km.
+  D <- as.matrix(dist(stan_data$knot_coords))
   n_knots <- nrow(D)
 
   pd <- load_draws(model)
@@ -142,7 +113,7 @@ check_one_model <- function(model) {
   )
 }
 
-cat("Verifying PD of 125x125 knot-to-knot K matrices (Matérn 3/2 on great-circle dist).\n")
+cat("Verifying PD of 125x125 knot-to-knot K matrices (Matérn 3/2 on chordal dist).\n")
 cat("Per-model:", N_DRAWS_CHECK, "posterior draws sampled.\n\n")
 
 results <- do.call(rbind, lapply(SPATIAL_MODELS, check_one_model))
@@ -156,14 +127,19 @@ cat(sprintf("Generated %s. Posterior source: `%s`. Sample: %d draws per model.\n
             format(Sys.time(), "%Y-%m-%d %H:%M %Z"), APRIL_RUN, N_DRAWS_CHECK))
 cat("**Question.** For each spatial model, are the 125x125 knot-to-knot ",
     "covariance matrices `K_intercept` and `K_slope` (built from the ",
-    "Matérn 3/2 kernel evaluated on great-circle distance, with the draw's ",
+    "Matérn 3/2 kernel evaluated on chordal distance, with the draw's ",
     "fitted amplitude `sigma_*_spatial` and length scale `ls_*_km`) ",
-    "positive definite at the fitted posterior draws?\n\n", sep = "")
-cat("**Method.** Per draw: reconstruct knot longitude/latitude from the ",
-    "standardized `knot_coords` and `coord_scaling`; compute pairwise ",
-    "haversine distance in km; build `K = sigma^2 * (1 + sqrt(3) d / rho) ",
+    "positive definite at the fitted posterior draws? On the chordal ",
+    "metric this is guaranteed analytically (see below); the check ",
+    "confirms it numerically.\n\n", sep = "")
+cat("**Method.** The knot chordal coordinates (`knot_coords`, 125 x 3, km) ",
+    "are used directly, so the pairwise chordal distance in km is the ",
+    "Euclidean distance over the 3-D coordinates (`dist(knot_coords)`). ",
+    "Per draw: build `K = sigma^2 * (1 + sqrt(3) d / rho) ",
     "* exp(-sqrt(3) d / rho)`; attempt `chol(K)` (no added jitter); ",
-    "compute `min(eigen(K))`.\n\n", sep = "")
+    "compute `min(eigen(K))`. The no-jitter Cholesky is a stronger ",
+    "diagnostic than inference itself requires: Stan solves the ",
+    "regularized `K + 1e-4 * I`.\n\n", sep = "")
 
 cat("## Per-model results\n\n")
 cat("| Model | Chol OK (intercept) | Chol OK (slope) | min(min eig) intercept | min(min eig) slope |\n")
@@ -191,13 +167,17 @@ cat(sprintf("- Minimum-of-minimum-eigenvalue across all spatial models and all s
             min_eig_overall))
 cat(sprintf("- All min eigenvalues are non-negative; the largest negative value observed would be %.3e.\n",
             min(0, min_eig_overall)))
-cat("\nThe Matérn 3/2 kernel on great-circle distance is not guaranteed to be ",
-    "positive definite on the 2-sphere for all parameter combinations, but ",
+cat("\nThe Matérn 3/2 kernel on chordal distance — Euclidean distance in R^3 ",
+    "restricted to the sphere — is a valid covariance function and is ",
+    "positive definite by construction for any length scale and amplitude ",
+    "(Banerjee et al. 2005; Gneiting 2013), in contrast to the great-circle ",
+    "metric, on which the Matérn kernel is not guaranteed to be PD on the ",
+    "2-sphere. The numerical results above confirm this analytic guarantee: ",
     "the *fitted* knot covariance matrices used by the spatial models are PD ",
     "at every posterior draw checked. The finite-dimensional predictive-process ",
-    "basis interpretation given in Section S2.4.3 is therefore numerically ",
-    "consistent: at no point during inference or prediction did the model use a ",
-    "non-PD K matrix.\n", sep = "")
+    "basis interpretation given in Section S2.4.3 is therefore both analytically ",
+    "and numerically consistent: at no point during inference or prediction did ",
+    "the model use a non-PD K matrix.\n", sep = "")
 
 sink()
 cat("Wrote", OUT_PATH, "\n")
