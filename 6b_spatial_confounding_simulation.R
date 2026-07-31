@@ -67,8 +67,6 @@ cat("Model compiled.\n\n")
 # orig_draws is a posterior::draws_array — extract by name.
 lambda_km <- mean(posterior::extract_variable(orig_draws, "lambda_decay"))
 ls_km <- mean(posterior::extract_variable(orig_draws, "ls_intercept_km"))
-coord_scale_km <- mean(stan_data$coord_scaling) * 111.0
-ls_std <- ls_km / coord_scale_km
 
 # sigma_intercept_spatial is back-transformed to original units in generated
 # quantities, so dividing by d2H_wax_sd_original gives standardized units
@@ -102,7 +100,7 @@ for (i in 1:N) {
   if (i < N) {
     for (j in (i + 1):N) {
       d <- sqrt(sum((obs_coords[i, ] - obs_coords[j, ])^2))
-      scaled <- sqrt3 * d / ls_std
+      scaled <- sqrt3 * d / ls_km
       K_obs[i, j] <- (1 + scaled) * exp(-scaled)
       K_obs[j, i] <- K_obs[i, j]
     }
@@ -269,8 +267,72 @@ fit_and_save <- function(stan_data_orig, d2h_sim, scenario_name,
 }
 
 
+# ─── Empirical-anchor calibration (chordal) ───
+# The "empirical" scenario is NOT a fixed rho. Its target rho is calibrated so
+# that the ACHIEVED correlation cor(z_confound, oipc_weighted) equals the
+# intercept-OIPC correlation actually observed in the source spatial model.
+# Under the chordal metric this correlation moved, so the old hard-coded 0.45
+# ("empirical") no longer reflects the data.
+#
+# The empirical target r is the SAME statistic regen_manuscript_numbers.R reports
+# for the intercept-OIPC correlation: the observation-level posterior-mean
+# intercept (alpha_spatial) correlated against the SINGLE-SCALE predictor
+# sed$oipc_d2h20 (NOT the multi-scale oipc_weighted). Anchoring to the reported
+# single-scale statistic keeps the "empirical" scenario tied to the manuscript's
+# reported r (per the 2026-07-29 codex diff review). Correlation is scale-
+# invariant, so regen's per-mil back-transform of alpha_spatial does not change r
+# and is omitted. Achieved rho is still measured vs oipc_weighted below (the
+# predictor the generator mixes into z_confound); uniroot equates that achieved
+# correlation to this reported single-scale target value.
+alpha_vars <- grep("^alpha_spatial\\[", posterior::variables(orig_draws),
+                   value = TRUE)
+if (length(alpha_vars) == 0) {
+  stop("alpha_spatial[...] not found in ", draws_path,
+       " -- cannot calibrate the empirical confounding anchor.")
+}
+alpha_pm <- posterior::summarise_draws(
+  posterior::subset_draws(orig_draws, variable = alpha_vars), mean)$mean
+# Single-scale OIPC (oipc_d2h20), matching regen_manuscript_numbers.R's reported r.
+sed_path <- "results/3_sediment_ready_for_modeling.rds"
+if (!file.exists(sed_path)) stop("sediment frame not found at ", sed_path,
+                                 " -- needed for the empirical-anchor target r.")
+sed_df <- readRDS(sed_path)
+if (is.null(sed_df$oipc_d2h20)) stop("oipc_d2h20 column missing from sediment frame.")
+if (length(alpha_pm) != nrow(sed_df))
+  stop("alpha_spatial length (", length(alpha_pm), ") != sediment rows (",
+       nrow(sed_df), ") -- site order/length mismatch.")
+empirical_r <- cor(alpha_pm, sed_df$oipc_d2h20)
+cat(sprintf("Empirical intercept-OIPC correlation (%s, chordal, oipc_d2h20): %.4f\n",
+            SRC_MODEL, empirical_r))
+
+# Achieved rho as a function of target rho, for the fixed z_indep / oipc draw.
+# Must mirror generate_confounding_intercept() exactly so the calibrated target
+# reproduces the achieved rho reported in the scenario loop.
+achieved_rho_fn <- function(target) {
+  oipc_std <- (oipc_weighted - mean(oipc_weighted)) / sd(oipc_weighted)
+  z <- target * sigma_int_std * oipc_std + sqrt(1 - target^2) * z_indep
+  cor(z, oipc_weighted)
+}
+
+# Solve achieved_rho_fn(target) = empirical_r for target in [0, 0.9].
+empirical_target <- tryCatch(
+  uniroot(function(t) achieved_rho_fn(t) - empirical_r,
+          interval = c(0, 0.9))$root,
+  error = function(e) {
+    stop("Empirical-anchor calibration failed to bracket a root in [0, 0.9] ",
+         "(empirical_r = ", round(empirical_r, 4), "); achieved-rho range is [",
+         round(achieved_rho_fn(0), 4), ", ", round(achieved_rho_fn(0.9), 4),
+         "]. Original error: ", conditionMessage(e))
+  }
+)
+cat(sprintf("Calibrated empirical target rho=%.4f -> achieved rho=%.4f\n",
+            empirical_target, achieved_rho_fn(empirical_target)))
+
 # ─── Run scenarios ───
-rho_values <- c(rho00 = 0.0, rho03 = 0.3, rho05 = 0.5, empirical = 0.45)
+# Fixed stress scenarios (0.0, 0.3, 0.5) are TARGET rho, kept for comparability.
+# The empirical scenario uses the calibrated target from above.
+rho_values <- c(rho00 = 0.0, rho03 = 0.3, rho05 = 0.5,
+                empirical = empirical_target)
 results <- list()
 
 for (scenario in scenarios) {
@@ -295,13 +357,22 @@ for (scenario in scenarios) {
   noise <- rnorm(N, 0, sqrt(sigma_resid^2 + stan_data$d2H_wax_err^2))
   d2h_sim <- mu_sim + noise
 
+  rho_achieved <- cor(z_confound, oipc_weighted)
+  scenario_label <- if (scenario == "empirical") {
+    sprintf("empirical (calibrated to achieved r=%.3f)", rho_achieved)
+  } else {
+    scenario
+  }
+
   metadata <- list(
     scenario = scenario,
+    label = scenario_label,
     rho = rho,
+    rho_achieved = rho_achieved,
     sigma_z = sigma_int_std,
     sigma_resid = sigma_resid,
     true_beta_oipc_unstd = TRUE_BETA_OIPC_UNSTD,
-    ls_std = ls_std,
+    ls_km = ls_km,
     lambda_km = lambda_km,
     version = "v2",
     fixes = c(

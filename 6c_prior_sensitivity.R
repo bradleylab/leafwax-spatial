@@ -63,19 +63,26 @@ experiments <- list(
     type = "stan_data",
     modifications = list(pc_prior_slope_u = 1.0, pc_prior_slope_alpha = 0.10)
   ),
+  # Length-scale prior variants. Under the chordal parameterization the LS prior
+  # is on log(km) and its mean/sd are passed as data (ls_prior_mean_log/sd); a
+  # sensitivity variant overrides that with a hardcoded shifted mean. The former
+  # std-unit shifts (-0.5 / -1.5) convert to km via coord_scale_km = 6434.1:
+  #   -0.5 std -> exp(-0.5)*6434.1 = 3902 km  -> log = 8.269  (longer)
+  #   -1.5 std -> exp(-1.5)*6434.1 = 1436 km  -> log = 7.269  (shorter)
+  # Both stay within the log_ls_spatial_km bounds [6.769, 8.769].
   "4c2" = list(
     name = "ls_longer",
-    description = "log_ls_spatial ~ Normal(-0.5, 0.4)",
+    description = "length-scale prior median ~3902 km (log-km 8.269; former std -0.5)",
     type = "stan_model",
-    find_line = "log_ls_spatial_raw[1] ~ normal(-1.0, 0.4);",
-    replace_line = "log_ls_spatial_raw[1] ~ normal(-0.5, 0.4);"
+    find_line = "log_ls_spatial_km[1] ~ normal(ls_prior_mean_log, ls_prior_sd_log);",
+    replace_line = "log_ls_spatial_km[1] ~ normal(8.269, 0.4);"
   ),
   "4c3" = list(
     name = "ls_shorter",
-    description = "log_ls_spatial ~ Normal(-1.5, 0.4)",
+    description = "length-scale prior median ~1436 km (log-km 7.269; former std -1.5)",
     type = "stan_model",
-    find_line = "log_ls_spatial_raw[1] ~ normal(-1.0, 0.4);",
-    replace_line = "log_ls_spatial_raw[1] ~ normal(-1.5, 0.4);"
+    find_line = "log_ls_spatial_km[1] ~ normal(ls_prior_mean_log, ls_prior_sd_log);",
+    replace_line = "log_ls_spatial_km[1] ~ normal(7.269, 0.4);"
   )
 )
 

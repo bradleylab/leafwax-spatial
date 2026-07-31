@@ -55,7 +55,7 @@ compute_oipc_weighted <- function(stan_data, lambda_km) {
 }
 
 # ─── Helper: generate GP surface at observation locations ───
-generate_gp_surface <- function(stan_data, ls_std, sigma_gp, seed = NULL) {
+generate_gp_surface <- function(stan_data, ls_km, sigma_gp, seed = NULL) {
   # Compute Matern 3/2 kernel at knots
   n_knots <- stan_data$n_pp_knots
   N <- stan_data$N
@@ -70,7 +70,7 @@ generate_gp_surface <- function(stan_data, ls_std, sigma_gp, seed = NULL) {
     K_knots[i, i] <- 1.0  # eta^2 = 1
     if (i < n_knots) for (j in (i+1):n_knots) {
       d <- sqrt(sum((knot_coords[i,] - knot_coords[j,])^2))
-      scaled <- sqrt3 * d / ls_std
+      scaled <- sqrt3 * d / ls_km
       K_knots[i, j] <- (1 + scaled) * exp(-scaled)
       K_knots[j, i] <- K_knots[i, j]
     }
@@ -86,7 +86,7 @@ generate_gp_surface <- function(stan_data, ls_std, sigma_gp, seed = NULL) {
   for (i in 1:N) {
     for (j in 1:n_knots) {
       d <- sqrt(sum((obs_coords[i,] - knot_coords[j,])^2))
-      scaled <- sqrt3 * d / ls_std
+      scaled <- sqrt3 * d / ls_km
       K_cross[i, j] <- (1 + scaled) * exp(-scaled)
     }
   }
@@ -177,8 +177,6 @@ fit_and_save <- function(stan_data_sim, scenario_name, true_params, model, confi
 # orig_draws is a posterior::draws_array — extract by name.
 lambda_km <- mean(posterior::extract_variable(orig_draws, "lambda_decay"))
 ls_km <- mean(posterior::extract_variable(orig_draws, "ls_intercept_km"))
-coord_scale_km <- mean(stan_data$coord_scaling) * 111.0
-ls_std <- ls_km / coord_scale_km  # Convert to standardized units
 
 sigma_int_orig <- mean(posterior::extract_variable(orig_draws,
                                                    "sigma_intercept_spatial"))
@@ -201,7 +199,7 @@ if ("3a" %in% scenarios) {
   true_beta_oipc <- 0.7
   
   # Generate intercept GP surface (realistic spatial structure)
-  gp_intercept <- generate_gp_surface(stan_data, ls_std, sigma_int_std, seed = 100)
+  gp_intercept <- generate_gp_surface(stan_data, ls_km, sigma_int_std, seed = 100)
   
   # Generate d2H_wax: intercept + slope*OIPC + noise
   mu_sim <- (true_beta_0 + gp_intercept) + true_beta_oipc * oipc_weighted
@@ -238,7 +236,7 @@ if ("3b" %in% scenarios) {
   cat("  Slope mean:", round(mean(true_slope_spatial), 3), "\n")
   
   # Generate intercept GP (same as 3a for comparability)
-  gp_intercept <- generate_gp_surface(stan_data, ls_std, sigma_int_std, seed = 100)
+  gp_intercept <- generate_gp_surface(stan_data, ls_km, sigma_int_std, seed = 100)
   
   # Generate d2H_wax with spatially varying slope
   mu_sim <- (true_beta_0 + gp_intercept) + true_slope_spatial * oipc_weighted
@@ -272,7 +270,7 @@ if ("3c" %in% scenarios) {
   # Scale to have realistic intercept variance (~sigma_int_std)
   # intercept = alpha * OIPC_pattern + small GP noise
   alpha <- 0.3  # ~25% of posterior sigma_intercept_std, gives effective OLS slope ~1.0  # Strong correlation
-  gp_noise <- generate_gp_surface(stan_data, ls_std, sigma_int_std * 0.3, seed = 200)
+  gp_noise <- generate_gp_surface(stan_data, ls_km, sigma_int_std * 0.3, seed = 200)
   confounding_intercept <- alpha * oipc_spatial_pattern + gp_noise
   
   cat("  Correlation between intercept and OIPC:", 
