@@ -36,7 +36,7 @@ MODELS=(
 MODEL=${MODELS[$SLURM_ARRAY_TASK_ID]}
 
 module load ris
-module load apptainer/1.3.4
+module load apptainer/1.3.6   # bumped from 1.3.4 after the 2026-07-15 C2 upgrade
 
 cd "${WORKDIR}"
 mkdir -p logs model_output/${MODEL}

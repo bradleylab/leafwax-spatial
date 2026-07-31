@@ -17,7 +17,7 @@ WORKDIR=/scratch2/fs1/alexander.s.bradley/leafwax_run
 SIF=${WORKDIR}/leafwax-spatial.sif
 
 module load ris
-module load apptainer/1.3.4
+module load apptainer/1.3.6
 
 cd "${WORKDIR}"
 mkdir -p logs
@@ -35,6 +35,7 @@ apptainer exec --no-home --containall \
     --bind /tmp:/tmp \
     --pwd "${WORKDIR}" \
     --env CMDSTAN=/root/.cmdstan/cmdstan-2.36.0 \
+    --env OPENBLAS_CORETYPE=Haswell \
     "${SIF}" \
     Rscript 6a_simulated_recovery.R "${SCEN}"
 
