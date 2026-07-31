@@ -49,9 +49,12 @@ data {
   vector[N] d2H_wax;
   vector<lower=0>[N] d2H_wax_err;
   
-  // Spatial coordinates (standardized)
-  array[N] vector[2] coords;  // lon, lat for each observation
-  vector[2] coord_scaling;    // SD of lon, lat for length scale conversion
+  // Spatial coordinates: 3-D chordal (Euclidean-on-the-sphere) in km.
+  // x = R cos(lat)cos(lon), y = R cos(lat)sin(lon), z = R sin(lat), R = 6371 km.
+  // distance() on these vectors is chordal km (isotropic; ~1.5% below the
+  // great-circle distance at continental scales), replacing the former
+  // per-axis-standardized 2-D coords that induced spurious anisotropy.
+  array[N] vector[3] coords;
   
   // Multi-scale predictors
   int<lower=1> n_scales;
@@ -108,11 +111,25 @@ data {
   
   // GP configuration (MUST BE BEFORE arrays that use n_pp_knots)
   int<lower=1> n_pp_knots;
-  
-  // GP knot locations and density
-  array[n_pp_knots] vector[2] knot_coords;
+
+  // GP knot locations (3-D chordal km, same convention as coords)
+  array[n_pp_knots] vector[3] knot_coords;
+
+  // Regularization precomputed in prep (4a) on the chordal km metric.
+  // knot_data_density and oipc_range_at_knots are diagnostics carried through to
+  // the run manifest / generated quantities; the tau_* vectors are the actual
+  // regularizing prior SDs used in the model block (base density tau, with the
+  // OIPC range_factor already folded into the slope term when enabled).
   vector<lower=0>[n_pp_knots] knot_data_density;
-  real<lower=0> density_scaling;
+  vector<lower=0>[n_pp_knots] oipc_range_at_knots;
+  vector<lower=0>[n_pp_knots] tau_spatial_intercept;
+  vector<lower=0>[n_pp_knots] tau_spatial_slope;
+
+  // Spatial length-scale prior, chordal km parameterization (config gp_length_scale).
+  real ls_log_lower;        // log(lower_km)
+  real ls_log_upper;        // log(upper_km)
+  real ls_prior_mean_log;   // prior mean on log(length scale / km)
+  real<lower=0> ls_prior_sd_log;
   
   // Lambda control (spatial scale weighting)
   int<lower=0, upper=1> estimate_lambda;
@@ -138,82 +155,13 @@ data {
 transformed data {
   // Number of B-spline coefficients
   int n_bspline_coef = n_basis_knots + spline_degree + 1;
-  
-  // Average coordinate scaling for length scale conversion
-  real coord_scale_km = mean(coord_scaling) * 111.0;  // Approx km per degree
-  
-  // Pre-compute density-based regularization factors
-  vector[n_pp_knots] tau_spatial_slope;
-  vector[n_pp_knots] tau_spatial_intercept;
-  
-  // Compute local OIPC range at each knot
-  vector[n_pp_knots] oipc_range_at_knots;
-  
-  if (include_gp == 1) {
-    // First, compute OIPC ranges WITHOUT using oipc_weighted
-    // We'll use the raw oipc_values at scale 0 as a proxy
-    real search_radius_km = 1000.0;  
-    real search_radius = search_radius_km / coord_scale_km;
-    
-    for (k in 1:n_pp_knots) {
-      real local_oipc_min = positive_infinity();
-      real local_oipc_max = negative_infinity();
-      int local_count = 0;
-      
-      for (n in 1:N) {
-        real dist = distance(coords[n], knot_coords[k]);
-        if (dist < search_radius) {
-          // Use first scale as proxy for OIPC values
-          local_oipc_min = fmin(local_oipc_min, oipc_values[n, 1]);
-          local_oipc_max = fmax(local_oipc_max, oipc_values[n, 1]);
-          local_count += 1;
-        }
-      }
-      
-      // Set range to 0 if too few points
-      oipc_range_at_knots[k] = local_count > 5 ? 
-                                local_oipc_max - local_oipc_min : 0.0;
-    }
-    
-    // Compute global OIPC range for data-relative thresholds
-    real max_oipc_range = max(oipc_range_at_knots);
-    
-    // Now compute tau values with OIPC range adjustment
-    for (k in 1:n_pp_knots) {
-      real d = knot_data_density[k];
-      // First: existing density-based tau
-      if (d == 0) {
-        tau_spatial_slope[k] = 0.50; 
-        tau_spatial_intercept[k] = 0.50; 
-      } else if (d < 10) {
-        tau_spatial_slope[k] = 0.50 + 0.30 * d/10;
-        tau_spatial_intercept[k] = 0.50 + 0.30 * d/10;
-      } else {
-        tau_spatial_slope[k] = 0.80; 
-        tau_spatial_intercept[k] = 0.80;   
-      }
-      
-      // Multiply slope tau by OIPC range factor
-      // Thresholds are relative to the global OIPC range at knots
-      // (fixed thresholds in standardized units were unreachable;
-      //  see validation_log/01_correlation_and_regularization_diagnostic.md)
-      real range_factor;
-      if (oipc_range_at_knots[k] < 0.25 * max_oipc_range) {  // < 25% of global range
-        range_factor = 0.2;
-      } else if (oipc_range_at_knots[k] < 0.60 * max_oipc_range) {  // 25-60% of global range
-        range_factor = 0.5;
-      } else {                                                        // > 60% of global range
-        range_factor = 1.0;
-      }
-      
-      tau_spatial_slope[k] = tau_spatial_slope[k] * range_factor;  // Slope only
-    }
-  } else {
-    oipc_range_at_knots = rep_vector(0.0, n_pp_knots);
-    tau_spatial_slope = rep_vector(1.0, n_pp_knots);
-    tau_spatial_intercept = rep_vector(1.0, n_pp_knots);
-  }
-  
+
+  // Density-based regularization (tau_spatial_intercept / tau_spatial_slope) and
+  // the OIPC range_factor are now precomputed in prep (4a_spatial_functions.R) on
+  // the chordal km metric and passed in as data. This block therefore no longer
+  // derives them from a standardized search radius; see gp_regularization in
+  // config.yaml (density_radius_km, oipc_range_radius_km, apply_range_factor).
+
   // PC prior rate parameter
   real pc_prior_lambda_intercept = -log(pc_prior_intercept_alpha) / pc_prior_intercept_u;
   real pc_prior_lambda_slope = -log(pc_prior_slope_alpha) / pc_prior_slope_u;
@@ -246,8 +194,10 @@ parameters {
   // Exponential decay for scale weighting (in km)
   array[estimate_lambda ? 1 : 0] real<lower=1, upper=400> lambda_decay_raw;
   
-  // GP parameters for spatially-varying intercept and slope
-  array[include_gp ? 1 : 0] real<lower=-2, upper=0> log_ls_spatial_raw;  // Single length scale for slope and intercept
+  // GP parameters for spatially-varying intercept and slope.
+  // log_ls_spatial_km is log(length scale in km); bounds come from config
+  // gp_length_scale (lower_km/upper_km). Single length scale for slope & intercept.
+  array[include_gp ? 1 : 0] real<lower=ls_log_lower, upper=ls_log_upper> log_ls_spatial_km;
   array[include_gp ? 1 : 0] real<lower=0> sigma_intercept_raw;   // SD of intercept GP
   array[include_gp ? 1 : 0] real<lower=0> sigma_slope_raw;       // SD of slope GP
   
@@ -317,7 +267,7 @@ transformed parameters {
   vector[N] beta_oipc_spatial = rep_vector(beta_oipc, N);  // Slope at each location
   
   if (include_gp == 1) {
-    real ls_spatial = exp(log_ls_spatial_raw[1]);
+    real ls_spatial = exp(log_ls_spatial_km[1]);  // length scale in km (chordal metric)
     real sigma_intercept = sigma_intercept_raw[1];
     real sigma_slope = sigma_slope_raw[1];
     
@@ -436,9 +386,9 @@ model {
   
   // GP hyperparameters
  if (include_gp == 1) {
-    // Length scale prior
-    log_ls_spatial_raw[1] ~ normal(-1.0, 0.4);
-    
+    // Length-scale prior on log(km); parameters from config gp_length_scale
+    log_ls_spatial_km[1] ~ normal(ls_prior_mean_log, ls_prior_sd_log);
+
     // Spatial SD priors
     sigma_intercept_raw[1] ~ exponential(pc_prior_lambda_intercept);
     sigma_slope_raw[1] ~ exponential(pc_prior_lambda_slope);
@@ -487,9 +437,9 @@ generated quantities {
   if (include_gp == 1) {
     sigma_intercept_spatial = sigma_intercept_raw[1] * d2H_wax_sd_original;
     sigma_slope_spatial = sigma_slope_raw[1];
-    // Proper conversion using coordinate scaling
-    ls_intercept_km = exp(log_ls_spatial_raw[1]) * coord_scale_km;
-    ls_slope_km = exp(log_ls_spatial_raw[1]) * coord_scale_km;
+    // Length scale is native km under the chordal metric (no coord_scale_km conversion)
+    ls_intercept_km = exp(log_ls_spatial_km[1]);
+    ls_slope_km = exp(log_ls_spatial_km[1]);
   }
   
   // Effective scale (lambda directly in km now)

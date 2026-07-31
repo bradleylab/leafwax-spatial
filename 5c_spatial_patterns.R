@@ -13,6 +13,13 @@
 library(tidyverse)
 library(posterior)
 source("scripts/posterior_helpers.R")
+source("4a_spatial_functions.R")  # lonlat_to_chordal()
+
+# Matérn 3/2 kernel (chordal distance d in km, rho = length scale in km).
+matern32 <- function(d, alpha = 1, rho = 1) {
+  s <- sqrt(3) * d / rho
+  alpha^2 * (1 + s) * exp(-s)
+}
 
 # Minimal shim for the fit$summary() pattern used throughout this script.
 # Given a diagnostics summary tibble, pulls the matching variable rows.
@@ -222,17 +229,10 @@ for (model_name in model_names) {
     # 2. MAPPING SPATIAL PATTERNS
     cat("\n2. MAPPING SPATIAL PATTERNS\n")
     
-    # Get knot coordinates
-    knot_coords <- stan_data$knot_coords
-    
-    # Transform back to original scale
-    lon_mean <- mean(stan_data$longitude)
-    lon_sd <- sd(stan_data$longitude)
-    lat_mean <- mean(stan_data$latitude)
-    lat_sd <- sd(stan_data$latitude)
-    
-    knot_lon <- knot_coords[,1] * lon_sd + lon_mean
-    knot_lat <- knot_coords[,2] * lat_sd + lat_mean
+    # Knot coordinates: 3-D chordal km for the GP; lon/lat (degrees) for maps.
+    knot_coords <- stan_data$knot_coords          # 125 x 3 chordal km
+    knot_lon <- stan_data$knot_coords_deg[, 1]    # degrees, straight from stan_data
+    knot_lat <- stan_data$knot_coords_deg[, 2]
     
     # Create knot data frame
     knot_df <- data.frame(
@@ -360,8 +360,8 @@ for (model_name in model_names) {
       # Observation-level data frame (effects are residuals from the global
       # mean, so they plot as deviations).
       obs_df <- data.frame(
-        lon = stan_data$longitude * lon_sd + lon_mean,
-        lat = stan_data$latitude * lat_sd + lat_mean,
+        lon = stan_data$longitude,   # already degrees
+        lat = stan_data$latitude,
         gp_intercept = gp_intercept_obs,
         gp_slope = gp_slope_obs,
         observed = stan_data$d2H_wax * d2h_sd + d2h_mean
@@ -386,11 +386,8 @@ for (model_name in model_names) {
     cat("\n5. VARIOGRAM ANALYSIS\n")
     
     if (n_knots > 20) {
-      # Calculate distances between knots
-      knot_dists <- as.matrix(dist(knot_coords))
-      
-      # Convert to km (approximate)
-      knot_dists_km <- knot_dists * 111 * mean(cos(knot_lat * pi/180))
+      # Knot coords are 3-D chordal km, so Euclidean distance IS chordal km.
+      knot_dists_km <- as.matrix(dist(knot_coords))
       
       # Calculate slope differences
       slope_diffs <- outer(knot_slopes, knot_slopes, "-")
@@ -437,49 +434,60 @@ for (model_name in model_names) {
     # 6. PREDICTION GRID
     cat("\n6. CREATING PREDICTION GRID\n")
     
-    # Create a regular grid for predictions
-    lon_range <- range(stan_data$longitude * lon_sd + lon_mean)
-    lat_range <- range(stan_data$latitude * lat_sd + lat_mean)
-    
+    # Create a regular grid for predictions (lon/lat are already degrees)
+    lon_range <- range(stan_data$longitude)
+    lat_range <- range(stan_data$latitude)
+
     # Extend slightly beyond data
     lon_buffer <- diff(lon_range) * 0.1
     lat_buffer <- diff(lat_range) * 0.1
-    
+
     lon_grid <- seq(lon_range[1] - lon_buffer, lon_range[2] + lon_buffer, by = 5)
     lat_grid <- seq(lat_range[1] - lat_buffer, lat_range[2] + lat_buffer, by = 5)
-    
+
     pred_grid <- expand.grid(lon = lon_grid, lat = lat_grid)
-    
+
     # Remove ocean points (roughly)
     pred_grid_sf <- st_as_sf(pred_grid, coords = c("lon", "lat"), crs = 4326)
     land <- world %>% summarise(geometry = st_union(geometry))
     pred_grid_land <- st_intersection(pred_grid_sf, land)
     pred_coords <- st_coordinates(pred_grid_land)
-    
+
     if (nrow(pred_coords) > 50) {
       cat("  Calculating predictions at", nrow(pred_coords), "grid points\n")
-      
-      # Standardize grid coordinates
-      pred_lon_std <- (pred_coords[,1] - lon_mean) / lon_sd
-      pred_lat_std <- (pred_coords[,2] - lat_mean) / lat_sd
-      
-      # Calculate distances from grid points to knots
-      grid_knot_dists <- fields::rdist(
-        cbind(pred_lon_std, pred_lat_std),
-        knot_coords
-      )
-      
-      # GP kernel function (squared exponential)
-      ls_std <- ls_intercept / (111 * mean(cos(lat_mean * pi/180)) * mean(c(lon_sd, lat_sd)))
-      K_grid_knot <- exp(-0.5 * (grid_knot_dists / ls_std)^2)
-      
-      # Normalize kernel
-      K_grid_knot <- K_grid_knot / rowSums(K_grid_knot)
-      
-      # Predict slopes at grid points
-      grid_slopes <- as.vector(K_grid_knot %*% matrix(knot_slopes, ncol = 1))
-      grid_intercepts <- as.vector(K_grid_knot %*% matrix(intercept_at_zero, ncol = 1))
-      
+
+      # GP conditional-mean projection on the chordal metric (Matérn 3/2, full
+      # (K_kk + 1e-4 I)^{-1} solve), replacing the former row-normalized
+      # Gaussian smoother (codex 2026-07-29). 5c collapses the two length
+      # scales to a single ls (ls_intercept == ls_slope above), so one
+      # projection serves both fields. Plug-in of posterior means is
+      # acceptable for this diagnostic.
+      pred_xyz <- lonlat_to_chordal(pred_coords[, 1], pred_coords[, 2])
+      D_kk <- fields::rdist(knot_coords)             # 125 x 125 chordal km
+      D_gk <- fields::rdist(pred_xyz, knot_coords)   # ngrid x 125 chordal km
+      K_kk_jit <- matern32(D_kk, alpha = 1, rho = ls_intercept) + diag(1e-4, n_knots)
+      K_gk     <- matern32(D_gk, alpha = 1, rho = ls_intercept)
+      proj     <- K_gk %*% solve(K_kk_jit)           # ngrid x 125
+
+      # Slope field: global slope + projected latent slope × sigma_slope.
+      if (has_spatial_slopes) {
+        grid_slopes <- beta_oipc + as.vector(proj %*% z_slope_means) * sigma_slope
+      } else {
+        grid_slopes <- rep(beta_oipc, nrow(pred_coords))
+      }
+
+      # Intercept-at-OIPC=0 field: mirror the knot-level transform above with
+      # the projected latent intercept and the grid slope field.
+      if (has_spatial_intercepts) {
+        grid_pred_z_int     <- as.vector(proj %*% z_intercept_means)
+        grid_intercept_std  <- beta_0 + grid_pred_z_int * (sigma_intercept / d2h_sd)
+        grid_intercept_mean <- grid_intercept_std * d2h_sd + d2h_mean
+        grid_intercepts     <- grid_intercept_mean + grid_slopes * (0 - oipc_mean)
+      } else {
+        grid_intercepts <- rep(intercept_at_mean + beta_oipc * (0 - oipc_mean),
+                               nrow(pred_coords))
+      }
+
       # Create prediction data frame
       grid_pred_df <- data.frame(
         lon = pred_coords[,1],
@@ -517,8 +525,8 @@ for (model_name in model_names) {
       
       # Create uncertainty map
       uncertainty_df <- data.frame(
-        lon = stan_data$longitude * lon_sd + lon_mean,
-        lat = stan_data$latitude * lat_sd + lat_mean,
+        lon = stan_data$longitude,   # already degrees
+        lat = stan_data$latitude,
         uncertainty = mu_sd * d2h_sd  # Convert to original scale
       )
       

@@ -50,7 +50,7 @@ SPLUS_BASE_MODELS <- c("baseline_sp", "baseline_env_sp",
 # Per Dupont et al. 2022, the smoother used to residualize the predictor
 # should match the spatial scale of the confounder being controlled for.
 # Our spatial GP has length scale ~3,700 km (ls_intercept_km median across
-# spatial models). On 1,129 globally distributed sites, that scale
+# spatial models). On 1,128 globally distributed sites, that scale
 # corresponds to an effective TPS basis of EDF ≈ 35-45 (EDF ≈ surface_area /
 # scale²). Empirical sweep on baseline_sp (oipc_values[, 1]):
 #

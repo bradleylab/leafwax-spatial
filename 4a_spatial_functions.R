@@ -208,6 +208,96 @@ calculate_knot_data_density <- function(knot_coords, obs_coords, radius = 0.2, v
   return(knot_density)
 }
 
+# Convert lon/lat (degrees) to 3-D chordal coordinates on a sphere of radius R km.
+# The Euclidean distance between two such rows is the chordal (straight-line)
+# distance in km: isotropic, positive-definite by construction, and within ~1.5%
+# of the great-circle distance at continental scales. This replaces the former
+# per-axis coordinate standardization, which induced spurious anisotropy.
+lonlat_to_chordal <- function(lon, lat, R = 6371) {
+  lon_r <- lon * pi / 180
+  lat_r <- lat * pi / 180
+  out <- cbind(
+    R * cos(lat_r) * cos(lon_r),
+    R * cos(lat_r) * sin(lon_r),
+    R * sin(lat_r)
+  )
+  colnames(out) <- c("x", "y", "z")
+  out
+}
+
+# Count observations within a chordal km radius of each knot (drives base tau).
+# Uses <= (inclusive), matching the former standardized-space density count.
+calculate_knot_data_density_km <- function(knot_xyz, obs_xyz, radius_km, verbose = TRUE) {
+  n_knots <- nrow(knot_xyz)
+  knot_density <- numeric(n_knots)
+  if (verbose) {
+    cat("  Calculating data density at", n_knots, "knots (chordal)\n")
+    cat("  Radius:", radius_km, "km\n")
+  }
+  for (k in seq_len(n_knots)) {
+    d <- sqrt((knot_xyz[k, 1] - obs_xyz[, 1])^2 +
+              (knot_xyz[k, 2] - obs_xyz[, 2])^2 +
+              (knot_xyz[k, 3] - obs_xyz[, 3])^2)
+    knot_density[k] <- sum(d <= radius_km)
+  }
+  knot_density
+}
+
+# Local OIPC range within a chordal km radius of each knot (drives range_factor).
+# Mirrors the former in-Stan computation: scale-1 standardized OIPC, strict < on
+# radius, and 0 where <= min_count sites fall inside (Stan used local_count > 5).
+compute_oipc_range_at_knots <- function(knot_xyz, obs_xyz, oipc_scale1,
+                                        radius_km, min_count = 5) {
+  n_knots <- nrow(knot_xyz)
+  rng <- numeric(n_knots)
+  for (k in seq_len(n_knots)) {
+    d <- sqrt((knot_xyz[k, 1] - obs_xyz[, 1])^2 +
+              (knot_xyz[k, 2] - obs_xyz[, 2])^2 +
+              (knot_xyz[k, 3] - obs_xyz[, 3])^2)
+    inside <- d < radius_km
+    rng[k] <- if (sum(inside) > min_count) {
+      max(oipc_scale1[inside]) - min(oipc_scale1[inside])
+    } else {
+      0.0
+    }
+  }
+  rng
+}
+
+# Density-based regularizing prior SDs, replicating the former Stan transformed-
+# data logic exactly, now on the chordal km metric. The OIPC range_factor shrinks
+# the SLOPE prior only (as in the original model); apply_range_factor = FALSE
+# disables it for the range_factor-off sensitivity fits.
+compute_spatial_tau <- function(knot_data_density, oipc_range_at_knots,
+                                apply_range_factor = TRUE) {
+  n_knots <- length(knot_data_density)
+  if (length(oipc_range_at_knots) != n_knots) {
+    stop("compute_spatial_tau: knot_data_density (", n_knots, ") and ",
+         "oipc_range_at_knots (", length(oipc_range_at_knots), ") length mismatch.")
+  }
+  if (any(!is.finite(knot_data_density)) || any(!is.finite(oipc_range_at_knots))) {
+    stop("compute_spatial_tau: non-finite values in density or OIPC-range inputs.")
+  }
+  base_tau <- vapply(knot_data_density, function(d) {
+    if (d == 0) 0.50 else if (d < 10) 0.50 + 0.30 * d / 10 else 0.80
+  }, numeric(1))
+
+  max_range <- max(oipc_range_at_knots)
+  range_factor <- rep(1.0, n_knots)
+  if (max_range > 0) {
+    range_factor <- vapply(oipc_range_at_knots, function(r) {
+      if (r < 0.25 * max_range) 0.2 else if (r < 0.60 * max_range) 0.5 else 1.0
+    }, numeric(1))
+  }
+
+  list(
+    tau_intercept = base_tau,
+    tau_slope     = if (apply_range_factor) base_tau * range_factor else base_tau,
+    range_factor  = range_factor,
+    base_tau      = base_tau
+  )
+}
+
 # Predictive Process helper function
 select_pp_knots <- function(coords, n_knots, method = "cover.design", min_dist_quantile = 0.05) {
   coords_unique <- unique(coords)
@@ -490,13 +580,16 @@ validate_stan_data <- function(stan_data) {
                         "include_vpd", "include_soil",
                         "estimate_lambda", "lambda_fixed", "lambda_prior_mean_log",
                         "lambda_prior_sd_log", "use_pc_prior_intercept", "pc_prior_intercept_u",
-                         "pc_prior_intercept_alpha", "use_pc_prior_slope", "pc_prior_slope_u", 
-                         "pc_prior_slope_alpha")
-  
+                         "pc_prior_intercept_alpha", "use_pc_prior_slope", "pc_prior_slope_u",
+                         "pc_prior_slope_alpha",
+                         "ls_log_lower", "ls_log_upper",
+                         "ls_prior_mean_log", "ls_prior_sd_log")
+
   # Check for coordinates if GP is included
   if (stan_data$include_gp == 1) {
-    required_elements <- c(required_elements, "coords", "knot_coords", "n_pp_knots", 
-                          "knot_data_density", "density_scaling", "coord_scaling")
+    required_elements <- c(required_elements, "coords", "knot_coords", "n_pp_knots",
+                          "knot_data_density", "oipc_range_at_knots",
+                          "tau_spatial_intercept", "tau_spatial_slope")
   }
   
   # Check for interaction matrices
@@ -518,25 +611,46 @@ validate_stan_data <- function(stan_data) {
   if (length(missing) > 0) {
     stop("Missing required stan_data elements: ", paste(missing, collapse = ", "))
   }
+
+  # Length-scale prior sanity (chordal km parameterization; always present).
+  # Bounds become parameter bounds in Stan and must be finite and strictly
+  # ordered; the prior SD must be finite and positive.
+  if (!is.finite(stan_data$ls_log_lower) || !is.finite(stan_data$ls_log_upper) ||
+      stan_data$ls_log_lower >= stan_data$ls_log_upper) {
+    stop("ls_log_lower/ls_log_upper must be finite and strictly ordered (lower < upper)")
+  }
+  if (!is.finite(stan_data$ls_prior_mean_log)) {
+    stop("ls_prior_mean_log must be finite")
+  }
+  if (!is.finite(stan_data$ls_prior_sd_log) || stan_data$ls_prior_sd_log <= 0) {
+    stop("ls_prior_sd_log must be finite and positive")
+  }
   
   # Check GP configuration if applicable
   if (stan_data$include_gp == 1) {
     cat("Checking GP configuration...\n")
     
-    # Check coordinate dimensions
-    if (!all(dim(stan_data$coords) == c(stan_data$N, 2))) {
-      stop("coords has wrong dimensions")
+    # Check coordinate dimensions (3-D chordal km)
+    if (!all(dim(stan_data$coords) == c(stan_data$N, 3))) {
+      stop("coords has wrong dimensions (expected N x 3 chordal)")
     }
-    
-    if (!all(dim(stan_data$knot_coords) == c(stan_data$n_pp_knots, 2))) {
-      stop("knot_coords has wrong dimensions")
+
+    if (!all(dim(stan_data$knot_coords) == c(stan_data$n_pp_knots, 3))) {
+      stop("knot_coords has wrong dimensions (expected n_pp_knots x 3 chordal)")
     }
-    
-    # Check coordinate scaling
-    if (length(stan_data$coord_scaling) != 2) {
-      stop("coord_scaling must have 2 elements (lon_sd, lat_sd)")
+
+    # Chordal coordinates must be finite and lie on the sphere (norm ~ 6371 km).
+    R_earth <- 6371
+    for (nm in c("coords", "knot_coords")) {
+      m <- stan_data[[nm]]
+      if (any(!is.finite(m))) stop(nm, " contains non-finite chordal coordinates")
+      norms <- sqrt(rowSums(m^2))
+      if (max(abs(norms - R_earth)) > 1) {   # 1 km tolerance
+        stop(nm, " rows are not on the 6371 km sphere (max |norm - R| = ",
+             round(max(abs(norms - R_earth)), 3), " km)")
+      }
     }
-    
+
     # Check knot data density
     cat("Checking knot data density for regularizing prior...\n")
     if (length(stan_data$knot_data_density) != stan_data$n_pp_knots) {
@@ -545,8 +659,32 @@ validate_stan_data <- function(stan_data) {
     if (any(stan_data$knot_data_density < 0)) {
       stop("knot_data_density contains negative values")
     }
+
+    # Check precomputed regularization vectors (finite before sign, so an NA
+    # does not silently trip the comparison). oipc_range_at_knots may legitimately
+    # be 0 (fewer than the minimum sites inside the neighborhood); the tau vectors
+    # must be STRICTLY positive because they are the SD of normal(0, tau) priors
+    # (tau == 0 is an invalid degenerate prior).
+    for (v in c("oipc_range_at_knots", "tau_spatial_intercept", "tau_spatial_slope")) {
+      if (length(stan_data[[v]]) != stan_data$n_pp_knots) {
+        stop(v, " has wrong length (expected n_pp_knots)")
+      }
+      if (any(!is.finite(stan_data[[v]]))) {
+        stop(v, " contains non-finite values (NA/NaN/Inf)")
+      }
+    }
+    if (any(stan_data$oipc_range_at_knots < 0)) {
+      stop("oipc_range_at_knots contains negative values")
+    }
+    for (v in c("tau_spatial_intercept", "tau_spatial_slope")) {
+      if (any(stan_data[[v]] <= 0)) {
+        stop(v, " must be strictly positive (it is the SD of a normal(0, tau) prior)")
+      }
+    }
     cat("  Knot density range: [", min(stan_data$knot_data_density),
         ", ", max(stan_data$knot_data_density), "] observations\n")
+    cat("  tau_spatial_slope range: [", round(min(stan_data$tau_spatial_slope), 3),
+        ", ", round(max(stan_data$tau_spatial_slope), 3), "]\n")
   }
   
   # Check B-spline configuration if elevation included
@@ -572,7 +710,16 @@ validate_stan_data <- function(stan_data) {
 prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, include_gp = TRUE,
                               include_elevation = TRUE, include_precip = FALSE, include_temp = FALSE,
                               include_vpd = FALSE, include_soil = FALSE,
-                              n_pp_knots = 100, SCALING_PARAMS, has_pft_columns) {
+                              n_pp_knots = 100, SCALING_PARAMS, has_pft_columns,
+                              apply_range_factor = NULL) {
+  # apply_range_factor: per-model override of gp_regularization.apply_range_factor.
+  # NULL (default) uses the global config value; pass FALSE for the range_factor-off
+  # sensitivity variants (config model_configs *_rfoff entries, spec v2 §3).
+  if (is.null(apply_range_factor)) {
+    apply_range_factor <- isTRUE(CONFIG$gp_regularization$apply_range_factor)
+  } else {
+    apply_range_factor <- isTRUE(apply_range_factor)
+  }
   
   N <- nrow(data)
   
@@ -1248,64 +1395,71 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
   # Add continent indicators
   data_with_continents <- add_continent_indicators(data)
   
-  # Prepare coordinates and compute scaling
-  coords_std <- matrix(0, N, 2)
-  pp_knot_coords <- matrix(0, 1, 2)
+  # Prepare coordinates (3-D chordal km) and GP regularization.
+  # Sites are always represented chordally; knot arrays and regularization are
+  # only populated when the GP is included (otherwise 1-row placeholders).
+  coords_chordal <- lonlat_to_chordal(data$longitude, data$latitude)  # N x 3
+  pp_knot_coords <- matrix(0, 1, 3)     # 3-D chordal km; overwritten if include_gp
+  knot_coords_deg <- matrix(0, 1, 2)    # lon/lat degrees (deposit / manifest)
   knot_data_density <- numeric(1)
-  coord_scaling <- c(1, 1)  # Default
-  
+  oipc_range_at_knots <- numeric(1)
+  spatial_tau <- list(tau_intercept = 1.0, tau_slope = 1.0,
+                      range_factor = 1.0, base_tau = 1.0)
+
   if (include_gp) {
     cat("\nSelecting", n_pp_knots, "knots for Predictive Process approximation...\n")
-    
-    # Get standardized coordinates and scaling factors
-    lon_mean <- safe_mean(data$longitude)
-    lon_sd <- safe_sd(data$longitude)
-    lat_mean <- safe_mean(data$latitude)
-    lat_sd <- safe_sd(data$latitude)
-    
-    # Store scaling for length scale conversion
-    coord_scaling <- c(lon_sd, lat_sd)
-    
-    coords_std <- cbind(
-      (data$longitude - lon_mean) / lon_sd,
-      (data$latitude - lat_mean) / lat_sd
-    )
-    
-    # Select knots using configured method
-    if (CONFIG$knot_selection_method == "regular_global") {
-      # For global grid, we need to work in original coordinate space
-      coords_orig <- cbind(data$longitude, data$latitude)
-      
-      # Get knots in original space
-      knot_coords_orig <- select_pp_knots(coords_orig, n_pp_knots, 
-                                          method = CONFIG$knot_selection_method,
-                                          min_dist_quantile = CONFIG$min_dist_quantile)
-      
-      # Now standardize the knot coordinates
-      pp_knot_coords <- cbind(
-        (knot_coords_orig[,1] - lon_mean) / lon_sd,
-        (knot_coords_orig[,2] - lat_mean) / lat_sd
-      )
-      colnames(pp_knot_coords) <- c("longitude", "latitude")
-    } else {
-      # For other methods, work in standardized space
-      pp_knot_coords <- select_pp_knots(coords_std, n_pp_knots, 
-                                        method = CONFIG$knot_selection_method,
-                                        min_dist_quantile = CONFIG$min_dist_quantile)
+
+    # Only regular_global is chordal-safe: it lays a lon/lat grid and
+    # select_pp_knots returns those grid points directly. The kmeans and
+    # cover.design paths still place knots using raw lon/lat DEGREES (anisotropic
+    # in km — only cover.design's pre-filter uses great-circle distance), so they
+    # are not yet valid for a chordal fit. Reject them here until made spherical.
+    if (!identical(CONFIG$knot_selection_method, "regular_global")) {
+      stop("knot_selection_method '", CONFIG$knot_selection_method,
+           "' is not chordal-safe (kmeans / cover.design place knots on raw ",
+           "lon/lat degrees). Use 'regular_global' until those paths are made ",
+           "spherical.")
     }
-    
+
+    # Knots are selected in original lon/lat degrees, then converted to the same
+    # 3-D chordal representation as the sites.
+    coords_orig <- cbind(data$longitude, data$latitude)
+    knot_coords_deg <- select_pp_knots(coords_orig, n_pp_knots,
+                                       method = CONFIG$knot_selection_method,
+                                       min_dist_quantile = CONFIG$min_dist_quantile)
+    knot_coords_deg <- as.matrix(knot_coords_deg)
+    colnames(knot_coords_deg) <- c("longitude", "latitude")
+    pp_knot_coords <- lonlat_to_chordal(knot_coords_deg[, 1], knot_coords_deg[, 2])
+
     cat("✓ Knots selected using space-filling design\n")
-    
-    # Calculate knot data density for regularizing prior
-    cat("\nCalculating data density at knots for GP regularization...\n")
-    
-    # Determine radius based on config
-    density_radius <- CONFIG$gp_regularization$density_radius_std
-    density_scaling <- CONFIG$gp_regularization$density_scaling
-    
-    knot_data_density <- calculate_knot_data_density(pp_knot_coords, coords_std, 
-                                                      radius = density_radius, 
-                                                      verbose = TRUE)
+
+    # GP regularization on the chordal km metric (config gp_regularization).
+    cat("\nComputing GP regularization (density + OIPC range) on chordal metric...\n")
+    density_radius_km    <- CONFIG$gp_regularization$density_radius_km
+    oipc_range_radius_km <- CONFIG$gp_regularization$oipc_range_radius_km
+    # apply_range_factor resolved at the top of the function (per-model override
+    # of the global gp_regularization.apply_range_factor); do NOT re-read it here.
+    if (!is.finite(density_radius_km) || density_radius_km <= 0 ||
+        !is.finite(oipc_range_radius_km) || oipc_range_radius_km <= 0) {
+      stop("gp_regularization density_radius_km / oipc_range_radius_km ",
+           "must be finite and positive (got ", density_radius_km, " / ",
+           oipc_range_radius_km, ").")
+    }
+
+    knot_data_density <- calculate_knot_data_density_km(
+      pp_knot_coords, coords_chordal, radius_km = density_radius_km, verbose = TRUE)
+
+    # Scale-1 standardized weighted OIPC drives the local OIPC range (matches the
+    # former in-Stan use of oipc_values[, 1]).
+    oipc_range_at_knots <- compute_oipc_range_at_knots(
+      pp_knot_coords, coords_chordal, oipc_weighted_matrix_std[, 1],
+      radius_km = oipc_range_radius_km)
+
+    spatial_tau <- compute_spatial_tau(knot_data_density, oipc_range_at_knots,
+                                       apply_range_factor = apply_range_factor)
+    cat("  Base tau range: [", round(min(spatial_tau$base_tau), 3), ",",
+        round(max(spatial_tau$base_tau), 3), "]; range_factor applied to slope:",
+        apply_range_factor, "\n")
   }
   
   # Prepare Stan data
@@ -1318,11 +1472,10 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     d2H_wax = data_std$d2H_wax_std,
     d2H_wax_err = data_std$d2H_wax_err_std,
     
-    # Coordinates for kernel computation
-    coords = coords_std,
-    coord_scaling = coord_scaling,  # For proper length scale conversion
-    
-    # Original coordinates (don't standardize these)
+    # Coordinates for kernel computation: 3-D chordal km (see lonlat_to_chordal)
+    coords = coords_chordal,
+
+    # Original coordinates in degrees (for deposit / manifest / plotting)
     longitude = data$longitude,
     latitude = data$latitude,
     
@@ -1362,9 +1515,25 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     
     # GP configuration WITHOUT kernel matrices
     n_pp_knots = if (include_gp) n_pp_knots else 1,
-    knot_coords = pp_knot_coords,
-    knot_data_density = knot_data_density,
-    density_scaling = if (include_gp) density_scaling else 1,
+    knot_coords = pp_knot_coords,                    # Stan data: 3-D chordal km
+    knot_data_density = knot_data_density,            # Stan data (diagnostic) + manifest
+    oipc_range_at_knots = oipc_range_at_knots,        # Stan data (diagnostic) + manifest
+    tau_spatial_intercept = spatial_tau$tau_intercept,  # Stan data: regularizing SD
+    tau_spatial_slope = spatial_tau$tau_slope,          # Stan data: regularizing SD
+
+    # Manifest-only fields: NOT declared in the Stan model, so Stan ignores them
+    # (same convention as longitude/latitude/is_* above). They stay top-level
+    # because cmdstanr's write_stan_json cannot serialize a mixed-size nested
+    # list; they are consumed only by the run-manifest / deposit builders.
+    knot_coords_deg = knot_coords_deg,               # lon/lat degrees
+    range_factor_values = spatial_tau$range_factor,  # per-knot range_factor
+    apply_range_factor = if (include_gp) as.integer(apply_range_factor) else 0L,
+
+    # Spatial length-scale prior (chordal km); see config gp_length_scale
+    ls_log_lower = log(CONFIG$gp_length_scale$lower_km),
+    ls_log_upper = log(CONFIG$gp_length_scale$upper_km),
+    ls_prior_mean_log = CONFIG$gp_length_scale$prior_mean_log_km,
+    ls_prior_sd_log = CONFIG$gp_length_scale$prior_sd_log,
     
     # Model configuration
     include_c4 = as.integer(include_c4),
@@ -1446,9 +1615,11 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
   if (include_gp) {
     cat("  Predictive Process knots:", n_pp_knots, "\n")
     cat("  GP kernel: Matérn 3/2\n")
-    cat("  GP length scale: ESTIMATED FROM DATA\n")
-    cat("  GP regularization: Density-based prior with scaling factor", density_scaling, "\n")
-    cat("  Coordinate scaling (lon, lat SD):", round(coord_scaling, 3), "\n")
+    cat("  GP length scale: ESTIMATED FROM DATA (chordal km)\n")
+    cat("  GP metric: chordal (3-D Euclidean on the sphere), isotropic\n")
+    cat("  GP regularization: density (", CONFIG$gp_regularization$density_radius_km,
+        "km) + OIPC range (", CONFIG$gp_regularization$oipc_range_radius_km,
+        "km); range_factor:", apply_range_factor, "\n")
     cat("  PC prior: ", ifelse(CONFIG$pc_prior$use_pc_prior, 
                                paste0("YES (P(σ > ", CONFIG$pc_prior$u_permil, "‰) = ", CONFIG$pc_prior$alpha, ")"),
                                "NO (using half-normal)"), "\n")

@@ -6,7 +6,7 @@
 # Performs LOO-CV comparisons, posterior predictive checks, and parameter
 # comparison across fitted models.
 #
-# Input: results/c2_run_20260414/<model>/{posterior_draws.rds, loo.rds,
+# Input: results/c2_run_20260626/model_output/<model>/{posterior_draws.rds, loo.rds,
 #        diagnostics.rds} (widened rds bundle, post Phase 5 W1/W2)
 # Output: results/loo_* rds, results/ppc_*.pdf, results/model_fit_metrics.csv
 #───────────────────────────────────────────────────────────────────────────────

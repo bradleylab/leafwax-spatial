@@ -216,6 +216,15 @@ for (model_name in model_names) {
     if (isTRUE(stan_data$include_precip == 1)) {
       params_to_check <- c(params_to_check, "beta_precip")
     }
+    if (isTRUE(stan_data$include_elevation == 1)) {
+      # Retain the elevation B-spline coefficients (and their smoothing SD) in the
+      # saved draws so the released posteriors carry the fitted elevation response.
+      # These were previously dropped here at the save step (not at export), which
+      # is why has_elevation came back FALSE downstream. The package derives
+      # has_elevation from column presence (load_posteriors.R), so retaining them
+      # flips it automatically and makes Fig S6 reproducible.
+      params_to_check <- c(params_to_check, "beta_elev_bspline", "tau_elev_bspline")
+    }
     if (stan_data$include_c4 == 1) {
       params_to_check <- c(params_to_check, "beta_c4")
       # The C4 interaction is active whenever include_veg_interactions && include_c4
@@ -329,57 +338,129 @@ for (model_name in model_names) {
 
 # Save overall summary
 cat("\n", strrep("=", 65), "\n")
-cat("ALL MODELS COMPLETED\n")
+cat("MODEL FITTING FINISHED — verifying per-model completeness\n")
 cat(strrep("=", 65), "\n\n")
 
 print(fit_summary)
 
 results_dir <- CONFIG$output_dirs$results
-saveRDS(fit_summary, file.path(results_dir, "model_fit_summary.rds"))
-write.csv(fit_summary, file.path(results_dir, "model_fit_summary.csv"), row.names = FALSE)
 
-cat("\nSummary saved to:\n")
-cat("  -", file.path(results_dir, "model_fit_summary.rds"), "\n")
-cat("  -", file.path(results_dir, "model_fit_summary.csv"), "\n")
+# ── Per-model completeness + status artifacts (concurrency-safe) ────────────────
+# When this process fits a single model (the SLURM array case — one model per
+# task), many array tasks run 4c concurrently against a SHARED results/ dir.
+# Writing model_fit_summary.* / pipeline_4c_complete.rds there would have every
+# task clobber the others (last-writer-wins), and each single-model task would
+# write a "pipeline complete" marker meaning only "my 1 model finished". Instead
+# every task writes per-model artifacts under model_output/<model>/ (no shared
+# path, no race): fit_status.rds always, and a DONE marker ONLY when the full
+# core artifact set is on disk. A separate aggregator
+# (scripts/aggregate_chordal_status.R) reads these to judge the whole batch.
+core_artifacts_complete <- function(model) {
+  mdir <- file.path(CONFIG$output_dirs$model_output, model)
+  all(file.exists(file.path(mdir, c("fit.rds", "diagnostics.rds",
+                                    "posterior_draws.rds"))))
+}
+loo_present <- function(model) {
+  file.exists(file.path(CONFIG$output_dirs$model_output, model, "loo.rds"))
+}
 
-# Completion guard: only write success marker if ALL models completed.
-# The launcher script uses pipeline_4c_complete.rds as the auto-shutdown gate.
-n_completed <- sum(fit_summary$status == "completed")
-n_failed <- sum(fit_summary$status == "failed")
-n_expected <- length(model_names)
+# Iterate the REQUESTED models, not fit_summary rows: a fully-failed fit adds no
+# fit_summary row (its diagnostics block is skipped when fit is NULL), yet it
+# still needs a fit_status.rds and, critically, removal of any stale DONE.
+sget <- function(col, i, default = NA) if (!is.na(i)) fit_summary[[col]][i] else default
+for (m in model_names) {
+  i       <- match(m, fit_summary$model)   # NA if this model produced no row (failed)
+  mdir    <- file.path(CONFIG$output_dirs$model_output, m)
+  dir.create(mdir, showWarnings = FALSE, recursive = TRUE)
+  core_ok <- core_artifacts_complete(m)
+  loo_ok  <- loo_present(m)
+  m_status <- if (!is.na(i)) fit_summary$status[i] else "failed"
+  is_ok   <- identical(m_status, "completed") && core_ok
+  status_row <- list(
+    model = m,
+    status = m_status,
+    core_complete = core_ok,      # fit.rds + diagnostics.rds + posterior_draws.rds
+    loo_present = loo_ok,         # best-effort; loo::loo can legitimately fail
+    divergences = sget("divergences", i),
+    max_treedepth = sget("max_treedepth", i),
+    low_ebfmi = sget("low_ebfmi", i),
+    max_rhat = sget("max_rhat", i),
+    min_ess_bulk = sget("min_ess_bulk", i),
+    runtime_mins = sget("runtime_mins", i),
+    completed_at = Sys.time()
+  )
+  saveRDS(status_row, file.path(mdir, "fit_status.rds"))
+  done_mark <- file.path(mdir, "DONE")
+  running_mark <- file.path(mdir, "RUNNING")
+  if (is_ok) {
+    writeLines(format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z"), done_mark)
+    unlink(running_mark)                       # completed: clear the in-progress flag
+    # A successful (re)fit supersedes any prior failure: drop this model's stale
+    # error_info.rds so a recovered model is not held failed by an old record.
+    unlink(file.path(mdir, "error_info.rds"))
+  } else if (file.exists(done_mark)) {
+    # A prior run's stale DONE must not survive a re-run that came up incomplete.
+    file.remove(done_mark)
+  }
+  if (!loo_ok) {
+    cat("  WARNING:", m, "has no loo.rds (loo::loo failed?) — LOOIC/Table-1",
+        "will be unavailable for this model.\n")
+  }
+}
 
-# Cross-check: count error_info.rds files independently of fit_summary
-error_files <- list.files(CONFIG$output_dirs$model_output,
-                          pattern = "error_info\\.rds$",
-                          recursive = TRUE, full.names = TRUE)
-n_error_files <- length(error_files)
+# Aggregate outcome for THIS process's requested models.
+n_expected  <- length(model_names)
+n_completed <- sum(vapply(model_names, function(m)
+  identical(fit_summary$status[match(m, fit_summary$model)], "completed") &&
+    core_artifacts_complete(m), logical(1)))
+n_failed    <- n_expected - n_completed
+# Scope the error scan to the REQUESTED models only. A global recursive scan makes
+# one failed array task fail unrelated successful tasks, and a stale error file
+# from another model's prior failure would wrongly hold this task failed. (This
+# model's own stale error_info.rds was already removed above on success.)
+error_files <- file.path(CONFIG$output_dirs$model_output, model_names, "error_info.rds")
+error_files <- error_files[file.exists(error_files)]
 
 completion_info <- list(
   completed_at = Sys.time(),
-  models_fitted = fit_summary$model[fit_summary$status == "completed"],
-  models_failed = fit_summary$model[fit_summary$status == "failed"],
+  requested = model_names,
+  models_complete = model_names[vapply(model_names, function(m)
+    identical(fit_summary$status[match(m, fit_summary$model)], "completed") &&
+      core_artifacts_complete(m), logical(1))],
   n_expected = n_expected,
   n_completed = n_completed,
   n_failed = n_failed,
-  n_error_files = n_error_files,
+  n_error_files = length(error_files),
   total_runtime_mins = sum(fit_summary$runtime_mins, na.rm = TRUE)
 )
 
-if (n_completed == n_expected && n_error_files == 0) {
-  saveRDS(completion_info, file.path(results_dir, "pipeline_4c_complete.rds"))
-  cat("\n✓ All", n_expected, "models completed successfully.\n")
-  cat("  Completion marker written: pipeline_4c_complete.rds\n")
+if (n_expected == 1) {
+  # Array / single-model mode: model-scoped summary only (no shared clobber).
+  m <- model_names[[1]]
+  write.csv(fit_summary, file.path(results_dir, paste0("model_fit_summary_", m, ".csv")),
+            row.names = FALSE)
+  saveRDS(completion_info, file.path(results_dir, paste0("fit_completion_", m, ".rds")))
 } else {
-  saveRDS(completion_info, file.path(results_dir, "pipeline_4c_INCOMPLETE.rds"))
-  cat("\n✗ INCOMPLETE:", n_completed, "of", n_expected, "models completed,",
-      n_failed, "failed,", n_error_files, "error files found.\n")
-  if (n_failed > 0) {
-    cat("  Failed models:", paste(fit_summary$model[fit_summary$status == "failed"],
-                                  collapse = ", "), "\n")
-  }
-  if (n_error_files > 0) {
+  # Full-set / legacy launcher mode: shared summary + auto-shutdown gate marker.
+  saveRDS(fit_summary, file.path(results_dir, "model_fit_summary.rds"))
+  write.csv(fit_summary, file.path(results_dir, "model_fit_summary.csv"), row.names = FALSE)
+  marker <- if (n_completed == n_expected && length(error_files) == 0)
+    "pipeline_4c_complete.rds" else "pipeline_4c_INCOMPLETE.rds"
+  saveRDS(completion_info, file.path(results_dir, marker))
+  cat("\nCompletion marker written:", marker, "\n")
+}
+
+if (n_completed == n_expected && length(error_files) == 0) {
+  cat("\n✓", n_completed, "of", n_expected, "requested model(s) completed with a",
+      "full artifact set.\n")
+} else {
+  cat("\n✗ INCOMPLETE:", n_completed, "of", n_expected, "requested model(s) complete;",
+      n_failed, "failed/incomplete,", length(error_files), "error file(s) found.\n")
+  if (length(error_files) > 0) {
     cat("  Error files:", paste(error_files, collapse = "\n              "), "\n")
   }
-  cat("  INCOMPLETE marker written: pipeline_4c_INCOMPLETE.rds\n")
-  cat("  The launcher will NOT auto-shutdown.\n")
+  # Nonzero exit so the SLURM task (and the fit wrapper's `set -e`) register the
+  # failure instead of false-succeeding. This is the backstop to the shell-level
+  # complete-artifact-set resume guard in job_fit_chordal.sh.
+  quit(status = 1)
 }

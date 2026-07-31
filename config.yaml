@@ -36,9 +36,35 @@ lambda_control:
   prior_sd_log: 0.5    # 95% interval between roughly 4 and 28
 
 # GP regularization parameters
+# Neighborhood radii are defined in kilometres and applied on the chordal
+# (3-D Euclidean on the sphere) metric. They replace the former
+# density_radius_std (0.2 standardized units), which under per-axis coordinate
+# standardization was an anisotropic ellipse (~1791 km E-W x 643 km N-S,
+# equal-area radius ~1073 km). density_scaling (formerly 10) was declared but
+# never used inside the Stan model and has been removed.
 gp_regularization:
-  density_radius_std: 0.2
-  density_scaling: 10
+  density_radius_km: 1000        # radius for counting nearby sites -> base tau
+  oipc_range_radius_km: 1000     # radius for local OIPC-range -> range_factor
+                                 # (the Stan model's former hardcoded 1000 km intent)
+  apply_range_factor: true       # set FALSE for range_factor-off sensitivity fits
+
+# GP spatial length-scale prior (chordal km parameterization).
+# Nominal km re-expression of the former standardized-unit prior
+# normal(-1.0, 0.4) on log_ls_spatial_raw with bounds [-2, 0], via the frozen
+# run's coord_scale_km = mean(coord_scaling) * 111 = 6434.1 km:
+#   median  = exp(-1.0) * 6434.1 = 2367 km ; log-km mean = -1.0 + log(6434.1)
+#   bounds  = [exp(-2), exp(0)] * 6434.1 = [870.8, 6434.1] km
+# This preserves the former prior's nominal centre/bounds; it is NOT an exact
+# geometric equivalent (the former metric was anisotropic, so no single isotropic
+# prior reproduces it). Bounds are ~±2.5 prior SD from the mean; a converged
+# baseline_sp pilot must confirm no posterior pile-up at a bound before the full
+# batch. Distances are now chordal km, so the length scale is reported directly
+# in km (no coord_scale_km back-conversion).
+gp_length_scale:
+  prior_mean_log_km: 7.7694      # log(2367); median length scale ~2367 km
+  prior_sd_log: 0.4              # log-scale SD (unchanged from former prior)
+  lower_km: 870.8                # exp(-2) * 6434.1
+  upper_km: 6434.1               # exp(0)  * 6434.1
 
 # Penalized complexity prior for spatial variance
 pc_prior_intercept:
@@ -221,8 +247,8 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 3000
-    adapt_delta: 0.99
-    max_treedepth: 12
+    adapt_delta: 0.999   # chordal re-tune 2026-07-25: 0.99->0.999 (0.99 left 7 divergences under chordal geometry)
+    max_treedepth: 13    # raised 12->13 to avoid treedepth saturation at adapt_delta 0.999
 
   c4_only_sp:
     name: "c4_only_sp"
@@ -263,8 +289,8 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 3000
-    adapt_delta: 0.99
-    max_treedepth: 12
+    adapt_delta: 0.999   # chordal re-tune 2026-07-25: 0.99->0.999 (0.99 left 5 divergences under chordal geometry)
+    max_treedepth: 13    # raised 12->13 to avoid treedepth saturation at adapt_delta 0.999
 
   elevation_c4_interact_sp:
     name: "elevation_c4_interact_sp"
@@ -277,8 +303,8 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 4000
-    adapt_delta: 0.99
-    max_treedepth: 12
+    adapt_delta: 0.999   # chordal re-tune 2026-07-25: 0.99->0.999 (0.99 left 3 divergences under chordal geometry)
+    max_treedepth: 13    # raised 12->13 to avoid treedepth saturation at adapt_delta 0.999
 
   full_sp:
     name: "full_sp"
@@ -307,3 +333,54 @@ model_configs:
     iter: 4000
     adapt_delta: 0.999   # retuned 2026-06-28: 0.99->0.995->0.999; 0.995 left 4 divergences
     max_treedepth: 13    # raised 12->13 with adapt_delta 0.999 to avoid treedepth saturation
+
+  # --- range_factor-off sensitivity variants (chordal batch, spec v2 §3) ---
+  # Clones of three spatial models with the OIPC range_factor slope-shrinkage
+  # DISABLED (apply_range_factor: false, a per-model override of the global
+  # gp_regularization.apply_range_factor). Everything else — including the chordal
+  # metric, km neighborhoods, and sampling params — matches the base model. Used to
+  # gate whether range_factor materially changes a manuscript-level claim.
+  baseline_sp_rfoff:
+    name: "baseline_sp_rfoff"
+    include_c4: false
+    include_pft: false
+    include_gp: true
+    include_elevation: false
+    include_precip: false
+    include_veg_interactions: false
+    n_pp_knots: 125
+    apply_range_factor: false
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.99
+    max_treedepth: 15
+
+  baseline_env_sp_rfoff:
+    name: "baseline_env_sp_rfoff"
+    include_c4: false
+    include_pft: false
+    include_gp: true
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: false
+    n_pp_knots: 125
+    apply_range_factor: false
+    chains: 8
+    iter: 3000
+    adapt_delta: 0.999   # chordal re-tune 2026-07-25: 0.99->0.999 (0.99 left 3 divergences under chordal geometry)
+    max_treedepth: 13    # raised 12->13 to avoid treedepth saturation at adapt_delta 0.999
+
+  full_interact_sp_rfoff:
+    name: "full_interact_sp_rfoff"
+    include_c4: true
+    include_pft: true
+    include_gp: true
+    include_elevation: true
+    include_precip: true
+    include_veg_interactions: true
+    n_pp_knots: 125
+    apply_range_factor: false
+    chains: 8
+    iter: 4000
+    adapt_delta: 0.999
+    max_treedepth: 13

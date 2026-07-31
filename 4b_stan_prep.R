@@ -12,6 +12,25 @@ cat("============================================\n\n")
 source("0_load_config.R")  # Load configuration first
 source(config$scripts$spatial_functions)   # Includes both spatial and validation functions
 
+# Prep-cache invalidation signature. The former skip logic compared only the
+# stan_data mtime vs the input RDS, so a change to config (regularization, length
+# scale, spatial scales, model flags) or to the prep code left a stale stan_data
+# in place. We now also compare a small payload of everything that determines the
+# prepared data; any change forces a rebuild. Bump PREP_CODE_VERSION when the prep
+# logic changes in a way not captured by config alone.
+PREP_CODE_VERSION <- "chordal-2026-07"
+prep_payload <- function(model_cfg) {
+  list(
+    prep_code_version = PREP_CODE_VERSION,
+    model = model_cfg[c("include_c4", "include_pft", "include_gp", "include_elevation",
+                        "include_precip", "include_veg_interactions", "n_pp_knots",
+                        "apply_range_factor")],
+    gp_regularization = CONFIG$gp_regularization,
+    gp_length_scale   = CONFIG$gp_length_scale,
+    spatial_scales    = CONFIG$spatial_scales
+  )
+}
+
 # Check if input file exists
 input_file <- CONFIG$input_data
 if (!file.exists(input_file)) {
@@ -166,15 +185,27 @@ for (model_name in names(model_configs)) {
     cat("    PP knots:", config$n_pp_knots, "\n")
   }
   
-  # Skip only if the cached stan_data is newer than the upstream prep RDS;
-  # otherwise we would reuse a stan_data built from a stale compilation.
+  # Skip only if the cached stan_data is (a) newer than the upstream prep RDS AND
+  # (b) built from the same config + prep-code signature. Either a stale
+  # compilation or a config/prep-code change forces a rebuild.
   output_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("stan_data_", model_name, ".rds"))
-  if (file.exists(output_file) && file.mtime(output_file) > file.mtime(input_file)) {
-    cat("  ✓ Already prepared (newer than prep RDS) - skipping\n\n")
+  config_file <- file.path(CONFIG$output_dirs$prepared_data, paste0("config_", model_name, ".rds"))
+  error_file  <- file.path(CONFIG$output_dirs$prepared_data, paste0("error_", model_name, ".rds"))
+  cur_payload <- prep_payload(config)
+  payload_ok <- FALSE
+  if (file.exists(output_file) && file.exists(config_file)) {
+    prev_cfg <- tryCatch(readRDS(config_file), error = function(e) NULL)
+    payload_ok <- !is.null(prev_cfg) && identical(prev_cfg$prep_payload, cur_payload)
+  }
+  if (file.exists(output_file) &&
+      file.mtime(output_file) > file.mtime(input_file) && payload_ok) {
+    cat("  ✓ Already prepared (fresh; config + prep-code unchanged) - skipping\n\n")
+    unlink(error_file)   # valid cache hit supersedes any prior failure record
     next
   }
   if (file.exists(output_file)) {
-    cat("  ↻ Cached stan_data older than prep RDS - regenerating\n")
+    reason <- if (!payload_ok) "config/prep-code changed" else "older than prep RDS"
+    cat("  ↻ Regenerating cached stan_data (", reason, ")\n")
   }
   
   # Prepare data
@@ -206,7 +237,10 @@ for (model_name in names(model_configs)) {
       include_soil = FALSE,   # Always FALSE due to collinearity
       n_pp_knots = config$n_pp_knots,
       SCALING_PARAMS = SCALING_PARAMS,
-      has_pft_columns = has_pft_columns
+      has_pft_columns = has_pft_columns,
+      # Per-model override (NULL for most models -> global config default; FALSE
+      # for the *_rfoff range_factor-off sensitivity variants). Spec v2 §3.
+      apply_range_factor = config$apply_range_factor
     )
     
     # Add vegetation interaction flag to stan_data
@@ -237,8 +271,10 @@ for (model_name in names(model_configs)) {
     config$pft_actually_used <- include_pft
     config$timestamp <- Sys.time()
     config$model_version <- "updated_bspline_matern"
+    config$prep_payload <- cur_payload   # cache-invalidation signature (see skip logic)
     saveRDS(config, file.path(CONFIG$output_dirs$prepared_data, paste0("config_", model_name, ".rds")))
-    
+    unlink(error_file)   # a successful rebuild supersedes any prior failure record
+
     cat("  ✓ Saved to", output_file, "\n")
     cat("  Data dimensions: N =", stan_data$N, ", scales =", stan_data$n_scales, "\n")
     cat("  Preparation time:", round(prep_time, 1), "seconds\n\n")
@@ -300,5 +336,31 @@ summary_info <- list(
   timestamp = Sys.time()
 )
 saveRDS(summary_info, file.path(CONFIG$output_dirs$prepared_data, "preparation_summary.rds"))
-cat("\nPreparation summary saved to:", 
+cat("\nPreparation summary saved to:",
     file.path(CONFIG$output_dirs$prepared_data, "preparation_summary.rds"), "\n")
+
+# Record the full expected model set so the launcher (job_prep.sh) can assert
+# every dataset exists before it touches the prep-complete flag — a stan_data
+# file per model_config, no more and no fewer.
+writeLines(names(model_configs),
+           file.path(CONFIG$output_dirs$prepared_data, "expected_models.txt"))
+
+# ── Fail closed ────────────────────────────────────────────────────────────────
+# A per-model prep error is caught above (so one bad model doesn't abort the
+# others), but the script MUST NOT exit 0 when any model failed to prepare —
+# otherwise job_prep.sh's `set -e` sees success and touches prep_complete.flag,
+# and the fit array then runs against a partial prepared_data set. Assert both
+# no recorded failures AND a stan_data file present for every model_config.
+present <- vapply(names(model_configs), function(m)
+  file.exists(file.path(CONFIG$output_dirs$prepared_data,
+                        paste0("stan_data_", m, ".rds"))), logical(1))
+missing_models <- names(model_configs)[!present]
+if (length(failed_models) > 0 || length(missing_models) > 0) {
+  cat("\n✗ PREP INCOMPLETE.\n")
+  if (length(failed_models) > 0)
+    cat("  Failed:", paste(failed_models, collapse = ", "), "\n")
+  if (length(missing_models) > 0)
+    cat("  Missing stan_data:", paste(missing_models, collapse = ", "), "\n")
+  quit(status = 1)
+}
+cat("\n✓ All", length(model_configs), "model datasets prepared.\n")
