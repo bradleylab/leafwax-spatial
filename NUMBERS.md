@@ -122,13 +122,13 @@ The claim-affecting shifts (see `retrace/map_main.md` / `retrace/map_supp.md` fo
 ## Uncertainty propagation / detection thresholds
 
 - σ_residual (wax) median **16.0‰**; combined σ_total = √(15.98² + 3²) = **16.26‰** (analytical SD 3‰).
-- Detection threshold (**δ²H_wax scale**), two-sample: ρ=0 **45.1**, ρ=0.5 **31.9**, ρ=0.8 **20.2**, ρ=0.9 **14.3‰**.
+- Detection threshold (**δ²H_wax scale**), two-sample: ρ=0 **45.1**, ρ=0.5 **32.4**, ρ=0.8 **21.5**, ρ=0.9 **16.3‰**. The autocorrelation factor applies only to residual variance; independent analytical error is not reduced by ρ.
 - **δ²H_precip scale** (per-draw propagation, `regen_precip_space.R`, reconstruction model **baseline_env_sp**):
   - single-sample reconstruction SD **26.5‰ [21.2, 35.0]** → quote "≈26‰ (21–35‰)".
   - two-sample threshold: ρ=0 **73.4‰**, ρ=0.5 **52.8**, ρ=0.8 **35.0**, ρ=0.9 **26.5‰** → headline "≈73‰".
   - Table S9 grid (fixed residual variance, wax-scale constant 45‰): slope 0.50→90, 0.60→75,
     0.62→73 (fitted baseline_env_sp), 0.70→64, 0.78→58‰.
-- Fig 6 endpoints (wax scale): spatial ρ=0.9 → **14.3‰**; non-spatial ρ=0 → **58.7‰** (σ_baseline 20.96‰).
+- Fig 6 endpoints (**δ²H_precip scale**, 95% confidence): spatial ρ=0.9 → **26.5‰**; non-spatial ρ=0 → **75.4‰** (each uses its model's global slope; `regen_precip_space.R`).
 
 ## Confounding simulation (Table S4 / Fig 3, chordal confounding_v2) — verified
 

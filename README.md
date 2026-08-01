@@ -1,8 +1,9 @@
 # Leaf wax hydrogen isotope spatial calibration
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20172576.svg)](https://doi.org/10.5281/zenodo.20172575)
-
-Companion code to Bradley (2026), submitted to *Geochimica et Cosmochimica Acta*.
+Companion analysis code for Bradley (2026), being prepared for submission to
+*Communications Earth & Environment*. Public code and data releases are
+deferred until the manuscript, package, and frozen artifacts pass coordinated
+final validation.
 
 Hierarchical Bayesian spatial model that calibrates sedimentary leaf-wax
 n-C₂₉ hydrogen isotope ratios (δ²H<sub>wax</sub>) against precipitation
