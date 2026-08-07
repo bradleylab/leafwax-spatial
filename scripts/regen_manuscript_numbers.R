@@ -1,8 +1,8 @@
 # regen_manuscript_numbers.R
 #
-# Recompute every numeric quantity that appears in the manuscript or
-# supplement from the frozen refit (c2_run_20260626/model_output) before
-# updating prose. Output: manuscript/drafts/REGENERATED_NUMBERS_v10.md.
+# Recompute numeric quantities that appear in the manuscript or supplement
+# from the run selected by LEAFWAX_RUN_DIR before updating prose. For the CEE
+# resubmission, select results/c2_run_20260728_chordal/model_output.
 #
 # Mirrors the structure of REGENERATED_NUMBERS.md (v8, c2_run_20260414)
 # so the user can scan side-by-side. Side-by-side comparison values are
@@ -80,7 +80,9 @@ sxx <- sum((ols_dat$oipc_d2h20 - xbar)^2)
 pi_se <- ols_sigma * sqrt(1 + 1/n_ols + (xbar - xbar)^2 / sxx)
 pi_halfwidth <- qt(0.975, df = ols$df.residual) * pi_se
 
-# Inverse prediction at d2H_wax = -180 ----------------------------------------
+# Classical OLS inverse diagnostic at d2H_wax = -180 --------------------------
+# This remains a labelled Fieller/delta-method comparison and is not the
+# likelihood-based Bayesian inversion implemented by the leafwax package.
 
 y_target <- -180
 xhat <- (y_target - beta0) / beta_oipc
@@ -265,6 +267,40 @@ pi_stats <- lapply(pi_models, function(m) {
   )
 }) |> bind_rows()
 
+# Data-density strata used in Supplementary Section S2.5.2 -------------------
+# Assign each observation the density count of its nearest fitted chordal knot,
+# then calculate in-sample RMSE from the posterior mean fitted value. This uses
+# the exact Stan inputs and posterior draws from baseline_env_sp.
+density_stan <- load_stan_data("baseline_env_sp")
+density_draws <- load_draws("baseline_env_sp")
+nearest_knot <- vapply(seq_len(density_stan$N), function(i) {
+  delta <- sweep(density_stan$knot_coords, 2, density_stan$coords[i, ], "-")
+  which.min(rowSums(delta^2))
+}, integer(1))
+site_density <- density_stan$knot_data_density[nearest_knot]
+density_group <- cut(
+  site_density,
+  breaks = c(-Inf, 9, 50, Inf),
+  labels = c("Sparse", "Medium", "Dense"),
+  right = TRUE
+)
+mu_vars <- paste0("mu[", seq_len(density_stan$N), "]")
+mu_mean <- colMeans(unclass(as_draws_matrix(
+  subset_draws(density_draws, variable = mu_vars)
+)))
+residual_permil <- (density_stan$d2H_wax - mu_mean) *
+  density_stan$d2H_wax_sd_original
+density_stats <- tibble(
+  category = density_group,
+  residual_permil = residual_permil
+) |>
+  group_by(category) |>
+  summarise(
+    n = n(),
+    rmse_permil = sqrt(mean(residual_permil^2)),
+    .groups = "drop"
+  )
+
 # Residual sigma per spatial model -------------------------------------------
 
 sigma_stats <- lapply(spatial_models, function(m) {
@@ -289,7 +325,9 @@ sigma_stats_focus <- sigma_stats |> filter(model %in% c(
 sigma_resid_med <- median(sigma_stats_focus$sigma_mean)
 sigma_anal <- 3
 sigma_total <- sqrt(sigma_resid_med^2 + sigma_anal^2)
-det_thresh <- function(rho) 1.96 * sqrt(2 * (1 - rho)) * sigma_total
+det_thresh <- function(rho) {
+  1.96 * sqrt(2 * sigma_resid_med^2 * (1 - rho) + 2 * sigma_anal^2)
+}
 det_table <- tibble(
   rho = c(0, 0.5, 0.8, 0.9),
   threshold_permil = sapply(rho, det_thresh)
@@ -302,13 +340,13 @@ sigma_baseline_mean <- {
   sigma_draws <- as_draws_matrix(subset_draws(pd, variable = "sigma"))
   mean(as.numeric(sigma_draws) * cfg$scaling_params$d2H_sd)
 }
-fig5_spatial_lo <- 1.96 * sqrt(2 * 0.1) * sqrt(sigma_resid_med^2 + sigma_anal^2)
-fig5_nonsp_hi <- 1.96 * sqrt(2 * 1.0) * sqrt(sigma_baseline_mean^2 + sigma_anal^2)
+fig5_spatial_lo <- 1.96 * sqrt(2 * sigma_resid_med^2 * 0.1 + 2 * sigma_anal^2)
+fig5_nonsp_hi <- 1.96 * sqrt(2 * sigma_baseline_mean^2 + 2 * sigma_anal^2)
 
 # WRITE REPORT ----------------------------------------------------------------
 
 sink(OUT_PATH)
-header(1, "Regenerated numeric quantities — frozen refit (c2_run_20260626)")
+header(1, "Regenerated numeric quantities — selected frozen model run")
 cat(sprintf("Generated %s. Run dir: `%s`.\n\n",
             format(Sys.time(), "%Y-%m-%d %H:%M %Z"),
             APRIL_RUN))
@@ -454,6 +492,18 @@ cat(sprintf(
   "\n- Spatial mean width: **%.1f ‰** (v8: ~65)\n- Non-spatial mean width: **%.1f ‰** (v8: ~80)\n- Spatial reduction: **%s** (v8: 19%%)\n\n",
   mean(sp_widths$mean_width), mean(nsp_widths$mean_width),
   pct(1 - mean(sp_widths$mean_width) / mean(nsp_widths$mean_width))))
+
+header(2, "Nearest-knot density strata (S2.5.2)")
+cat("Density is the number of observations within 1,000 chordal km of each observation's nearest fitted knot. RMSE uses the posterior mean fitted value from baseline_env_sp.\n\n")
+cat("| Category | Knot-density count | n | In-sample RMSE (per mil) |\n")
+cat("|---|---:|---:|---:|\n")
+for (i in seq_len(nrow(density_stats))) {
+  bounds <- c("<10", "10--50", ">50")[[i]]
+  cat(sprintf("| %s | %s | %d | %.1f |\n",
+              density_stats$category[i], bounds, density_stats$n[i],
+              density_stats$rmse_permil[i]))
+}
+cat("\n")
 
 header(2, "Residual σ per spatial model")
 cat("| Model | σ_residual (‰) | 95% CI |\n|---|---:|---|\n")
