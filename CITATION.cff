@@ -1,10 +1,10 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite both this software archive and the related manuscript."
+message: "Development metadata for the CEE submission; a matching archived release is pending final manuscript review."
 type: software
 title: "leafwax-spatial: hierarchical Bayesian spatial calibration of leaf-wax hydrogen isotopes"
 authors:
   - family-names: Bradley
-    given-names: Alex
+    given-names: Alexander S.
     orcid: "https://orcid.org/0000-0002-4044-2802"
     affiliation: "Department of Earth, Environmental, and Planetary Sciences, Washington University in St. Louis"
     email: abradley@wustl.edu
@@ -27,21 +27,14 @@ keywords:
   - hierarchical model
   - precipitation isotopes
 license: MIT
-version: "1.1.1"
-date-released: "2026-07-09"
 repository-code: "https://github.com/bradleylab/leafwax-spatial"
-url: "https://doi.org/10.5281/zenodo.20172575"
-identifiers:
-  - type: doi
-    value: "10.5281/zenodo.20172575"
-    description: Concept DOI (always resolves to latest version)
 references:
   - type: unpublished
     title: >-
-      Spatial modeling improves the calibration of leaf wax hydrogen
-      isotopes to precipitation
+      Geography limits the transferability of global leaf-wax isotope
+      calibrations
     authors:
       - family-names: Bradley
-        given-names: Alex
+        given-names: Alexander S.
         orcid: "https://orcid.org/0000-0002-4044-2802"
     year: 2026

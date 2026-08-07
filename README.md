@@ -1,9 +1,9 @@
 # Leaf wax hydrogen isotope spatial calibration
 
-Companion analysis code for Bradley (2026), being prepared for submission to
-*Communications Earth & Environment*. Public code and data releases are
-deferred until the manuscript, package, and frozen artifacts pass coordinated
-final validation.
+Companion analysis code for Bradley (2026), prepared for submission to
+*Communications Earth & Environment*. This repository state supports the
+CEE submission; a matching archived release and DOI will be created after
+final manuscript review.
 
 Hierarchical Bayesian spatial model that calibrates sedimentary leaf-wax
 n-C₂₉ hydrogen isotope ratios (δ²H<sub>wax</sub>) against precipitation
@@ -140,10 +140,11 @@ and output directories. Every numbered script begins by sourcing
   artifacts are not part of this repo.
 - **Model fits.** `results/` and `model_output/` are git-ignored. Producing
   fresh fits from a clean clone takes the wall-clock time noted above. The
-  published-version posterior draws are archived at Zenodo:
-  [10.5281/zenodo.20085465](https://doi.org/10.5281/zenodo.20085465)
-  (`leafwax v10 model posteriors`, CC-BY-4.0). The leafwax R package
-  downloads these posteriors on first use; manual download is not required.
+  authoritative chordal-run posterior draws used by the manuscript are in
+  [bradleylab/leafwax-data](https://github.com/bradleylab/leafwax-data).
+  Earlier Zenodo versions predate the chordal refit and do not reproduce the
+  submitted manuscript. A versioned chordal archive will be created after
+  final manuscript review.
 
 ## License
 
@@ -151,7 +152,8 @@ MIT — see [LICENSE](LICENSE).
 
 ## Citation
 
-Cite both the software archive and the related manuscript:
+Cite the repository and related manuscript as follows until the matching
+versioned archive is released:
 
 ```bibtex
 @software{bradley_leafwax_spatial_2026,
@@ -159,19 +161,18 @@ Cite both the software archive and the related manuscript:
   title   = {leafwax-spatial: hierarchical Bayesian spatial calibration
              of leaf-wax hydrogen isotopes},
   year    = {2026},
-  doi     = {10.5281/zenodo.20172575},
-  url     = {https://doi.org/10.5281/zenodo.20172575}
+  url     = {https://github.com/bradleylab/leafwax-spatial},
+  note    = {Development version supporting the CEE submission}
 }
 
 @unpublished{bradley_leafwax_paper_2026,
   author = {Bradley, Alexander S.},
-  title  = {Spatial modeling improves the calibration of leaf wax
-            hydrogen isotopes to precipitation},
+  title  = {Geography limits the transferability of global leaf-wax
+            isotope calibrations},
   year   = {2026},
   note   = {Manuscript in preparation}
 }
 ```
 
-The `@software` DOI is the concept DOI — it always resolves to the
-latest version. To cite a specific release, replace it with that
-release's version DOI from the Zenodo deposit page.
+A matching versioned software citation and DOI will be added after final
+manuscript review.

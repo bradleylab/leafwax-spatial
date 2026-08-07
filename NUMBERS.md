@@ -182,14 +182,9 @@ intercept–δ²H_precip correlation. Ordered by achieved correlation (GP poster
   (baseline_sp slope 0.649, GP scale 3,589 km).
 - **Tables S2 / S9** — prior descriptor slope range 0.60–0.70; detection-threshold grid above.
 
-## OPEN
-
-- `manuscript/METHODS.md` is git-untracked; its chordal §4.2 edit (d = chordal km; PD by
-  construction) is present and self-verified but not part of any committed diff.
-
 ## Provenance notes
 
-- Deposit: the 14 posteriors in `bradleylab/leafwax-data` are rebuilt chordal on branch
-  `chordal-deposit` (v3.0.0, spatial_metric stamped, elevation coefficients retained); the frozen
+- Deposit: the 14 posteriors in `bradleylab/leafwax-data` are rebuilt chordal on the
+  default branch (unreleased v3.0.0 metadata, spatial metric stamped, elevation coefficients retained); the frozen
   great-circle deposit (v2.0.0 = zenodo.21286445) is preserved at leafwax-data commit 5a477e3.
 - The frozen great-circle run is preserved unchanged at `results/c2_run_20260626/` for comparison.

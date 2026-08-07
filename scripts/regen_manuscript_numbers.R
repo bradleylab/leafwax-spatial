@@ -2,7 +2,7 @@
 #
 # Recompute numeric quantities that appear in the manuscript or supplement
 # from the run selected by LEAFWAX_RUN_DIR before updating prose. For the CEE
-# resubmission, select results/c2_run_20260728_chordal/model_output.
+# submission, select results/c2_run_20260728_chordal/model_output.
 #
 # Mirrors the structure of REGENERATED_NUMBERS.md (v8, c2_run_20260414)
 # so the user can scan side-by-side. Side-by-side comparison values are
