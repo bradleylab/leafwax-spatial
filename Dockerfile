@@ -50,6 +50,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN R -e ' \
     install.packages(c( \
         "yaml", \
+        "arrow", \
+        "digest", \
+        "jsonlite", \
         "tidyverse", \
         "terra", \
         "sf", \
