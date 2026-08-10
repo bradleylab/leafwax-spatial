@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Development metadata for the CEE submission; a matching archived release is pending final manuscript review."
+message: "If you use this software, cite the archived release and the associated manuscript."
 type: software
 title: "leafwax-spatial: hierarchical Bayesian spatial calibration of leaf-wax hydrogen isotopes"
 authors:
@@ -31,8 +31,8 @@ repository-code: "https://github.com/bradleylab/leafwax-spatial"
 references:
   - type: unpublished
     title: >-
-      Geography limits the transferability of global leaf-wax isotope
-      calibrations
+      Geographic structure limits the generality of leaf-wax
+      isotope–precipitation relationships
     authors:
       - family-names: Bradley
         given-names: Alexander S.

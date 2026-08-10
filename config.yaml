@@ -23,7 +23,7 @@ data_sources:
   oipc_d2h: "input_data/GlobalPrecip/d2h_MA.tif"
   oipc_se: "input_data/GlobalPrecip/d2h_se_MA.tif"
   elevation: "input_data/elevation_5KMmn_GMTEDmn.tif"
-  sediment_csv: "input_data/global_data_c29.csv"
+  sediment_csv: "input_data/leafwax_d2h_c29_calibration_v1.csv"
 
 # Spatial scale parameters
 spatial_scales: [1, 3, 5, 10, 20, 40, 70, 100, 150]  # km
@@ -37,11 +37,7 @@ lambda_control:
 
 # GP regularization parameters
 # Neighborhood radii are defined in kilometres and applied on the chordal
-# (3-D Euclidean on the sphere) metric. They replace the former
-# density_radius_std (0.2 standardized units), which under per-axis coordinate
-# standardization was an anisotropic ellipse (~1791 km E-W x 643 km N-S,
-# equal-area radius ~1073 km). density_scaling (formerly 10) was declared but
-# never used inside the Stan model and has been removed.
+# (3-D Euclidean on the sphere) metric.
 gp_regularization:
   density_radius_km: 1000        # radius for counting nearby sites -> base tau
   oipc_range_radius_km: 1000     # radius for local OIPC-range -> range_factor
@@ -49,20 +45,13 @@ gp_regularization:
   apply_range_factor: true       # set FALSE for range_factor-off sensitivity fits
 
 # GP spatial length-scale prior (chordal km parameterization).
-# Nominal km re-expression of the former standardized-unit prior
-# normal(-1.0, 0.4) on log_ls_spatial_raw with bounds [-2, 0], via the frozen
-# run's coord_scale_km = mean(coord_scaling) * 111 = 6434.1 km:
-#   median  = exp(-1.0) * 6434.1 = 2367 km ; log-km mean = -1.0 + log(6434.1)
-#   bounds  = [exp(-2), exp(0)] * 6434.1 = [870.8, 6434.1] km
-# This preserves the former prior's nominal centre/bounds; it is NOT an exact
-# geometric equivalent (the former metric was anisotropic, so no single isotropic
-# prior reproduces it). Bounds are ~±2.5 prior SD from the mean; a converged
+# The log-normal prior has a median of 2,367 km and bounds of 871--6,434 km.
+# Bounds are approximately ±2.5 prior SD from the mean; a converged
 # baseline_sp pilot must confirm no posterior pile-up at a bound before the full
-# batch. Distances are now chordal km, so the length scale is reported directly
-# in km (no coord_scale_km back-conversion).
+# batch. The length scale is reported directly in chordal km.
 gp_length_scale:
   prior_mean_log_km: 7.7694      # log(2367); median length scale ~2367 km
-  prior_sd_log: 0.4              # log-scale SD (unchanged from former prior)
+  prior_sd_log: 0.4              # log-scale SD
   lower_km: 870.8                # exp(-2) * 6434.1
   upper_km: 6434.1               # exp(0)  * 6434.1
 
@@ -128,12 +117,7 @@ ppc_settings:
 # Spatial _veg models: iter=3000, adapt_delta=0.95, max_treedepth=14
 # Spatial _env/full models: iter=3000-4000, adapt_delta=0.99, max_treedepth=12
 #
-# Retune 2026-06-23 (after the frozen-data refresh; see HANDOFF.md), targeting the
-# only three models with diagnostic flags in the 2026-05-01 run:
-#   baseline_env      iter 2000 -> 6000        (Rhat 1.011, ESS 857 -> lift mixing)
-#   full_sp           adapt_delta 0.99 -> 0.995 (8 residual divergences)
-#   full_interact_sp  adapt_delta 0.99 -> 0.995 (1 residual divergence)
-# The other 11 models were clean (0 div, Rhat < 1.008, ESS > 1000) and are unchanged.
+# Per-model iteration and sampler-control settings are recorded below.
 
 model_configs:
   # ── Non-spatial models (fast, ~1-2 hrs each) ──
@@ -331,15 +315,14 @@ model_configs:
     n_pp_knots: 125
     chains: 8
     iter: 4000
-    adapt_delta: 0.999   # retuned 2026-06-28: 0.99->0.995->0.999; 0.995 left 4 divergences
-    max_treedepth: 13    # raised 12->13 with adapt_delta 0.999 to avoid treedepth saturation
+    adapt_delta: 0.999
+    max_treedepth: 13
 
-  # --- range_factor-off sensitivity variants (chordal batch, spec v2 §3) ---
+  # --- range_factor-off sensitivity variants ---
   # Clones of three spatial models with the OIPC range_factor slope-shrinkage
   # DISABLED (apply_range_factor: false, a per-model override of the global
   # gp_regularization.apply_range_factor). Everything else — including the chordal
-  # metric, km neighborhoods, and sampling params — matches the base model. Used to
-  # gate whether range_factor materially changes a manuscript-level claim.
+  # metric, km neighborhoods, and sampling parameters — matches the base model.
   baseline_sp_rfoff:
     name: "baseline_sp_rfoff"
     include_c4: false

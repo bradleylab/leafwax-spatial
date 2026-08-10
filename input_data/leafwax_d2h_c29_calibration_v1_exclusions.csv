@@ -1,0 +1,2 @@
+"obs_id","source","compilation","DOI","latitude","longitude","d2H_wax","exclusion_reason"
+"obs_0522","Ladd 2021 compilation (Garcin et al., 2012)","ETH Zurich: doi:10.3929/ethz-b-000412154","10.1016/j.gca.2011.11.039",4.65,9.41,-155,"duplicate: non-canonical member of same-DOI re-ingestion set"

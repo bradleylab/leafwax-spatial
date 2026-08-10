@@ -1,21 +1,15 @@
-# posterior_helpers.R — root-level twin of manuscript/figure_code/posterior_helpers.R
-# with an APRIL_RUN path resolved from the repo root (one level up from scripts/).
+# posterior_helpers.R — helpers for reading a selected fitted-model run.
 #
-# Sourced by 5*_*.R and 7_paleo_inversion.R. Keep this file and the manuscript
-# twin in sync.
-#
-# APRIL_RUN selection (in priority order):
+# Model-run selection (in priority order):
 #   1. Environment variable LEAFWAX_RUN_DIR (absolute or relative path)
-#   2. results/c2_run_20260626/model_output   (default frozen refit)
+#   2. results/c2_run_20260728_chordal/model_output (reported analysis)
 #
-# The variable is still named APRIL_RUN for backward compatibility with 5a-5e
-# callers; semantically it is "the C2 run mirror to read posteriors from".
 # Override at the shell:
-#   LEAFWAX_RUN_DIR=results/c2_run_20260626/model_output Rscript 5a_model_validation.R
+#   LEAFWAX_RUN_DIR=<run>/model_output Rscript 5a_model_validation.R
 
 library(posterior)
 
-DEFAULT_RUN_NAME <- file.path("c2_run_20260626", "model_output")
+DEFAULT_RUN_NAME <- file.path("c2_run_20260728_chordal", "model_output")
 
 .resolve_run_dir <- function() {
   env_override <- Sys.getenv("LEAFWAX_RUN_DIR", unset = "")
@@ -36,11 +30,12 @@ DEFAULT_RUN_NAME <- file.path("c2_run_20260626", "model_output")
   candidate
 }
 
-APRIL_RUN <- .resolve_run_dir()
-PREPARED_DATA <- file.path(APRIL_RUN, "_prepared_data")
+MODEL_RUN_DIR <- .resolve_run_dir()
+RUN_ID <- basename(dirname(MODEL_RUN_DIR))
+PREPARED_DATA <- file.path(MODEL_RUN_DIR, "_prepared_data")
 
 load_draws <- function(model) {
-  path <- file.path(APRIL_RUN, model, "posterior_draws.rds")
+  path <- file.path(MODEL_RUN_DIR, model, "posterior_draws.rds")
   if (!file.exists(path)) {
     stop("posterior_draws.rds missing for '", model, "' at ", path,
          "\nRun 4c_fit_models.R on C2 against this model's output dir, ",
@@ -50,19 +45,19 @@ load_draws <- function(model) {
 }
 
 load_summaries <- function(model) {
-  path <- file.path(APRIL_RUN, model, "diagnostics.rds")
+  path <- file.path(MODEL_RUN_DIR, model, "diagnostics.rds")
   if (!file.exists(path)) stop("diagnostics.rds missing at ", path)
   readRDS(path)$all_params_summary
 }
 
 load_sampler_diag <- function(model) {
-  path <- file.path(APRIL_RUN, model, "diagnostics.rds")
+  path <- file.path(MODEL_RUN_DIR, model, "diagnostics.rds")
   if (!file.exists(path)) stop("diagnostics.rds missing at ", path)
   readRDS(path)$summary
 }
 
 load_loo <- function(model) {
-  path <- file.path(APRIL_RUN, model, "loo.rds")
+  path <- file.path(MODEL_RUN_DIR, model, "loo.rds")
   if (!file.exists(path)) {
     stop("loo.rds missing for '", model, "' at ", path,
          "\nRun 4c_fit_models.R on C2 against this model's output dir, ",
@@ -84,7 +79,26 @@ load_config <- function(model) {
 }
 
 load_sediment <- function() {
-  path <- file.path(APRIL_RUN, "3_sediment_ready_for_modeling.rds")
+  path <- file.path(MODEL_RUN_DIR, "3_sediment_ready_for_modeling.rds")
   if (!file.exists(path)) stop("sediment data missing at ", path)
   readRDS(path)
+}
+
+# Convert the Stan coefficient (SD wax per SD precipitation) to the physical
+# calibration slope (per mil wax per per mil precipitation), and back again.
+# Spatial slope perturbations use the same coefficient scale as beta_oipc.
+slope_model_to_physical <- function(slope, scaling_params) {
+  required <- c("d2H_sd", "oipc_sd")
+  if (!all(required %in% names(scaling_params))) {
+    stop("scaling_params must contain d2H_sd and oipc_sd")
+  }
+  slope * scaling_params$d2H_sd / scaling_params$oipc_sd
+}
+
+slope_physical_to_model <- function(slope, scaling_params) {
+  required <- c("d2H_sd", "oipc_sd")
+  if (!all(required %in% names(scaling_params))) {
+    stop("scaling_params must contain d2H_sd and oipc_sd")
+  }
+  slope * scaling_params$oipc_sd / scaling_params$d2H_sd
 }

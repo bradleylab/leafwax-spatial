@@ -6,7 +6,7 @@
 # Extracts environmental covariates at sediment sites with optimized sampling
 # Creates model-ready dataset with all necessary predictors
 #
-# Input: data/frozen/leafwax_d2h_c29_calibration_v1.csv (frozen audited compilation),
+# Input: input_data/leafwax_d2h_c29_calibration_v1.csv (audited compilation),
 #        environmental rasters (OIPC, C4, elevation, climate)
 # Output: results/3_sediment_ready_for_modeling.rds
 #         results/3_sediment_ready_for_modeling.csv
@@ -22,11 +22,10 @@ cat("================================================================\n\n")
 #───────────────────────────────────────────────────────────────────────────────
 # Parameters
 #───────────────────────────────────────────────────────────────────────────────
-# Calibration input: the FROZEN, audited compilation (built by 2i_freeze_calibration.R
-# from input_data/global_data_c29.csv with the NLM-grounded duplicate + archive
-# decisions applied). Carries archive_class (soil / lake / fluvial / marine sediment)
-# for medium-aware downstream use. See HANDOFF.md / data/frozen/*_dictionary.md.
-INPUT_CSV <- "data/frozen/leafwax_d2h_c29_calibration_v1.csv"
+# Calibration input: the audited compilation with duplicate and archive-class
+# decisions applied. The repository ships this exact downstream input so model
+# preparation does not depend on private primary-source extraction materials.
+INPUT_CSV <- "input_data/leafwax_d2h_c29_calibration_v1.csv"
 
 max_radius_deg <- 5
 lat_threshold <- 50

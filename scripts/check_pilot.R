@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # check_pilot.R
 #
-# Pre-launch gate on the converged baseline_sp chordal pilot (spec v2 §2.5/§7):
+# Pre-launch gate on the converged baseline_sp chordal pilot:
 #   (1) convergence — max R-hat, min ESS, divergences, max-treedepth hits, E-BFMI
 #       (all from diagnostics.rds);
 #   (2) length-scale sanity — the column must be present and finite, the two
@@ -131,7 +131,7 @@ if (fails == 0) {
   cat("PILOT GATE PASSED — safe to launch the full 17-fit chordal batch.\n")
 } else {
   cat(sprintf("PILOT GATE: %d check(s) failed — review before launching the batch.\n", fails))
-  cat("If the length-scale piles at a bound, widen gp_length_scale bounds in config.yaml\n",
-      "(operator decision), re-prep, and re-run the pilot.\n")
+  cat("If the length-scale piles at a bound, evaluate and document any change to\n",
+      "gp_length_scale bounds in config.yaml, re-prepare, and re-run the pilot.\n")
   quit(status = 1)
 }

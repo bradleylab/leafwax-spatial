@@ -1,15 +1,15 @@
 #!/usr/bin/env Rscript
 # validate_chordal_prep.R
 #
-# Local (no-fit) end-to-end validation of the chordal prep path on the REAL frozen
-# sediment: builds stan_data in memory for representative models and asserts the
+# Local (no-fit) end-to-end validation of the chordal preparation path on the
+# audited model-ready data: builds stan_data in memory for representative models and asserts the
 # chordal coords / km regularization / length-scale-prior structure. This catches
 # integration bugs in prepare_stan_data() that the unit-level acceptance test
 # (which only exercises the helpers) cannot. Prep is data preparation, not a fit,
 # so it runs locally; the MCMC fits still go to C2.
 #
-# Runs in memory only — does NOT write to prepared_data/ (that dir has symlinks to
-# a retired location; a real run preps into a fresh dir per README_chordal_run.md).
+# Runs in memory only and does not write to prepared_data/. A fitting run prepares
+# its inputs in a fresh directory as described in README_chordal_run.md.
 #
 # Run from the leafwax_working root:  Rscript scripts/validate_chordal_prep.R
 

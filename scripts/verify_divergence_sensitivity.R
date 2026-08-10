@@ -3,8 +3,8 @@
 # Divergence-location and sensitivity diagnostic for the spatial models.
 # A divergent transition flags a possible integration failure; whether it
 # matters for inference is an empirical question (Betancourt 2017). This
-# script does NOT assume divergences are benign — it assembles the evidence a
-# skeptical reviewer would need: where the divergences fall, whether they
+# script does NOT assume divergences are benign — it assembles the evidence
+# needed to determine where the divergences fall, whether they
 # distort posterior summaries (means AND tails), whether they distort model
 # comparison (LOO), and the full convergence table.
 #

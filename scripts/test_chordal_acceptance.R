@@ -1,15 +1,14 @@
 #!/usr/bin/env Rscript
 # test_chordal_acceptance.R
 #
-# Fast, dependency-light acceptance tests for the chordal-metric refit
-# (implementation spec v2, section 7 — the subset that does not require the full
-# prep pipeline or a Stan fit). Validates:
+# Fast, dependency-light acceptance tests for the chordal-distance models. They
+# validate:
 #   1. chordal coordinate geometry (norm = R; known-pair distances)
-#   2. compute_spatial_tau replicates the former in-Stan regularization logic
+#   2. compute_spatial_tau matches the Stan regularization logic
 #   3. mPP kriging self-consistency (prediction at knots recovers knot effects)
 #   4. length-scale prior/bounds match the config faithful-translation targets
 #
-# The heavier checks (build real stan_data from the frozen sediment + a small
+# The heavier checks (build real stan_data from the audited model-ready data + a small
 # Stan smoke fit, Stan-vs-R prediction parity) run in the pre-launch gate with a
 # fresh prepared-data directory, immediately before the HPC batch.
 #
@@ -33,7 +32,7 @@ check <- function(name, cond, detail = "") {
   if (!isTRUE(cond)) fails <<- fails + 1
   cat(sprintf("  [%s] %s%s\n", status, name, if (nzchar(detail)) paste0(" — ", detail) else ""))
 }
-gc_km <- function(lon1, lat1, lon2, lat2) {  # great-circle km, for comparison
+surface_arc_km <- function(lon1, lat1, lon2, lat2) {
   geosphere::distHaversine(c(lon1, lat1), c(lon2, lat2), r = R_EARTH * 1000) / 1000
 }
 
@@ -45,20 +44,21 @@ check("3-D norm == R for all points", max(abs(norms - R_EARTH)) < 1e-6,
 
 d_1deg <- as.numeric(dist(chordal_from_lonlat(c(0, 0), c(0, 1))))
 check("1 deg latitude ~ 111.19 km chordal", abs(d_1deg - 111.19) < 0.05,
-      sprintf("chordal = %.3f km, gc = %.3f km", d_1deg, gc_km(0, 0, 0, 1)))
+      sprintf("chordal = %.3f km, surface arc = %.3f km", d_1deg, surface_arc_km(0, 0, 0, 1)))
 
 d_90 <- as.numeric(dist(chordal_from_lonlat(c(0, 90), c(0, 0))))
 check("90 deg equator chordal = 2R sin(45) = 9010.5 km",
       abs(d_90 - 2 * R_EARTH * sin(pi / 4)) < 1e-3,
-      sprintf("chordal = %.1f km, gc = %.1f km (chordal < gc as expected)", d_90, gc_km(0, 0, 90, 0)))
+      sprintf("chordal = %.1f km, surface arc = %.1f km", d_90, surface_arc_km(0, 0, 90, 0)))
 
-# continental scale (~30 deg): chordal should track great circle to ~1.5%
+# At continental scale (~30 degrees), chordal distance should track the surface
+# arc to within approximately 1.5%.
 d_30 <- as.numeric(dist(chordal_from_lonlat(c(0, 30), c(0, 0))))
-gc_30 <- gc_km(0, 0, 30, 0)
-check("30 deg deviation from great circle < 1.5%", abs(d_30 - gc_30) / gc_30 < 0.015,
-      sprintf("chordal = %.1f km, gc = %.1f km, dev = %.2f%%", d_30, gc_30, 100 * (gc_30 - d_30) / gc_30))
+arc_30 <- surface_arc_km(0, 0, 30, 0)
+check("30 deg deviation from surface arc < 1.5%", abs(d_30 - arc_30) / arc_30 < 0.015,
+      sprintf("chordal = %.1f km, surface arc = %.1f km, dev = %.2f%%", d_30, arc_30, 100 * (arc_30 - d_30) / arc_30))
 
-cat("== 2. compute_spatial_tau replicates former in-Stan logic ==\n")
+cat("== 2. compute_spatial_tau matches the configured regularization rule ==\n")
 dens <- c(0, 5, 15, 20)
 rng  <- c(0.10, 0.50, 1.00, 0.00)   # max = 1.0
 # base tau: d==0 -> .50 ; d<10 -> .50+.30*d/10 ; else .80
@@ -159,7 +159,7 @@ check("dual_gp omitting metric errors (fail-safe)", identical(err, "errored"))
 err_one <- tryCatch({ predict_one_gp_mpp(newpt, knots5, matrix(rnorm(K), 1, K), 1, 2000); "no_error" },
                     error = function(e) "errored")
 check("one_gp_mpp omitting metric errors (fail-safe)", identical(err_one, "errored"))
-# (b) the two metrics give different predictions (the silent mismatch codex measured)
+# (b) the two metrics give different predictions, guarding explicit metric dispatch
 ch <- predict_spatial_dual_gp(newpt, knots5, draws5, scaling5, metric = "chordal")
 st <- predict_spatial_dual_gp(newpt, knots5, draws5, scaling5, metric = "standardized")
 check("chordal vs standardized predictions differ",

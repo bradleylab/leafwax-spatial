@@ -32,8 +32,8 @@ echo "CPUs: ${SLURM_CPUS_PER_TASK}"
 echo "Start: $(date)"
 
 # Per-model R wrapper. Rereads existing fit.rds, extracts widened draws and
-# emits posterior_draws.rds (overwrite) + new loo.rds. Matches Phase 5 W1
-# logic in 4c_fit_models.R on master.
+# emits posterior_draws.rds (overwrite) + new loo.rds using the extraction
+# logic in 4c_fit_models.R.
 RUNNER=/tmp/pp_${MODEL}_${SLURM_JOB_ID}.R
 cat > "${RUNNER}" <<'REOF'
 suppressPackageStartupMessages({

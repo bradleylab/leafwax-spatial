@@ -16,7 +16,7 @@ WORKDIR=/scratch2/fs1/alexander.s.bradley/leafwax_run
 SIF=${WORKDIR}/leafwax-spatial.sif
 
 module load ris
-module load apptainer/1.3.6   # bumped from 1.3.4 after the 2026-07-15 C2 upgrade
+module load apptainer/1.3.6
 
 cd "${WORKDIR}"
 mkdir -p logs prepared_data model_output results
@@ -26,16 +26,15 @@ mkdir -p logs prepared_data model_output results
 # re-written only after the completeness assertions pass at the end.
 rm -f results/prep_complete.flag
 
-# 3_prep_data.R reads the FROZEN, audited calibration (not the raw compilation);
+# 3_prep_data.R reads the audited calibration (not the source compilation);
 # the skip guard must watch that same file so a stale prep can't be reused.
-INPUT_CSV="data/frozen/leafwax_d2h_c29_calibration_v1.csv"
+INPUT_CSV="input_data/leafwax_d2h_c29_calibration_v1.csv"
 PREP_RDS="results/3_sediment_ready_for_modeling.rds"
 PREP_SIDECAR="results/3_sediment_ready_for_modeling.input_md5"
 
 # ── Input CSV md5-aware skip guard ─────────────────────────────────────────
 # Skip prep only if the cached prep RDS was produced from the *same* input
-# CSV. Previously this only checked file existence, which silently reused v8
-# prep when v10 input was loaded into a stale WORKDIR.
+# CSV rather than relying on file existence alone.
 if [ ! -f "$INPUT_CSV" ]; then
     echo "ERROR: Input CSV missing: ${WORKDIR}/${INPUT_CSV}"
     exit 1
@@ -66,7 +65,7 @@ else
     # 3_prep_data.R reads C4, MODIS-PFT, and TerraClimate rasters. This guard sits
     # inside the rebuild branch: when the cached step-3 RDS is current (input md5
     # matches), steps 1+3 are skipped and these rasters are never read, so requiring
-    # them then would abort a valid reuse of the frozen sediment prep for inputs it
+    # them then would abort a valid reuse of the cached model-ready data for inputs it
     # does not touch. C4 is built by step 1 below; MODIS-PFT (2d_) and TerraClimate
     # (2f_) are produced from large downloads on EC2/local and must be pre-staged
     # into ${WORKDIR}/results/ before a rebuild.

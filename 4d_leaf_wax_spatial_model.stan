@@ -52,8 +52,7 @@ data {
   // Spatial coordinates: 3-D chordal (Euclidean-on-the-sphere) in km.
   // x = R cos(lat)cos(lon), y = R cos(lat)sin(lon), z = R sin(lat), R = 6371 km.
   // distance() on these vectors is chordal km (isotropic; ~1.5% below the
-  // great-circle distance at continental scales), replacing the former
-  // per-axis-standardized 2-D coords that induced spurious anisotropy.
+  // corresponding surface-arc distance at continental scales).
   array[N] vector[3] coords;
   
   // Multi-scale predictors

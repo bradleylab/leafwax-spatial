@@ -21,7 +21,6 @@
 !NUMBERS.md
 !LICENSE
 !CITATION.cff
-!CLAUDE.md
 !config.yaml
 !Dockerfile
 !.github/
@@ -35,6 +34,11 @@
 !input_data/
 input_data/**
 !input_data/global_data_c29.csv
+!input_data/calibration_curation_v1.csv
+!input_data/leafwax_d2h_c29_calibration_v1.csv
+!input_data/leafwax_d2h_c29_calibration_v1.sha256
+!input_data/leafwax_d2h_c29_calibration_v1_dictionary.md
+!input_data/leafwax_d2h_c29_calibration_v1_exclusions.csv
 
 # NOTE on what is intentionally NOT tracked:
 #   data/compilation/   — compilation building scripts and intermediate

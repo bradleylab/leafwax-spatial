@@ -2,12 +2,12 @@
 #───────────────────────────────────────────────────────────────────────────────
 # 5a_model_validation.R
 #
-# Comprehensive model validation and comparison
+# Model validation and comparison
 # Performs LOO-CV comparisons, posterior predictive checks, and parameter
 # comparison across fitted models.
 #
-# Input: results/c2_run_20260626/model_output/<model>/{posterior_draws.rds, loo.rds,
-#        diagnostics.rds} (widened rds bundle, post Phase 5 W1/W2)
+# Input: the run selected by LEAFWAX_RUN_DIR, containing
+#        <model>/{posterior_draws.rds, loo.rds, diagnostics.rds}
 # Output: results/loo_* rds, results/ppc_*.pdf, results/model_fit_metrics.csv
 #───────────────────────────────────────────────────────────────────────────────
 
@@ -25,10 +25,10 @@ cat("MODEL VALIDATION AND COMPARISON (Standalone)\n")
 cat("===========================================\n\n")
 
 # Find all fitted models by looking at the local April mirror.
-model_dirs <- list.dirs(APRIL_RUN, recursive = FALSE, full.names = FALSE)
+model_dirs <- list.dirs(MODEL_RUN_DIR, recursive = FALSE, full.names = FALSE)
 model_dirs <- sort(model_dirs[!grepl("^_", model_dirs)])
 model_dirs <- model_dirs[sapply(model_dirs, function(m)
-  file.exists(file.path(APRIL_RUN, m, "posterior_draws.rds")))]
+  file.exists(file.path(MODEL_RUN_DIR, m, "posterior_draws.rds")))]
 
 cat("Found", length(model_dirs), "models with widened draws:\n")
 for (m in model_dirs) cat("  -", m, "\n")

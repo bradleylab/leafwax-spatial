@@ -78,7 +78,7 @@ record <- list(
     stan_model        = md5_or_na("4d_leaf_wax_spatial_model.stan"),
     config            = md5_or_na("config.yaml")),
   input_md5 = list(
-    calibration_csv       = md5_or_na("data/frozen/leafwax_d2h_c29_calibration_v1.csv"),
+    calibration_csv       = md5_or_na("input_data/leafwax_d2h_c29_calibration_v1.csv"),
     sediment_prepared_rds = md5_or_na("results/3_sediment_ready_for_modeling.rds")),
   prepared_md5 = prepared_md5)
 

@@ -1,27 +1,17 @@
-# regen_tables_v10.R
+# regen_tables.R
 #
-# Regenerate manuscript Tables 1--5 from the frozen refit
-# (results/c2_run_20260626/model_output/). Produces the same .tex shapes the
-# (now missing) extract_full_model_analysis.R + extract_vegetation_coefficients.R
-# producers used to emit; the shapes are reverse-engineered from the
-# existing 2026-04-17 v8 .tex files.
+# Regenerate manuscript Tables 1--5 from the model run selected by
+# LEAFWAX_RUN_DIR. The reported analysis uses
+# results/c2_run_20260728_chordal/model_output.
 #
 # Run from repo root:
-#   Rscript scripts/regen_tables_v10.R
+#   Rscript scripts/regen_tables.R
 #
-# Reads:
-#   results/c2_run_20260626/model_output/<model>/{posterior_draws,diagnostics,loo}.rds
-#   results/c2_run_20260626/model_output/_prepared_data/config_<model>.rds
-#   results/c2_run_20260626/model_output/_prepared_data/stan_data_<model>.rds
-#   results/c2_run_20260626/model_output/3_sediment_ready_for_modeling.rds
+# Reads the selected run's posterior draws, diagnostics, LOO objects, prepared
+# model data, and model-ready calibration data.
 #
-# Writes:
-#   manuscript/tables/table1_model_performance.tex          (standalone)
-#   manuscript/tables/table2_global_params_body.tex         (body fragment;
-#                                                            wrapper unchanged)
-#   manuscript/tables/table3_variance_decomp.tex            (standalone)
-#   manuscript/tables/table4_environmental.tex              (standalone)
-#   manuscript/tables/table5_interactions.tex               (standalone)
+# Writes generated .tex and companion .csv files to
+# model_analysis/reported_outputs/ by default.
 #
 # Reproducibility: deterministic — only summarises saved posterior draws.
 
@@ -33,14 +23,14 @@ suppressPackageStartupMessages({
 })
 
 source("scripts/posterior_helpers.R")
+source("scripts/spatial_variance_helpers.R")
 source("scripts/table_helpers.R")
 
-# Output goes to the manuscript by default; set LEAFWAX_RETRACE_OUT_DIR to redirect
-# every .tex/.csv into a flat sandbox dir (chordal re-trace vs frozen diff, without
-# clobbering the in-review manuscript tables). Only the output DIR changes.
-.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
-if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
-.outpath <- function(default) if (nzchar(.retrace_out)) file.path(.retrace_out, basename(default)) else default
+# Set LEAFWAX_OUTPUT_DIR to override the generated-output directory. Only the
+# output path changes; every calculation is unchanged.
+.output_dir <- Sys.getenv("LEAFWAX_OUTPUT_DIR", unset = "model_analysis/reported_outputs")
+dir.create(.output_dir, recursive = TRUE, showWarnings = FALSE)
+.outpath <- function(default) file.path(.output_dir, basename(default))
 
 ALL_MODELS <- c(
   "baseline", "baseline_sp",
@@ -54,7 +44,7 @@ ALL_MODELS <- c(
 
 SPATIAL_MODELS <- ALL_MODELS[grepl("_sp$", ALL_MODELS)]
 
-# Predictor strings used in Table 1 second column. Match the v8 .tex.
+# Predictor strings used in the second column of Table 1.
 PREDICTORS <- c(
   baseline                 = "$\\delta^2$H$_p$",
   baseline_sp              = "$\\delta^2$H$_p$ + GP",
@@ -131,6 +121,9 @@ extract_global_params <- function(model) {
   beta_0_draws    <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "beta_0")))
   beta_0_permil   <- beta_0_draws * d2H_sd + d2H_mean
   beta_oipc_draws <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "beta_oipc")))
+  beta_oipc_physical <- slope_model_to_physical(
+    beta_oipc_draws, cfg$scaling_params
+  )
 
   # Lambda integration (always present; lambda_decay)
   lambda_draws <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "lambda_decay")))
@@ -139,7 +132,10 @@ extract_global_params <- function(model) {
   is_spatial <- grepl("_sp$", model)
   if (is_spatial) {
     ls_draws  <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "ls_intercept_km")))
-    sig_slope <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "sigma_slope_spatial")))
+    sig_slope <- slope_model_to_physical(
+      as.numeric(as_draws_matrix(subset_draws(pd, variable = "sigma_slope_spatial"))),
+      cfg$scaling_params
+    )
     sig_int   <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "sigma_intercept_spatial")))
   } else {
     ls_draws  <- NA_real_
@@ -162,9 +158,9 @@ extract_global_params <- function(model) {
     beta_0_mean = mean(beta_0_permil),
     beta_0_lo   = q(beta_0_permil, 0.025),
     beta_0_hi   = q(beta_0_permil, 0.975),
-    beta_oipc_mean = mean(beta_oipc_draws),
-    beta_oipc_lo   = q(beta_oipc_draws, 0.025),
-    beta_oipc_hi   = q(beta_oipc_draws, 0.975),
+    beta_oipc_mean = mean(beta_oipc_physical),
+    beta_oipc_lo   = q(beta_oipc_physical, 0.025),
+    beta_oipc_hi   = q(beta_oipc_physical, 0.975),
     lambda_mean = mean(lambda_draws),
     lambda_lo   = q(lambda_draws, 0.025),
     lambda_hi   = q(lambda_draws, 0.975),
@@ -173,75 +169,44 @@ extract_global_params <- function(model) {
     gp_scale_hi   = if (is_spatial) q(ls_draws, 0.975) else NA_real_,
     knot_slope_sd_mean = if (is_spatial) mean(sig_slope) else NA_real_,
     # sigma_intercept_spatial is already in per-mil units in this Stan
-    # parameterization (verified against v8 table values).
+    # parameterization.
     knot_int_sd_mean_permil = if (is_spatial) mean(sig_int) else NA_real_
   )
 }
 
-# Variance decomposition (Table 3) -----------------------------------------
+# Marginal spatial-component comparison (Table 3) --------------------------
 
 extract_variance_decomp <- function(model) {
   if (!grepl("_sp$", model)) return(NULL)
   pd <- load_draws(model)
-  cfg <- load_config(model)
-  sed <- load_sediment()
-  d2H_sd <- cfg$scaling_params$d2H_sd
+  stan_data <- load_stan_data(model)
+  fitted_oipc <- fitted_oipc_draw_matrix(pd, stan_data, model)
+  max_weight_error <- attr(fitted_oipc, "scale_weight_max_sum_error")
+  summary <- summarize_spatial_components(pd, fitted_oipc, model)
 
-  vars <- variables(pd)
-  alpha_vars <- vars[startsWith(vars, "alpha_spatial[")]
-  beta_sp_vars <- vars[startsWith(vars, "beta_oipc_spatial[")]
-
-  if (length(alpha_vars) == 0) {
-    warning("No alpha_spatial[] for ", model, " — skipping variance decomp")
-    return(NULL)
-  }
-
-  # Per-draw variance decomposition on the standardized d2H scale, matching
-  # the v8 extract_full_model_analysis.R producer convention.
-  oipc_std <- (sed$oipc_d2h20 - cfg$scaling_params$oipc_mean) /
-              cfg$scaling_params$oipc_sd
-
-  alpha_mat <- as_draws_matrix(subset_draws(pd, variable = alpha_vars))   # [draws, n]
-  if (length(beta_sp_vars) > 0) {
-    beta_sp_mat <- as_draws_matrix(subset_draws(pd, variable = beta_sp_vars))
-  } else {
-    beta_sp_mat <- NULL
-  }
-  beta_oipc_global <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "beta_oipc")))
-  sigma_draws <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "sigma")))
-
-  n_draws <- nrow(alpha_mat)
-  alpha_mat_plain <- unclass(alpha_mat); attr(alpha_mat_plain, "draws") <- NULL
-  if (!is.null(beta_sp_mat)) {
-    beta_sp_mat_plain <- unclass(beta_sp_mat); attr(beta_sp_mat_plain, "draws") <- NULL
-  }
-  per_draw <- vapply(seq_len(n_draws), function(s) {
-    a   <- as.numeric(alpha_mat_plain[s, ])
-    var_a <- var(a)
-    if (!is.null(beta_sp_mat)) {
-      bs  <- as.numeric(beta_sp_mat_plain[s, ])
-      bs_dev <- bs - beta_oipc_global[s]
-      var_b <- var(bs_dev * oipc_std)
-    } else {
-      var_b <- 0
-    }
-    c(var_alpha = var_a,
-      var_slope = var_b,
-      var_resid = sigma_draws[s]^2)
-  }, numeric(3))
-
-  var_alpha_mean <- mean(per_draw["var_alpha", ])
-  var_slope_mean <- mean(per_draw["var_slope", ])
-  var_resid_mean <- mean(per_draw["var_resid", ])
-  var_total_spatial <- var_alpha_mean + var_slope_mean
-  total <- var_total_spatial + var_resid_mean
-
+  # These are marginal response-scale component magnitudes, not an additive
+  # partition of total response variance. The intercept and slope contributions
+  # covary, so their covariance is retained in the CSV for audit but excluded
+  # from the two percentages displayed in Figure 2b.
   tibble(
     model = model,
-    spatial_pct          = 100 * var_total_spatial / total,
-    residual_pct         = 100 * var_resid_mean / total,
-    intercept_pct_within = 100 * var_alpha_mean / var_total_spatial,
-    slope_pct_within     = 100 * var_slope_mean / var_total_spatial
+    n_draws = summary$n_draws,
+    n_obs = summary$n_obs,
+    marginal_intercept_variance_std2 =
+      summary$marginal_intercept_variance_std2,
+    marginal_slope_variance_std2 =
+      summary$marginal_slope_variance_std2,
+    twice_covariance_std2 = summary$twice_covariance_std2,
+    realized_spatial_variance_std2 =
+      summary$realized_spatial_variance_std2,
+    residual_variance_std2 = summary$residual_variance_std2,
+    marginal_intercept_share_pct =
+      summary$marginal_intercept_share_pct,
+    marginal_slope_share_pct = summary$marginal_slope_share_pct,
+    realized_spatial_share_of_spatial_plus_residual_pct =
+      summary$realized_spatial_share_of_spatial_plus_residual_pct,
+    scale_weight_max_sum_error_before_normalization = max_weight_error,
+    identity_max_abs_error = summary$identity_max_abs_error
   )
 }
 
@@ -316,7 +281,7 @@ extract_interaction_coefs <- function(model) {
 
 cat("Loading diagnostics...\n")
 diag_tbl <- lapply(ALL_MODELS, function(m) {
-  d <- readRDS(file.path(APRIL_RUN, m, "diagnostics.rds"))
+  d <- readRDS(file.path(MODEL_RUN_DIR, m, "diagnostics.rds"))
   tibble(
     model = m,
     max_rhat = d$max_rhat,
@@ -405,12 +370,12 @@ t1_out <- table1_df |>
 
 # We can't use emit_standalone_tex directly because Table 1 needs landscape +
 # specific p{4.5cm} column for predictors. Build the LaTeX by hand to match
-# the existing v8 shape line-by-line.
+# the required table structure.
 
-table1_path <- .outpath("manuscript/tables/table1_model_performance.tex")
+table1_path <- .outpath("table1_model_performance.tex")
 banner <- c(
-  "% Auto-generated by scripts/regen_tables_v10.R.",
-  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables_v10.R`.",
+  "% Auto-generated by scripts/regen_tables.R.",
+  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables.R`.",
   ""
 )
 
@@ -420,7 +385,7 @@ t1_lines <- c(
   "\\begin{table}[htbp]",
   "\\centering",
   "\\caption{Model performance metrics for all candidate models}",
-  "\\label{tab:model_performance}",
+  "\\label{tab:model-performance}",
   "\\footnotesize",
   "",
   "\\begin{tabular}{lp{4.5cm}cccccccc}",
@@ -438,7 +403,7 @@ for (i in seq_len(nrow(t1_out))) {
           collapse = " & "),
     "\\\\"
   ))
-  # Mirror v8 \addlinespace pattern: every 5 rows
+  # Separate groups of five models for readability.
   if (i %in% c(5, 10) && i < nrow(t1_out)) {
     t1_lines <- c(t1_lines, "\\addlinespace")
   }
@@ -463,10 +428,10 @@ cat("  ->", table1_path, "\n")
 
 cat("Writing Table 2 body fragment...\n")
 
-table2_path <- .outpath("manuscript/tables/table2_global_params_body.tex")
+table2_path <- .outpath("table2_global_params_body.tex")
 t2_lines <- c(
-  "% Auto-generated by scripts/regen_tables_v10.R.",
-  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables_v10.R`.",
+  "% Auto-generated by scripts/regen_tables.R.",
+  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables.R`.",
   ""
 )
 
@@ -500,20 +465,20 @@ cat("  ->", table2_path, "\n")
 
 cat("Writing Table 3...\n")
 
-table3_path <- .outpath("manuscript/tables/table3_variance_decomp.tex")
+table3_path <- .outpath("table3_variance_decomp.tex")
 t3_lines <- c(
-  "% Auto-generated by scripts/regen_tables_v10.R.",
-  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables_v10.R`.",
+  "% Auto-generated by scripts/regen_tables.R.",
+  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables.R`.",
   "",
   "\\begin{table}[htbp]",
   "\\centering",
-  "\\caption{Variance decomposition for spatial models}",
+  "\\caption{Marginal spatial-component variance for spatial models}",
   "\\label{tab:variance_decomp}",
   "\\small",
   "",
-  "\\begin{tabular}{lcccc}",
+  "\\begin{tabular}{lcc}",
   "\\toprule",
-  "Model & Spatial (\\%) & Residual (\\%) & Intercept (\\%) & Slope (\\%)\\\\",
+  "Model & Spatial intercept (\\%) & Spatial slope (\\%)\\\\",
   "\\midrule"
 )
 
@@ -529,9 +494,9 @@ for (i in seq_along(t3_models_ordered)) {
   row <- table3_rows |> filter(model == m)
   if (nrow(row) == 0) next
   t3_lines <- c(t3_lines, sprintf(
-    "%s & %.1f & %.1f & %.1f & %.1f\\\\",
-    MODEL_LABELS[m], row$spatial_pct, row$residual_pct,
-    row$intercept_pct_within, row$slope_pct_within
+    "%s & %.1f & %.1f\\\\",
+    MODEL_LABELS[m], row$marginal_intercept_share_pct,
+    row$marginal_slope_share_pct
   ))
   if (i == 5 && i < length(t3_models_ordered)) {
     t3_lines <- c(t3_lines, "\\addlinespace")
@@ -544,7 +509,14 @@ t3_lines <- c(t3_lines,
   "\\begin{minipage}{\\linewidth}",
   "\\vspace{2mm}",
   "\\footnotesize",
-  "\\textit{Note:} Variance components shown as percentage of total variance. Spatial = variance explained by spatial Gaussian process; Residual = unexplained variance; Intercept/Slope = proportion of spatial variance attributed to intercept vs.\\ slope components.",
+  paste0(
+    "\\textit{Note:} For each posterior draw, the spatial-intercept contribution ",
+    "and the local slope deviation multiplied by that draw's fitted, scale-weighted ",
+    "OIPC predictor were evaluated across the 1,128 calibration sites. The table ",
+    "reports each marginal variance as a percentage of their sum. Covariance between ",
+    "the two contributions is excluded, so these percentages compare component ",
+    "magnitudes and are not an additive partition of total $\\delta^2$H$_{wax}$ variance."
+  ),
   "\\end{minipage}",
   "\\end{table}"
 )
@@ -561,16 +533,16 @@ fmt_veg <- function(mean_val, lo, hi) {
   sprintf("%.3f [%.3f, %.3f]", mean_val, lo, hi)
 }
 
-table4_path <- .outpath("manuscript/tables/table4_environmental.tex")
+table4_path <- .outpath("table4_environmental.tex")
 t4_lines <- c(
-  "% Auto-generated by scripts/regen_tables_v10.R.",
-  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables_v10.R`.",
+  "% Auto-generated by scripts/regen_tables.R.",
+  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables.R`.",
   "",
   "\\begin{landscape}",
   "\\begin{table}[htbp]",
   "\\centering",
   "\\caption{Environmental covariate coefficients}",
-  "\\label{tab:environmental}",
+  "\\label{tab:environmental-coefficients}",
   "\\scriptsize",
   "",
   "\\begin{tabular}{lccccc}",
@@ -613,7 +585,7 @@ cat("  ->", table4_path, "\n")
 # Only interaction-bearing variants are listed (rows where any interaction
 # term is present). Portrait table; 4 interaction columns.
 
-table5_path <- .outpath("manuscript/tables/table5_interactions.tex")
+table5_path <- .outpath("table5_interactions.tex")
 # The documented interaction-model variants (Section S2.3.6) that actually
 # estimate the delta2H_precip x vegetation terms. `full`/`full_sp` carry these
 # parameters fixed at zero and the elevation_c4 variants do not store them, so
@@ -621,8 +593,8 @@ table5_path <- .outpath("manuscript/tables/table5_interactions.tex")
 interact_models <- c("full_interact", "full_interact_sp")
 
 t5_lines <- c(
-  "% Auto-generated by scripts/regen_tables_v10.R.",
-  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables_v10.R`.",
+  "% Auto-generated by scripts/regen_tables.R.",
+  "% Do not hand-edit — regenerate via `Rscript scripts/regen_tables.R`.",
   "",
   "\\begin{table}[htbp]",
   "\\centering",
@@ -660,14 +632,11 @@ t5_lines <- c(t5_lines,
 writeLines(t5_lines, table5_path)
 cat("  ->", table5_path, "\n")
 
-# --------- WRITE COMPANION CSVs in model_analysis/tables/ ------------------
-# The audit script `manuscript/table_code/check_tables_numeric.R` cross-checks
-# each .tex against a CSV with the producer's numerical lineage. We write
-# CSVs that contain the same numbers as the .tex so the audit passes.
+# --------- WRITE COMPANION CSVs ---------------------------------------------
+# Each CSV contains the same values as its generated .tex table, providing a
+# machine-readable record for independent numeric checks.
 
-cat("Writing companion CSVs in model_analysis/tables/...\n")
-
-if (!nzchar(.retrace_out)) dir.create("model_analysis/tables", recursive = TRUE, showWarnings = FALSE)
+cat("Writing companion CSVs to", .output_dir, "...\n")
 
 # Table 1 CSV
 t1_csv <- table1_df |>
@@ -683,7 +652,7 @@ t1_csv <- table1_df |>
     p_eff    = round(p_eff, 1),
     n_hi_k   = as.integer(n_hi_k)
   )
-write.csv(t1_csv, .outpath("model_analysis/tables/table1_model_performance.csv"),
+write.csv(t1_csv, .outpath("table1_model_performance.csv"),
           row.names = FALSE)
 
 # Table 2 CSV
@@ -713,19 +682,13 @@ t2_csv <- table2_rows |>
     knot_slope_sd_mean = knot_slope_sd_mean,
     knot_intercept_sd_permil_mean = knot_int_sd_mean_permil
   )
-write.csv(t2_csv, .outpath("model_analysis/tables/table2_global_params.csv"),
+write.csv(t2_csv, .outpath("table2_global_params.csv"),
           row.names = FALSE)
 
-# Table 3 CSV
-t3_csv <- table3_rows |>
-  transmute(
-    model = model,
-    var_spatial_total_pct        = spatial_pct,
-    var_obs_pct                  = residual_pct,
-    var_intercept_pct_of_spatial = intercept_pct_within,
-    var_slope_pct_of_spatial     = slope_pct_within
-  )
-write.csv(t3_csv, .outpath("model_analysis/tables/table3_variance_decomp.csv"),
+# Table 3 CSV. Retain the covariance and realized spatial variance for audit;
+# Figure 2 uses only the explicitly named marginal component shares.
+t3_csv <- table3_rows
+write.csv(t3_csv, .outpath("table3_variance_decomp.csv"),
           row.names = FALSE)
 
 # Table 4 CSV
@@ -738,7 +701,7 @@ t4_csv <- table4_rows |>
     beta_grass_mean = grass_mean, beta_grass_q05 = grass_lo, beta_grass_q95 = grass_hi,
     beta_precip_mean = precip_mean, beta_precip_q05 = precip_lo, beta_precip_q95 = precip_hi
   )
-write.csv(t4_csv, .outpath("model_analysis/tables/table4_environmental.csv"),
+write.csv(t4_csv, .outpath("table4_environmental.csv"),
           row.names = FALSE)
 
 # Table 5 CSV
@@ -750,8 +713,8 @@ t5_csv <- table5_rows |>
     beta_shrub_mean = shrub_mean, beta_shrub_q025 = shrub_lo, beta_shrub_q975 = shrub_hi,
     beta_grass_mean = grass_mean, beta_grass_q025 = grass_lo, beta_grass_q975 = grass_hi
   )
-write.csv(t5_csv, .outpath("model_analysis/tables/table5_interactions.csv"),
+write.csv(t5_csv, .outpath("table5_interactions.csv"),
           row.names = FALSE)
 
-cat("\nAll five tables regenerated from", APRIL_RUN, "\n")
-cat("CSV companions written for audit (manuscript/table_code/check_tables_numeric.R).\n")
+cat("\nAll five tables regenerated from", MODEL_RUN_DIR, "\n")
+cat("CSV companions written for independent numeric checks.\n")

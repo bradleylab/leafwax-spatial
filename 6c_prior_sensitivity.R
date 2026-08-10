@@ -1,12 +1,12 @@
-# run_sensitivity.R
-# Phase 4: Prior/Hyperparameter Sensitivity Analysis
+# 6c_prior_sensitivity.R
+# Prior and hyperparameter sensitivity analysis
 #
 # Varies one prior at a time and re-fits baseline_veg_sp on real data.
 # Uses the fixed range_factor thresholds.
 #
 # Usage: Rscript run_sensitivity.R [experiment_id]
 #   experiment_id: "4a2", "4a3", "4a4", "4b2", "4b3", "4c2", "4c3", or "all"
-#   Baselines (4a1, 4b1, 4c1) are just the fixed-range run from Phase 2.
+#   Baselines (4a1, 4b1, 4c1) use the reference fixed-range fit.
 #
 # Expected runtime: ~2-3 hrs per experiment on r6i.8xlarge
 

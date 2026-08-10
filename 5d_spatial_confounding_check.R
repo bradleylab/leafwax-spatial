@@ -21,7 +21,7 @@ output_dir <- "model_analysis/spatial_confounding"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Get all spatial models (those ending in _sp) from April mirror
-all_models <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+all_models <- list.dirs(MODEL_RUN_DIR, full.names = FALSE, recursive = FALSE)
 all_models <- all_models[!grepl("^_", all_models)]
 spatial_models <- all_models[grepl("_sp$", all_models)]
 

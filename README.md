@@ -1,9 +1,7 @@
 # Leaf wax hydrogen isotope spatial calibration
 
-Companion analysis code for Bradley (2026), prepared for submission to
-*Communications Earth & Environment*. This repository state supports the
-CEE submission; a matching archived release and DOI will be created after
-final manuscript review.
+Companion analysis code for Bradley (2026), "Geographic structure limits the
+generality of leaf-wax isotope--precipitation relationships."
 
 Hierarchical Bayesian spatial model that calibrates sedimentary leaf-wax
 n-C₂₉ hydrogen isotope ratios (δ²H<sub>wax</sub>) against precipitation
@@ -18,7 +16,7 @@ leave-one-out cross-validation.
 |---|---|
 | `0_*.R` | Project configuration loader |
 | `1_*.R`, `2a_*` … `2f_*` | Environmental raster extraction (C₄ NUS, MODIS PFT, TerraClimate) |
-| `2g_*.R` … `2i_*.R` | Calibration data audit, sample-level archive classification, frozen-dataset build |
+| `2g_*.R` … `2i_*.R` | Calibration-curation utilities; `2i_freeze_calibration.R` reproducibly builds the audited CSV |
 | `3_prep_data.R`, `3b_*` … `3h_*` | Data preparation + diagnostics |
 | `4a_*.R` … `4c_*.R`, `4d_*.stan` | Stan data assembly + model fitting |
 | `5a_*.R` … `5e_*_weighted.R` | Post-fit validation + diagnostics |
@@ -27,15 +25,17 @@ leave-one-out cross-validation.
 | `6c_prior_sensitivity.R` | Prior / hyperparameter sensitivity |
 | `7_paleo_inversion.R` | Paleoclimate inversion application |
 | `scripts/posterior_helpers.R`, `scripts/table_helpers.R` | Helpers sourced by the numbered scripts |
-| `slurm/` | SLURM submission scripts (one production example) |
+| `slurm/` | SLURM preparation, fitting, and post-processing scripts |
 | `Dockerfile`, `.github/workflows/build-container.yml` | Containerized environment + CI |
 | `config.yaml` | MCMC settings + 14 model specifications |
-| `input_data/global_data_c29.csv` | Compiled δ²H<sub>wax</sub> dataset (1,136 rows from 73 publications; the modeling pipeline retains 1,128 after filtering, the n reported in Bradley 2026) |
+| `input_data/global_data_c29.csv` | Source compilation (1,136 rows from 73 publications) |
+| `input_data/calibration_curation_v1.csv` | Versioned inclusion and archive-class decisions for every source row |
+| `input_data/leafwax_d2h_c29_calibration_v1.csv` | Audited calibration input (1,135 rows with archive classes; model preparation retains 1,128 after raster-coverage filtering) |
 
-The repo does **not** include manuscript drafts, figure/table generation
-code, or the upstream pipeline that builds the input compilation.
-Everything needed to reproduce the model fits and the diagnostics from the
-input CSV is in the numbered scripts.
+The repo does **not** include manuscript source or manuscript-assembly code.
+It does include the scientific scripts that generate reported figures, tables,
+and numeric summaries. The upstream pipeline that builds the input compilation
+from primary-source files is maintained separately.
 
 ## Quick start (containerized)
 
@@ -88,11 +88,7 @@ Rscript 2d_downsample_modis.R
 python3 2e_download_terraclimate.py    # TerraClimate annual means
 Rscript 2f_process_terraclimate.R
 
-# Calibration data audit + freeze (produces data/frozen/leafwax_d2h_c29_calibration_v1)
-Rscript 2g_data_audit.R                # duplicate detection + coordinate archive split
-Rscript 2h_archive_overrides.R         # sample-level archive classes (fetches Gensel PANGAEA)
-Rscript 2i_freeze_calibration.R        # apply decisions -> frozen calibration dataset
-
+Rscript 2i_freeze_calibration.R        # source compilation + curation decisions
 Rscript 3_prep_data.R                  # joins all covariates + spatial averaging
 
 # Model fitting (loops 14 model variants)
@@ -131,20 +127,18 @@ and output directories. Every numbered script begins by sourcing
 
 ## Repository scope (what is intentionally not here)
 
-- **Compilation building.** The upstream Python / R pipeline that produces
-  `input_data/global_data_c29.csv` from primary sources (PANGAEA datasets,
-  Ladd 2021 compilation, individual paper supplements, etc.) is not part of
-  this repo. The shipped artifact is the CSV; the build scripts and
-  intermediate spreadsheets stay with the author.
-- **Manuscript.** Figure code, table code, narrative drafts, and rendered
-  artifacts are not part of this repo.
+- **Compilation building.** The upstream literature-extraction workflow that
+  produced `input_data/global_data_c29.csv` is not part of this repo. The source
+  compilation and versioned scientific curation decisions are tracked here;
+  `2i_freeze_calibration.R` deterministically regenerates the audited calibration
+  CSV, data dictionary, checksum, and exclusion record.
+- **Manuscript.** Narrative source, assembly/conversion code, and rendered
+  manuscript artifacts are not part of this repo. Scientific figure, table,
+  and numeric-summary code remains with the analysis it reproduces.
 - **Model fits.** `results/` and `model_output/` are git-ignored. Producing
   fresh fits from a clean clone takes the wall-clock time noted above. The
-  authoritative chordal-run posterior draws used by the manuscript are in
+  posterior draws used by the manuscript are in
   [bradleylab/leafwax-data](https://github.com/bradleylab/leafwax-data).
-  Earlier Zenodo versions predate the chordal refit and do not reproduce the
-  submitted manuscript. A versioned chordal archive will be created after
-  final manuscript review.
 
 ## License
 
@@ -152,27 +146,6 @@ MIT — see [LICENSE](LICENSE).
 
 ## Citation
 
-Cite the repository and related manuscript as follows until the matching
-versioned archive is released:
-
-```bibtex
-@software{bradley_leafwax_spatial_2026,
-  author  = {Bradley, Alexander S.},
-  title   = {leafwax-spatial: hierarchical Bayesian spatial calibration
-             of leaf-wax hydrogen isotopes},
-  year    = {2026},
-  url     = {https://github.com/bradleylab/leafwax-spatial},
-  note    = {Development version supporting the CEE submission}
-}
-
-@unpublished{bradley_leafwax_paper_2026,
-  author = {Bradley, Alexander S.},
-  title  = {Geography limits the transferability of global leaf-wax
-            isotope calibrations},
-  year   = {2026},
-  note   = {Manuscript in preparation}
-}
-```
-
-A matching versioned software citation and DOI will be added after final
-manuscript review.
+Citation metadata for the analysis code and associated manuscript are provided
+in [`CITATION.cff`](CITATION.cff). Use the archived release identifier for the
+version used in an analysis.

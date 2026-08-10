@@ -22,12 +22,10 @@ library(viridis)
 output_dir <- "model_analysis/overfitting_diagnostics"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
-# Set LEAFWAX_RETRACE_OUT_DIR to redirect manuscript-table output into a
-# sandbox (re-trace diff); unset writes to manuscript/tables. Only the
-# output DIR changes, not any number.
-.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
-if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
-.tables_out <- if (nzchar(.retrace_out)) .retrace_out else "manuscript/tables"
+# Set LEAFWAX_OUTPUT_DIR to override the generated-output directory. Only the
+# output path changes; every calculation is unchanged.
+.tables_out <- Sys.getenv("LEAFWAX_OUTPUT_DIR", unset = "model_analysis/reported_outputs")
+dir.create(.tables_out, recursive = TRUE, showWarnings = FALSE)
 
 cat("\nOVERFITTING DIAGNOSTICS\n")
 cat("=======================\n")
@@ -319,10 +317,10 @@ compare_model_sizes <- function() {
   cat(strrep("-", 50), "\n")
 
   # Discover all models with loo.rds + config rds in the April mirror.
-  model_dirs <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+  model_dirs <- list.dirs(MODEL_RUN_DIR, full.names = FALSE, recursive = FALSE)
   model_dirs <- model_dirs[!grepl("^_", model_dirs)]
   models <- model_dirs[sapply(model_dirs, function(m)
-    file.exists(file.path(APRIL_RUN, m, "loo.rds")))]
+    file.exists(file.path(MODEL_RUN_DIR, m, "loo.rds")))]
 
   if (length(models) == 0) {
     cat("  No models with LOO results found\n")
@@ -373,22 +371,22 @@ compare_model_sizes <- function() {
 
 # Automatically discover all models with widened posterior_draws.rds in the
 # April mirror. Skip the _prepared_data subdir.
-model_dirs <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+model_dirs <- list.dirs(MODEL_RUN_DIR, full.names = FALSE, recursive = FALSE)
 model_dirs <- model_dirs[!grepl("^_", model_dirs)]
 fitted_models <- character()
 for (model_name in model_dirs) {
-  if (file.exists(file.path(APRIL_RUN, model_name, "posterior_draws.rds"))) {
+  if (file.exists(file.path(MODEL_RUN_DIR, model_name, "posterior_draws.rds"))) {
     fitted_models <- c(fitted_models, model_name)
   }
 }
 if (length(fitted_models) == 0) {
-  stop("No fitted models found at ", APRIL_RUN)
+  stop("No fitted models found at ", MODEL_RUN_DIR)
 }
 
 cat("Found", length(fitted_models), "fitted models:", paste(fitted_models, collapse = ", "), "\n")
 
 # prepared_data_dir retained as a legacy function argument; helpers
-# (load_stan_data, load_config) resolve paths internally against APRIL_RUN.
+# (load_stan_data, load_config) resolve paths internally against MODEL_RUN_DIR.
 prepared_data_dir <- NULL
 
 all_results <- list()
@@ -440,7 +438,7 @@ saveRDS(all_results, file.path(output_dir, "overfitting_diagnostics.rds"))
 write.csv(size_comp, file.path(output_dir, "model_size_comparison.csv"), row.names = FALSE)
 
 #───────────────────────────────────────────────────────────────────────────────
-# TABLE S2 PRODUCER — manuscript/tables/Table_S2_regional_performance_body.tex
+# TABLE S2 PRODUCER — Table_S2_regional_performance_body.tex
 #───────────────────────────────────────────────────────────────────────────────
 #
 # Regional-performance rows (Overall + 5 regions) per model. Numbers come

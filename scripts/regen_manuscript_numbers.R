@@ -1,12 +1,8 @@
 # regen_manuscript_numbers.R
 #
 # Recompute numeric quantities that appear in the manuscript or supplement
-# from the run selected by LEAFWAX_RUN_DIR before updating prose. For the CEE
-# submission, select results/c2_run_20260728_chordal/model_output.
-#
-# Mirrors the structure of REGENERATED_NUMBERS.md (v8, c2_run_20260414)
-# so the user can scan side-by-side. Side-by-side comparison values are
-# pulled verbatim from REGENERATED_NUMBERS.md headings.
+# from the run selected by LEAFWAX_RUN_DIR. For the reported chordal results,
+# select results/c2_run_20260728_chordal/model_output.
 #
 # Run from repo root:
 #   Rscript scripts/regen_manuscript_numbers.R
@@ -26,12 +22,11 @@ suppressPackageStartupMessages({
 
 source("scripts/posterior_helpers.R")
 
-# Output goes to the manuscript by default; set LEAFWAX_RETRACE_OUT_DIR to
-# redirect into a sandbox (chordal re-trace vs frozen diff, without clobbering the
-# in-review manuscript). Only the output DIR changes; every number is unchanged.
-.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
-if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
-OUT_PATH <- if (nzchar(.retrace_out)) file.path(.retrace_out, "REGENERATED_NUMBERS_v10.md") else "manuscript/drafts/REGENERATED_NUMBERS_v10.md"
+# Set LEAFWAX_OUTPUT_DIR to override the generated-output directory. Only the
+# output path changes; every calculation is unchanged.
+.output_dir <- Sys.getenv("LEAFWAX_OUTPUT_DIR", unset = "model_analysis/reported_outputs")
+dir.create(.output_dir, recursive = TRUE, showWarnings = FALSE)
+OUT_PATH <- file.path(.output_dir, "REGENERATED_NUMBERS.md")
 SEED <- 42
 set.seed(SEED)
 
@@ -53,7 +48,12 @@ lat_range  <- range(sed$latitude,  na.rm = TRUE)
 n_doi <- length(unique(na.omit(sed$DOI)))
 n_compilations <- sed |>
   count(compilation, sort = TRUE) |>
-  rename(source = compilation, n = n)
+  rename(source = compilation, n = n) |>
+  mutate(source = if_else(
+    is.na(source) | trimws(source) == "",
+    "Not recorded",
+    source
+  ))
 n_measured <- sum(sed$has_measured_elevation, na.rm = TRUE)
 oipc_se_range <- range(sed$oipc_se20, na.rm = TRUE)
 wax_err_q <- quantile(sed$d2H_wax_err, c(0.05, 0.5, 0.95), na.rm = TRUE)
@@ -114,7 +114,7 @@ coords <- ols_dat |>
   select(longitude, latitude) |>
   as.matrix()
 
-# Nearest-neighbor distances (great-circle via spdep::knearneigh)
+# Surface-geodesic nearest-neighbor distances via spdep::knearneigh
 knn1 <- knearneigh(coords, k = 1, longlat = TRUE)
 nn_dists_km <- nbdists(knn2nb(knn1), coords, longlat = TRUE) |>
   unlist()
@@ -185,7 +185,7 @@ main_models <- c(
 )
 
 diag_tbl <- lapply(main_models, function(m) {
-  d <- readRDS(file.path(APRIL_RUN, m, "diagnostics.rds"))
+  d <- readRDS(file.path(MODEL_RUN_DIR, m, "diagnostics.rds"))
   tibble(
     model = m,
     max_rhat = d$max_rhat,
@@ -226,10 +226,14 @@ intercept_stats <- lapply(spatial_models, function(m) {
 
 slope_stats <- lapply(spatial_models, function(m) {
   pd <- load_draws(m)
+  cfg <- load_config(m)
   vars <- variables(pd)
   slope_vars <- vars[startsWith(vars, "beta_oipc_spatial[")]
   if (length(slope_vars) == 0) return(NULL)
-  slope_means <- summarise_draws(subset_draws(pd, variable = slope_vars), mean)$mean
+  slope_means <- slope_model_to_physical(
+    summarise_draws(subset_draws(pd, variable = slope_vars), mean)$mean,
+    cfg$scaling_params
+  )
   iqr_val <- IQR(slope_means)
   tibble(
     model = m,
@@ -316,7 +320,7 @@ sigma_stats <- lapply(spatial_models, function(m) {
   )
 }) |> bind_rows()
 
-# Pick a couple of sp models that match the v8 list
+# Models used for the residual-variance and detection-threshold summaries
 sigma_stats_focus <- sigma_stats |> filter(model %in% c(
   "baseline_sp", "baseline_env_sp", "full_sp", "full_interact_sp"))
 
@@ -333,33 +337,33 @@ det_table <- tibble(
   threshold_permil = sapply(rho, det_thresh)
 )
 
-# Fig 5 endpoints: spatial @ rho=0.9 vs non-spatial @ rho=0
+# Detection-threshold endpoints: spatial at rho=0.9 vs non-spatial at rho=0
 sigma_baseline_mean <- {
   pd <- load_draws("baseline")
   cfg <- load_config("baseline")
   sigma_draws <- as_draws_matrix(subset_draws(pd, variable = "sigma"))
   mean(as.numeric(sigma_draws) * cfg$scaling_params$d2H_sd)
 }
-fig5_spatial_lo <- 1.96 * sqrt(2 * sigma_resid_med^2 * 0.1 + 2 * sigma_anal^2)
-fig5_nonsp_hi <- 1.96 * sqrt(2 * sigma_baseline_mean^2 + 2 * sigma_anal^2)
+spatial_threshold_rho09 <- 1.96 * sqrt(
+  2 * sigma_resid_med^2 * 0.1 + 2 * sigma_anal^2
+)
+nonspatial_threshold_rho0 <- 1.96 * sqrt(
+  2 * sigma_baseline_mean^2 + 2 * sigma_anal^2
+)
 
 # WRITE REPORT ----------------------------------------------------------------
 
 sink(OUT_PATH)
-header(1, "Regenerated numeric quantities — selected frozen model run")
-cat(sprintf("Generated %s. Run dir: `%s`.\n\n",
-            format(Sys.time(), "%Y-%m-%d %H:%M %Z"),
-            APRIL_RUN))
-cat("Side-by-side with v8 values from `REGENERATED_NUMBERS.md`.\n\n")
+header(1, "Regenerated numeric quantities")
+cat(sprintf("Model run: `%s`.\n\n", RUN_ID))
 
 header(2, "Dataset")
-cat(sprintf("- **n = %s** sites (v8: 1,124)\n", fmt_int(n_total)))
-cat(sprintf("- Elevation range: **%s to %s m** (v8: %s to %s)\n",
-            fmt_int(round(elev_range[1])), fmt_int(round(elev_range[2])),
-            "−1,488", "5,233"))
-cat(sprintf("- Latitude range: %.1f° to %.1f° (v8: −51.7° to +76.9°)\n",
+cat(sprintf("- **n = %s** sites\n", fmt_int(n_total)))
+cat(sprintf("- Elevation range: **%s to %s m**\n",
+            fmt_int(round(elev_range[1])), fmt_int(round(elev_range[2]))))
+cat(sprintf("- Latitude range: %.1f° to %.1f°\n",
             lat_range[1], lat_range[2]))
-cat(sprintf("- Unique DOIs: **%d** (v8: 50)\n", n_doi))
+cat(sprintf("- Unique DOIs: **%d**\n", n_doi))
 cat(sprintf("- Sites with measured (not raster) elevation: **%d / %d** (%s)\n",
             n_measured, n_total, pct(n_measured / n_total)))
 cat("\n### Compilations\n\n")
@@ -370,56 +374,51 @@ for (i in seq_len(nrow(n_compilations))) {
 cat("\n")
 
 header(2, "OLS Figure 1 (point-value fit)")
-cat(sprintf("- β₀ = **%.2f ± %.2f** (v8: −122.27 ± 1.44)\n", beta0, beta0_se))
-cat(sprintf("- β_OIPC = **%.3f ± %.3f** (v8: 0.831 ± 0.019)\n",
+cat(sprintf("- β₀ = **%.2f ± %.2f**\n", beta0, beta0_se))
+cat(sprintf("- β_OIPC = **%.3f ± %.3f**\n",
             beta_oipc, beta_oipc_se))
-cat(sprintf("- R² = **%.3f** (v8: 0.641)\n", ols_r2))
-cat(sprintf("- RMSE = **%.1f ‰** (v8: 23.0)\n", ols_rmse))
-cat(sprintf("- σ̂ (residual SD) = **%.2f ‰** (v8: 23.05)\n", ols_sigma))
-cat(sprintf("- n = %d (v8: 1,124)\n", ols_n))
-cat(sprintf("- 95%% PI half-width at x̄: **%.1f ‰** (v8: 45.3)\n",
-            pi_halfwidth))
+cat(sprintf("- R² = **%.3f**\n", ols_r2))
+cat(sprintf("- RMSE = **%.1f ‰**\n", ols_rmse))
+cat(sprintf("- σ̂ (residual SD) = **%.2f ‰**\n", ols_sigma))
+cat(sprintf("- n = %d\n", ols_n))
+cat(sprintf("- 95%% PI half-width at x̄: **%.1f ‰**\n", pi_halfwidth))
 cat("\n### Inverse prediction at δ²H_wax = −180 ‰\n\n")
-cat(sprintf("- Point estimate: **x̂ = %.1f ‰** (v8: −69.5)\n", xhat))
-cat(sprintf("- McClelland 95%% CI: [%.1f, %.1f] (v8: [−123.9, −15.0])\n",
+cat(sprintf("- Point estimate: **x̂ = %.1f ‰**\n", xhat))
+cat(sprintf("- McClelland 95%% CI: [%.1f, %.1f]\n",
             mc_ci[1], mc_ci[2]))
 if (B_disc > 0 && (1 - g) > 0) {
-  cat(sprintf("- Fieller 95%% CI: [%.1f, %.1f] (v8: [−76.0, −63.5])\n",
+  cat(sprintf("- Fieller 95%% CI: [%.1f, %.1f]\n",
               fieller_lo, fieller_hi))
 } else {
   cat("- Fieller 95% CI: discriminant negative or g >= 1 — undefined\n")
 }
 cat("\n")
 
-header(2, "Nearest-neighbor (S2.2.1 + main §8)")
-cat(sprintf("- Mean NN distance: **%.1f km** (v8: 30.1)\n", nn_mean))
-cat(sprintf("- Median NN distance: **%.1f km** (v8: 4.0)\n", nn_median))
-cat(sprintf("- %% within 10 km: **%s** (v8: 62.5%%)\n",
-            pct(pct_within_10)))
-cat(sprintf("- %% within 100 km: **%s** (v8: 92.3%%)\n",
-            pct(pct_within_100)))
+header(2, "Nearest-neighbor distances")
+cat(sprintf("- Mean NN distance: **%.1f km**\n", nn_mean))
+cat(sprintf("- Median NN distance: **%.1f km**\n", nn_median))
+cat(sprintf("- %% within 10 km: **%s**\n", pct(pct_within_10)))
+cat(sprintf("- %% within 100 km: **%s**\n", pct(pct_within_100)))
 
 header(2, "Moran's I (residuals of OLS)")
-cat(sprintf("- k=8 NN: I = **%.3f**, p ≈ %s (v8: 0.581)\n",
+cat(sprintf("- k=8 NN: I = **%.3f**, p ≈ %s\n",
             unname(mor_resid$estimate[1]),
             ifelse(mor_resid$p.value < 1e-3, "0", fmt(mor_resid$p.value))))
-cat(sprintf("- k=8 NN raw δ²H_wax: I = **%.3f** (v8: 0.842)\n",
+cat(sprintf("- k=8 NN raw δ²H_wax: I = **%.3f**\n",
             unname(mor_raw$estimate[1])))
-cat("\n| d (km) | I | p | v8 I |\n|---:|---:|---:|---:|\n")
-v8_I <- c(0.564, 0.467, 0.421, 0.352, 0.227, 0.146, 0.052)
+cat("\n| d (km) | I | p |\n|---:|---:|---:|\n")
 for (i in seq_len(nrow(moran_multi))) {
-  cat(sprintf("| %d | %.3f | %s | %.3f |\n",
+  cat(sprintf("| %d | %.3f | %s |\n",
               moran_multi$d[i], moran_multi$I[i],
-              ifelse(moran_multi$p[i] < 1e-3, "~0", fmt(moran_multi$p[i])),
-              v8_I[i]))
+              ifelse(moran_multi$p[i] < 1e-3, "~0", fmt(moran_multi$p[i]))))
 }
 cat("\n")
 
 header(2, "Variogram (residuals, Matérn 3/2)")
-cat(sprintf("- Nugget: **%.0f ‰²** (v8: 298)\n", nugget))
-cat(sprintf("- Partial sill: **%.0f ‰²** (v8: 196)\n", psill))
-cat(sprintf("- Range: **%.0f km** (v8: 163)\n", vg_range))
-cat("\n*Same caveat as v8: empirical variogram doesn't reach a clean sill; the parametric range is sensitive to functional form. Prefer GP length-scale from Table 2 in prose.*\n\n")
+cat(sprintf("- Nugget: **%.0f ‰²**\n", nugget))
+cat(sprintf("- Partial sill: **%.0f ‰²**\n", psill))
+cat(sprintf("- Range: **%.0f km**\n", vg_range))
+cat("\n*The empirical variogram does not reach a clean sill, so the parametric range is sensitive to functional form. The fitted GP length scale is the model-based spatial-range summary.*\n\n")
 
 header(2, "Per-model diagnostics (S2.4.6)")
 cat("| Model | max R̂ | min ESS bulk | divergences | max-treedepth | min EBFMI |\n")
@@ -453,7 +452,7 @@ for (i in seq_len(nrow(intercept_stats))) {
               intercept_stats$max_permil[i]))
 }
 cat(sprintf(
-  "\n**Summary:** r = %.2f to %.2f (v8: 0.35–0.50); r² = %.2f to %.2f (v8: 0.12–0.25); SD = %.1f to %.1f ‰ (v8: 13.5–16.4); range %.0f to +%.0f ‰ (v8: −39 to +46).\n\n",
+  "\n**Summary:** r = %.2f to %.2f; r² = %.2f to %.2f; SD = %.1f to %.1f ‰; range %.0f to +%.0f ‰.\n\n",
   min(intercept_stats$r), max(intercept_stats$r),
   min(intercept_stats$r2), max(intercept_stats$r2),
   min(intercept_stats$sd_permil), max(intercept_stats$sd_permil),
@@ -489,7 +488,7 @@ for (i in seq_len(nrow(pi_stats))) {
 sp_widths <- pi_stats |> filter(grepl("_sp$", model))
 nsp_widths <- pi_stats |> filter(!grepl("_sp$", model))
 cat(sprintf(
-  "\n- Spatial mean width: **%.1f ‰** (v8: ~65)\n- Non-spatial mean width: **%.1f ‰** (v8: ~80)\n- Spatial reduction: **%s** (v8: 19%%)\n\n",
+  "\n- Spatial mean width: **%.1f ‰**\n- Non-spatial mean width: **%.1f ‰**\n- Spatial reduction: **%s**\n\n",
   mean(sp_widths$mean_width), mean(nsp_widths$mean_width),
   pct(1 - mean(sp_widths$mean_width) / mean(nsp_widths$mean_width))))
 
@@ -514,7 +513,7 @@ for (i in seq_len(nrow(sigma_stats_focus))) {
               sigma_stats_focus$sigma_lo[i],
               sigma_stats_focus$sigma_hi[i]))
 }
-cat(sprintf("\n**Median σ_residual = %.1f ‰** (v8: 15.8).\n\n", sigma_resid_med))
+cat(sprintf("\n**Median σ_residual = %.1f ‰**.\n\n", sigma_resid_med))
 
 header(2, "Detection thresholds (§17)")
 cat(sprintf("Combined σ_total = √(%.2f² + 3²) = **%.2f ‰**.\n\n",
@@ -524,13 +523,13 @@ for (i in seq_len(nrow(det_table))) {
   cat(sprintf("| %.1f | %.1f |\n", det_table$rho[i], det_table$threshold_permil[i]))
 }
 cat(sprintf(
-  "\n### Figure 5 endpoints\n\n- Spatial, ρ=0.9: **%.1f ‰** (v8: ~14)\n- Non-spatial, ρ=0: **%.1f ‰** (v8: 58.8); uses σ_baseline = %.2f ‰\n\n",
-  fig5_spatial_lo, fig5_nonsp_hi, sigma_baseline_mean))
+  "\n### Detection-threshold endpoints\n\n- Spatial, ρ=0.9: **%.1f ‰**\n- Non-spatial, ρ=0: **%.1f ‰**; uses σ_baseline = %.2f ‰\n\n",
+  spatial_threshold_rho09, nonspatial_threshold_rho0, sigma_baseline_mean))
 
-header(2, "OIPC / measurement uncertainty (S2.3.5)")
-cat(sprintf("- OIPC SE per site (`oipc_se20`): **%.1f to %.1f ‰** (v8: 1.0 to 8.9)\n",
+header(2, "OIPC and measurement uncertainty")
+cat(sprintf("- OIPC SE per site (`oipc_se20`): **%.1f to %.1f ‰**\n",
             oipc_se_range[1], oipc_se_range[2]))
-cat(sprintf("- δ²H_wax measurement error range: **%.2f to %.1f ‰** (v8: 0.02 to 36.4)\n",
+cat(sprintf("- δ²H_wax measurement error range: **%.2f to %.1f ‰**\n",
             wax_err_range[1], wax_err_range[2]))
 cat(sprintf("- δ²H_wax measurement error quantiles (5/50/95): **%.2f / %.2f / %.2f ‰**\n",
             wax_err_q[1], wax_err_q[2], wax_err_q[3]))
