@@ -60,6 +60,10 @@ RUN R -e ' \
         as.character(packageVersion("Deriv")) != "4.2.0") { \
         stop("Deriv 4.2.0 installation failed") \
     }; \
+    install.packages("Rcpp", repos = "https://cloud.r-project.org", Ncpus = 1); \
+    if (!requireNamespace("Rcpp", quietly = TRUE)) { \
+        stop("Rcpp installation failed") \
+    }; \
     install.packages( \
         "https://cloud.r-project.org/src/contrib/Archive/terra/terra_1.9-27.tar.gz", \
         repos = NULL, \
