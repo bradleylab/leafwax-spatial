@@ -5,9 +5,9 @@
 # (the 3-D Euclidean distance between points on the sphere), as used by
 # the spatial models. On chordal distance the Matérn kernel is a valid
 # covariance and is positive-definite by construction (Banerjee et al.
-# 2005; Gneiting 2013) — unlike the great-circle metric, for which PD is
-# not guaranteed. This script confirms that analytic guarantee numerically
-# at the fitted posterior draws and writes a short report (Section S2.4.3).
+# 2005; Gneiting 2013). This script confirms that analytic guarantee
+# numerically at the fitted posterior draws and writes a short report
+# (Section S2.4.3).
 #
 # For each spatial model, for a 200-draw posterior subsample, we:
 #   1. Take the knot chordal coordinates (knot_coords, 125 x 3, km) directly.
@@ -19,7 +19,7 @@
 #
 # Run from repo root:
 #   Rscript scripts/verify_pd_knots.R
-# Output: manuscript/drafts/PD_VERIFICATION.md
+# Output: model_analysis/reported_outputs/PD_VERIFICATION.md
 
 suppressPackageStartupMessages({
   library(posterior)
@@ -27,11 +27,11 @@ suppressPackageStartupMessages({
 
 source("scripts/posterior_helpers.R")
 
-# Set LEAFWAX_RETRACE_OUT_DIR to redirect output into a sandbox (re-trace diff);
-# unset writes to the manuscript. Only the output DIR changes, not any number.
-.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
-if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
-OUT_PATH      <- if (nzchar(.retrace_out)) file.path(.retrace_out, "PD_VERIFICATION.md") else "manuscript/drafts/PD_VERIFICATION.md"
+# Set LEAFWAX_OUTPUT_DIR to override the generated-output directory. Only the
+# output path changes; every calculation is unchanged.
+.output_dir <- Sys.getenv("LEAFWAX_OUTPUT_DIR", unset = "model_analysis/reported_outputs")
+dir.create(.output_dir, recursive = TRUE, showWarnings = FALSE)
+OUT_PATH      <- file.path(.output_dir, "PD_VERIFICATION.md")
 N_DRAWS_CHECK <- 200    # per model; subsample of the 4,000-draw posterior
 
 SPATIAL_MODELS <- c(
@@ -123,8 +123,8 @@ results <- do.call(rbind, lapply(SPATIAL_MODELS, check_one_model))
 cat("\nWriting", OUT_PATH, "\n")
 sink(OUT_PATH)
 cat("# Numerical PD verification of 125x125 knot covariance matrices\n\n")
-cat(sprintf("Generated %s. Posterior source: `%s`. Sample: %d draws per model.\n\n",
-            format(Sys.time(), "%Y-%m-%d %H:%M %Z"), APRIL_RUN, N_DRAWS_CHECK))
+cat(sprintf("Model run: `%s`. Sample: %d draws per model.\n\n",
+            RUN_ID, N_DRAWS_CHECK))
 cat("**Question.** For each spatial model, are the 125x125 knot-to-knot ",
     "covariance matrices `K_intercept` and `K_slope` (built from the ",
     "Matérn 3/2 kernel evaluated on chordal distance, with the draw's ",
@@ -170,9 +170,8 @@ cat(sprintf("- All min eigenvalues are non-negative; the largest negative value 
 cat("\nThe Matérn 3/2 kernel on chordal distance — Euclidean distance in R^3 ",
     "restricted to the sphere — is a valid covariance function and is ",
     "positive definite by construction for any length scale and amplitude ",
-    "(Banerjee et al. 2005; Gneiting 2013), in contrast to the great-circle ",
-    "metric, on which the Matérn kernel is not guaranteed to be PD on the ",
-    "2-sphere. The numerical results above confirm this analytic guarantee: ",
+    "(Banerjee et al. 2005; Gneiting 2013). The numerical results above ",
+    "confirm this analytic guarantee: ",
     "the *fitted* knot covariance matrices used by the spatial models are PD ",
     "at every posterior draw checked. The finite-dimensional predictive-process ",
     "basis interpretation given in Section S2.4.3 is therefore both analytically ",

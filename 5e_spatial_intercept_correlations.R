@@ -41,7 +41,7 @@ cat("Loading environmental data...\n")
 data <- load_sediment()
 
 # Find available spatial models (exclude _prepared_data)
-all_models <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+all_models <- list.dirs(MODEL_RUN_DIR, full.names = FALSE, recursive = FALSE)
 all_models <- all_models[!grepl("^_", all_models)]
 spatial_models <- all_models[grepl("_sp$", all_models)]
 

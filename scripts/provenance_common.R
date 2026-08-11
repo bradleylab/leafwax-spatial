@@ -3,10 +3,9 @@
 # Single source of truth for (a) the chordal-run model taxonomy and (b) what makes
 # a fit-time provenance record COMPLETE and what counts as prep→fit DRIFT. Sourced
 # by capture_fit_provenance.R, check_provenance_current.R, and build_run_manifest.R
-# so the three cannot disagree about which fields/hashes are essential (the class
-# of fail-open the round-5/6 reviews kept finding).
+# so the three cannot disagree about which fields and hashes are essential.
 
-# ── Model taxonomy (all 17 refit fresh) ─────────────────────────────────────────
+# ── Model taxonomy ────────────────────────────────────────────────────────────
 CHORDAL_SPATIAL  <- c("baseline_sp", "baseline_veg_sp", "baseline_env_sp", "c4_only_sp",
                       "elevation_only_sp", "elevation_c4_sp", "elevation_c4_interact_sp",
                       "full_sp", "full_interact_sp")
@@ -18,9 +17,8 @@ EXPECTED17       <- c(CHORDAL_SPATIAL, NONSPATIAL_REFIT, SENSITIVITY)
 prov_na_or_empty <- function(x) is.null(x) || length(x) == 0 || (length(x) == 1 && (is.na(x) || !nzchar(as.character(x))))
 is_md5 <- function(x) is.character(x) && length(x) == 1 && grepl("^[0-9a-fA-F]{32}$", x)
 
-# Drift is fail-CLOSED: a missing recorded hash OR a missing current file OR a
-# mismatch all count as drift. (The earlier `!na_or_empty(rec) && !is.na(now) &&
-# differ` predicate reported no drift when either side was missing.)
+# Drift is fail-closed: a missing recorded hash, a missing current file, or a
+# mismatch all count as drift.
 prov_is_drift <- function(now, rec) prov_na_or_empty(rec) || prov_na_or_empty(now) || !identical(now, rec)
 
 # The COMPLETE essential-field set. Returns a character vector of missing/invalid

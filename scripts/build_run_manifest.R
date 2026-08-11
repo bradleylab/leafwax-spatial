@@ -1,19 +1,15 @@
 #!/usr/bin/env Rscript
 # build_run_manifest.R
 #
-# Authoritative run manifest for the full chordal-run refit (spec v2 §3, revised
-# 2026-07-18). ALL 17 model_configs are refit fresh: 9 chordal-refit spatial, 5
-# non-spatial, 3 *_rfoff sensitivities. Nothing is reused from the frozen run
-# (recorded for comparison only; use scripts/verify_nonspatial_vs_frozen.R for a
-# shared-parameter comparison — whole-file md5 cannot match since the elevation
-# deposits carry extra beta_elev columns).
+# Run manifest for all 17 configured fits: 9 chordal-distance spatial models,
+# 5 non-spatial models, and 3 *_rfoff sensitivity variants.
 #
-# The manifest is an AUDIT RECORD. It validates in tiers and FAILS CLOSED:
-#   Tier 1 (HARD — ignores --allow-incomplete):
+# The manifest is an audit record. It validates in two stages and fails closed:
+#   Structural validation (ignores --allow-incomplete):
 #     * config readable + EXACTLY the 17 expected model_configs;
 #     * fit-time provenance record (scripts/capture_fit_provenance.R, captured
 #       inside the SIF on C2) present and readable — it cannot be reconstructed.
-#   Tier 2 (gated by --allow-incomplete for interim snapshots): for every model —
+#   Fit validation (gated by --allow-incomplete for interim snapshots):
 #     * posterior readable with a valid 3-D draw structure;
 #     * draw dims match the fitted config (chains, retained iterations);
 #     * the COMPLETE conditional variable set 4c writes for that config is present;
@@ -25,7 +21,6 @@
 #   Rscript scripts/build_run_manifest.R \
 #     --chordal-output   results/c2_run_<date>_chordal/model_output \
 #     --chordal-prepared results/c2_run_<date>_chordal/_prepared_data \
-#     --frozen-output    results/c2_run_20260626/model_output \
 #     --fit-provenance   results/c2_run_<date>_chordal/fit_provenance.rds \
 #     --out              results/c2_run_<date>_chordal/RUN_MANIFEST_chordal
 
@@ -37,7 +32,6 @@ has_flag <- function(flag) flag %in% args
 
 chordal_output   <- get_arg("--chordal-output",   "model_output")
 chordal_prepared <- get_arg("--chordal-prepared", "prepared_data")
-frozen_output    <- get_arg("--frozen-output",    "results/c2_run_20260626/model_output")
 config_path      <- get_arg("--config",           "config.yaml")
 fit_prov_path    <- get_arg("--fit-provenance",   file.path(dirname(chordal_output), "fit_provenance.rds"))
 out_base         <- get_arg("--out",              "results/RUN_MANIFEST_chordal")
@@ -51,7 +45,7 @@ is_spatial <- function(m) grepl("_sp", m)
 die <- function(...) { cat("ERROR:", ..., "\n"); quit(status = 1) }
 md5_or_na <- function(p) if (!is.na(p) && file.exists(p)) unname(tools::md5sum(p)) else NA_character_
 
-# ── Tier 1: structural integrity — HARD fail (ignores --allow-incomplete) ───────
+# ── Structural integrity — hard fail (ignores --allow-incomplete) ─────────────
 if (!file.exists(config_path)) die("config not found at '", config_path, "'.")
 cfg <- tryCatch(yaml::read_yaml(config_path), error = function(e) NULL)
 if (is.null(cfg) || is.null(cfg$model_configs)) die("config '", config_path, "' unreadable or has no model_configs.")
@@ -107,8 +101,7 @@ provenance <- list(
   manifest_builder_cmdstan_version = tryCatch(cmdstanr::cmdstan_version(), error = function(e) NA_character_),
   stan_seed = cfg$stan_seed,
   fit_time = fit_prov,   # authoritative: captured inside the SIF on C2
-  reg_neighborhood_radii_km = reg_radii,
-  frozen_comparison_run = frozen_output)
+  reg_neighborhood_radii_km = reg_radii)
 # The real fitting CmdStan comes from the captured record, not a hardcode.
 fitting_cmdstan <- tryCatch(fit_prov$environment$cmdstan_version, error = function(e) NA_character_)
 
@@ -217,14 +210,13 @@ add_row <- function(model, role) {
     stan_data_md5 = prep$md5, prepared_readable = prep$readable, reg_ok = prep$reg_ok,
     fit_status_ok = validate_fit_status(model),
     done_fresh = done_fresh(model),
-    frozen_md5 = md5_or_na(file.path(frozen_output, model, "posterior_draws.rds")),
     runtime = runtime_info(model), reg = prep$reg)
 }
-for (m in CHORDAL_SPATIAL)  add_row(m, "chordal-refit")
-for (m in NONSPATIAL_REFIT) add_row(m, "nonspatial-refit")
+for (m in CHORDAL_SPATIAL)  add_row(m, "spatial")
+for (m in NONSPATIAL_REFIT) add_row(m, "nonspatial")
 for (m in SENSITIVITY)      add_row(m, "sensitivity")
 
-# ── Tier 2: completeness — gated by --allow-incomplete ──────────────────────────
+# ── Fit completeness — gated by --allow-incomplete ───────────────────────────
 mnames <- function(pred) vapply(rows[vapply(rows, pred, logical(1))], `[[`, character(1), "model")
 fully_valid <- function(r) isTRUE(r$posterior_struct_ok) && isTRUE(r$dims_ok) && isTRUE(r$vars_ok) &&
   isTRUE(r$indexed_ok) && isTRUE(r$prepared_readable) && (!is_spatial(r$model) || isTRUE(r$reg_ok)) &&
@@ -242,7 +234,7 @@ drift <- c(
   if (drift_path("4b_stan_prep.R", fit_prov$code_md5$stan_prep)) "4b_stan_prep.R",
   if (drift_path("4c_fit_models.R", fit_prov$code_md5$fit_models)) "4c_fit_models.R",
   if (drift_path("4d_leaf_wax_spatial_model.stan", fit_prov$code_md5$stan_model)) "4d_leaf_wax_spatial_model.stan",
-  if (drift_path("data/frozen/leafwax_d2h_c29_calibration_v1.csv", fit_prov$input_md5$calibration_csv)) "calibration_csv",
+  if (drift_path("input_data/leafwax_d2h_c29_calibration_v1.csv", fit_prov$input_md5$calibration_csv)) "calibration_csv",
   if (drift_path("results/3_sediment_ready_for_modeling.rds", fit_prov$input_md5$sediment_prepared_rds)) "sediment_prepared_rds")
 # Per-model manifested stan_data md5 vs the fit-time captured stan_data md5.
 stan_data_drift <- vapply(EXPECTED17, function(m) {
@@ -278,16 +270,15 @@ if (length(problems) && !allow_incomplete) {
 manifest <- list(
   status = status, validation_problems = problems, allow_incomplete = allow_incomplete,
   provenance = provenance,
-  built_role_map = list(chordal_spatial = CHORDAL_SPATIAL, nonspatial_refit = NONSPATIAL_REFIT, sensitivity = SENSITIVITY),
+  built_role_map = list(spatial = CHORDAL_SPATIAL, nonspatial = NONSPATIAL_REFIT, sensitivity = SENSITIVITY),
   chordal_output = chordal_output, chordal_prepared = chordal_prepared,
-  frozen_comparison_run = frozen_output, fit_provenance_path = fit_prov_path, models = rows)
+  fit_provenance_path = fit_prov_path, models = rows)
 
 # ── Markdown ────────────────────────────────────────────────────────────────────
 MD <- character(0); wl <- function(...) MD[[length(MD) + 1]] <<- paste0(...)
-wl("# Chordal run manifest — status: ", toupper(status)); wl("")
+wl("# Model run manifest — status: ", toupper(status)); wl("")
 if (length(problems)) wl("> **INTERIM / NON-AUTHORITATIVE** (--allow-incomplete): ", paste(problems, collapse = "; "))
-wl("Full refit run = ALL 17 model_configs fit fresh (9 chordal-refit spatial + 5 non-spatial + 3 rfoff).")
-wl("Nothing reused from the frozen run (comparison only; see verify_nonspatial_vs_frozen.R).")
+wl("The run contains all 17 model configurations: 9 spatial, 5 non-spatial, and 3 range-factor sensitivity fits.")
 wl(""); wl("## Provenance")
 wl("- built_at: ", format(provenance$built_at))
 wl("- manifest-builder: R ", provenance$manifest_builder_r_version, "; cmdstan ",
@@ -302,7 +293,6 @@ wl("- fit-time git: ", ifelse(is.null(fit_prov$git$head) || is.na(fit_prov$git$h
    if (isTRUE(fit_prov$git$dirty)) " (dirty)" else "")
 wl("- stan_seed: ", ifelse(is.null(provenance$stan_seed), "—", provenance$stan_seed),
    " | reg radii (km): density=", reg_radii$density_radius_km, " oipc_range=", reg_radii$oipc_range_radius_km)
-wl("- frozen comparison run: ", frozen_output)
 wl("")
 wl("| model | role | struct | dims✓ | vars✓ | idx✓ | iter×chain | md5 | stan_data md5 | fits_elev | elev✓ | reg✓ | status/DONE |")
 wl("|---|---|---|---|---|---|---|---|---|---|---|---|---|")

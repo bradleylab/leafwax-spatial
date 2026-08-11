@@ -21,7 +21,7 @@
 #
 # Run from repo root:
 #   Rscript scripts/regen_precip_space.R
-# Output: manuscript/drafts/REGENERATED_NUMBERS_precip_space_v10.md
+# Output: model_analysis/reported_outputs/REGENERATED_NUMBERS_precip_space.md
 
 suppressPackageStartupMessages({
   library(posterior)
@@ -31,11 +31,11 @@ suppressPackageStartupMessages({
 
 source("scripts/posterior_helpers.R")
 
-# Set LEAFWAX_RETRACE_OUT_DIR to redirect output into a sandbox (re-trace diff);
-# unset writes to the manuscript. Only the output DIR changes, not any number.
-.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
-if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
-OUT_PATH   <- if (nzchar(.retrace_out)) file.path(.retrace_out, "REGENERATED_NUMBERS_precip_space_v10.md") else "manuscript/drafts/REGENERATED_NUMBERS_precip_space_v10.md"
+# Set LEAFWAX_OUTPUT_DIR to override the generated-output directory. Only the
+# output path changes; every calculation is unchanged.
+.output_dir <- Sys.getenv("LEAFWAX_OUTPUT_DIR", unset = "model_analysis/reported_outputs")
+dir.create(.output_dir, recursive = TRUE, showWarnings = FALSE)
+OUT_PATH   <- file.path(.output_dir, "REGENERATED_NUMBERS_precip_space.md")
 SIGMA_MEAS <- 3        # representative analytical SD on wax (per mil)
 RHO_GRID   <- c(0, 0.5, 0.8, 0.9)
 FOCUS_MODELS <- c("baseline", "baseline_sp", "baseline_env_sp", "full_sp", "full_interact_sp")
@@ -49,7 +49,10 @@ per_draw_summaries <- function(model) {
   cfg <- load_config(model)
   d2H_sd <- cfg$scaling_params$d2H_sd
 
-  beta_oipc_draws <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "beta_oipc")))
+  beta_oipc_draws <- slope_model_to_physical(
+    as.numeric(as_draws_matrix(subset_draws(pd, variable = "beta_oipc"))),
+    cfg$scaling_params
+  )
   sigma_draws_std <- as.numeric(as_draws_matrix(subset_draws(pd, variable = "sigma")))
   sigma_draws_pm  <- sigma_draws_std * d2H_sd  # per mil
 
@@ -108,10 +111,9 @@ all_summaries <- lapply(FOCUS_MODELS, function(m) {
 cat("Writing", OUT_PATH, "\n")
 
 sink(OUT_PATH)
-cat("# Precip-space reconstruction uncertainty and detection thresholds (v10)\n\n")
-cat(sprintf("Generated %s. Run dir: `%s`. Analytical SD assumed = %.1f permil (median observed).\n\n",
-            format(Sys.time(), "%Y-%m-%d %H:%M %Z"),
-            APRIL_RUN, SIGMA_MEAS))
+cat("# Precipitation-space reconstruction uncertainty and detection thresholds\n\n")
+cat(sprintf("Model run: `%s`. Analytical SD assumed = %.1f permil (median observed).\n\n",
+            RUN_ID, SIGMA_MEAS))
 cat("**Method.** For each posterior draw i we compute\n")
 cat("`threshold_precip^(i)(rho_t) = 1.96 * sqrt(2 * sigma_resid^(i)^2 * (1 - rho_t) + 2 * sigma_meas^2)`\n")
 cat("`                              / |beta_OIPC^(i)|`.\n")
@@ -132,20 +134,19 @@ for (m in FOCUS_MODELS) {
 }
 
 cat("---\n\n")
-cat("## Suggested manuscript values (posterior medians from baseline_env_sp)\n\n")
+cat("## baseline_env_sp summary\n\n")
 focus <- all_summaries |> dplyr::filter(model == "baseline_env_sp")
 get_med <- function(q) focus$median[focus$quantity == q]
 get_ci  <- function(q) sprintf("[%.0f, %.0f]", focus$lo95[focus$quantity == q],
                                focus$hi95[focus$quantity == q])
-cat(sprintf("- Reconstruction uncertainty (single point), precip-space: median = **%.0f permil**, 95 percent CI %s.\n",
+cat(sprintf("- Reconstruction uncertainty (single point), precipitation scale: median = **%.0f ‰**, 95 percent CI %s.\n",
             get_med("reconstruction SD (precip, single point)"),
             get_ci("reconstruction SD (precip, single point)")))
 for (rho in RHO_GRID) {
   q <- sprintf("threshold precip @ rho_t = %s", rho)
-  cat(sprintf("- 95 percent detection threshold for delta(delta2H_precip), rho_t = %s: median = **%.0f permil**, 95 percent CI %s.\n",
+  cat(sprintf("- 95 percent detection threshold for Δδ²H_precip, rho_t = %s: median = **%.0f ‰**, 95 percent CI %s.\n",
               rho, get_med(q), get_ci(q)))
 }
-cat("\nThese should replace the wax-space values in abstract / section 4.5.3 / conclusions / Figure 5.\n")
 
 sink()
 cat("Wrote", OUT_PATH, "\n")

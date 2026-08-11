@@ -127,7 +127,7 @@ excl <- data.frame(
                     sum(!is.finite(raw$d2H_wax)),
                     sum(raw$compilation_clean == "direct primary ingest"),
                     sum(dec$proposed_action == "DROP (same-DOI re-ingestion)")),
-  status = "PROPOSED — awaiting operator sign-off"
+  status = "REQUIRES MANUAL REVIEW"
 )
 write.csv(excl, file.path(out_dir, "exclusion_log.csv"), row.names = FALSE)
 

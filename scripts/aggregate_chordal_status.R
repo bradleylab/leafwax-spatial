@@ -1,14 +1,12 @@
 #!/usr/bin/env Rscript
 # aggregate_chordal_status.R
 #
-# Batch-level completion gate for the chordal fit array (spec v2 §3). Each SLURM
+# Batch-level completion gate for the chordal fit array. Each SLURM
 # array task fits ONE model and writes per-model artifacts under
 # model_output/<model>/ (fit_status.rds always; a DONE marker only when the full
 # core artifact set — fit.rds + diagnostics.rds + posterior_draws.rds — is on
 # disk). This aggregator collects those per-model files and judges the WHOLE
-# batch. It replaces the old shared pipeline_4c_complete.rds marker, which was
-# meaningless under concurrent single-model array tasks (last-writer-wins, and
-# each task's marker meant only "my 1 model finished").
+# batch.
 #
 # FAIL-CLOSED: exits nonzero unless every expected model is complete (status
 # "completed" AND core artifacts present AND DONE marker present). loo.rds is

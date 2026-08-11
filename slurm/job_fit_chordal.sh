@@ -7,27 +7,20 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=120G
 #SBATCH --time=96:00:00
-# Node isolation: each model owns its node (see job_fit.sh for the rationale —
-# co-scheduled array tasks trip the per-user process limit).
+# Node isolation: each model owns its node. Co-scheduled array tasks each spawn
+# eight CmdStan chains plus compilation processes and can exceed the per-user
+# process limit even when memory use is modest.
 #SBATCH --exclusive
 #SBATCH --array=0-16
 #SBATCH --output=logs/fit_chordal_%A_%a.out
 #SBATCH --error=logs/fit_chordal_%A_%a.err
 
-# Full refit batch (spec v2 §3, revised 2026-07-18): ALL 17 model_configs are
-# refit fresh — the 9 spatial (*_sp) under the chordal metric, the 5 non-spatial
-# models, and 3 range_factor-off sensitivity variants (*_rfoff). Nothing is reused
-# from the frozen run. (Reuse was abandoned: baseline_env's frozen chain CSVs are
-# header-only so its beta_elev is unrecoverable and it must be refit; a uniform
-# refit of all 17 is cleaner than a hybrid, and the frozen posterior_draws.rds
-# dropped beta_elev at save. The 4c save-fix now retains beta_elev. Non-spatial
-# models have no GP, so the chordal geometry is inert for them; they should target
-# the same posterior as the frozen run — verified post-fit by
-# scripts/verify_nonspatial_vs_frozen.R, not assumed.)
+# Complete fitting batch: 9 spatial models using the chordal metric, 5
+# non-spatial models, and 3 range-factor sensitivity variants. Every task writes
+# a complete posterior artifact set from the prepared data for that model.
 #
-# Prereqs (2026-07-15 C2 upgrade): host keys refreshed on the connecting host;
-# `-A compute2-alexander.s.bradley` (unchanged); apptainer/1.3.6 (bumped from
-# 1.3.4). Run prep first (job_prep.sh) into a FRESH prepared_data dir so the
+# Compute2 requirements: `-A compute2-alexander.s.bradley` and apptainer/1.3.6.
+# Run prep first (job_prep.sh) into a fresh prepared_data directory so the
 # chordal stan_data is not shadowed by a stale cache. After all fits complete,
 # snapshot model_output -> results/c2_run_<date>_chordal/ and build the run
 # manifest (scripts/build_run_manifest.R).

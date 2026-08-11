@@ -11,13 +11,15 @@
 
 set -eo pipefail
 module load ris
-module load apptainer/1.3.4
+module load apptainer/1.3.6
 
 WORKDIR=/scratch2/fs1/alexander.s.bradley/leafwax_run
 SIF=${WORKDIR}/leafwax-spatial.sif
 cd "${WORKDIR}"
 
-# 14 models — same order/names as slurm/job_fit.sh so array index maps cleanly.
+# Recovery utility for the 14 principal comparison models. The current fitting
+# script normally writes these products directly; use this array only to
+# reconstruct posterior_draws.rds or loo.rds from retained fit.rds files.
 MODELS=(
     baseline baseline_veg baseline_env full full_interact
     baseline_sp baseline_veg_sp baseline_env_sp c4_only_sp elevation_only_sp
@@ -32,8 +34,8 @@ echo "CPUs: ${SLURM_CPUS_PER_TASK}"
 echo "Start: $(date)"
 
 # Per-model R wrapper. Rereads existing fit.rds, extracts widened draws and
-# emits posterior_draws.rds (overwrite) + new loo.rds. Matches Phase 5 W1
-# logic in 4c_fit_models.R on master.
+# emits posterior_draws.rds (overwrite) + new loo.rds using the extraction
+# logic in 4c_fit_models.R.
 RUNNER=/tmp/pp_${MODEL}_${SLURM_JOB_ID}.R
 cat > "${RUNNER}" <<'REOF'
 suppressPackageStartupMessages({

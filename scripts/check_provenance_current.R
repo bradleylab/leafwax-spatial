@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # check_provenance_current.R
 #
-# Pre-fit gate (spec v2 §3): before a model is fit, confirm the captured fit-time
+# Pre-fit gate: before a model is fit, confirm the captured fit-time
 # provenance record is COMPLETE and still describes the CURRENT workspace — the
 # files 4c actually reads. job_fit_chordal.sh runs this inside the SIF, and BEFORE
 # the resume/skip guard, so no task fits (or is trusted as complete) without it.
@@ -48,7 +48,7 @@ add_drift("4b_stan_prep.R",         md5_or_na("4b_stan_prep.R"),         p$code_
 add_drift("4c_fit_models.R",        md5_or_na("4c_fit_models.R"),        p$code_md5$fit_models)
 add_drift("4d_leaf_wax_spatial_model.stan", md5_or_na("4d_leaf_wax_spatial_model.stan"), p$code_md5$stan_model)
 add_drift("config.yaml",            md5_or_na("config.yaml"),            p$code_md5$config)
-add_drift("calibration_csv",        md5_or_na("data/frozen/leafwax_d2h_c29_calibration_v1.csv"), p$input_md5$calibration_csv)
+add_drift("calibration_csv",        md5_or_na("input_data/leafwax_d2h_c29_calibration_v1.csv"), p$input_md5$calibration_csv)
 add_drift("sediment_prepared_rds",  md5_or_na("results/3_sediment_ready_for_modeling.rds"), p$input_md5$sediment_prepared_rds)
 
 # (3) THIS model's direct fit inputs (stan_data + config).

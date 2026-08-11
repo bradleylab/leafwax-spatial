@@ -1,5 +1,5 @@
-# run_simulated_recovery.R
-# Phase 3: Simulated Data Recovery Tests
+# 6a_simulated_recovery.R
+# Simulated data-recovery tests
 #
 # Generates synthetic d2H_wax data with KNOWN parameters, fits the model,
 # and checks whether it recovers the truth. Three scenarios:

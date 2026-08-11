@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 # check_stan_r_parity.R
 #
-# Numerical Stan <-> R prediction parity for the chordal GP (spec v2 §7). The
+# Numerical Stan <-> R prediction parity for the chordal GP. The
 # acceptance test only checks R-internal self-consistency; this checks that the
 # leafwax package's predict_spatial_dual_gp() (chordal branch) reproduces the
 # spatial field the Stan model actually produced, on the SAME posterior draws.

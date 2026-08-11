@@ -53,6 +53,11 @@ base_pkgs <- c(
   "class", "MASS", "spatial"
 )
 
+# Optional output backends may be checked with requireNamespace() without being
+# required for the tracked pipeline. The calibration freezer always writes CSV
+# and RDS; arrow adds a local Parquet copy only when already installed.
+optional_pkgs <- c("arrow")
+
 # ── 4b. Meta-package expansion ────────────────────────────────────────────
 # When the Dockerfile installs `tidyverse` it also installs its component
 # packages (ggplot2, dplyr, etc.) plus common transitive deps that scripts
@@ -78,7 +83,7 @@ for (m in intersect(names(meta_expand), installed)) {
 installed <- sort(unique(installed))
 
 # ── 5. Diff and report ────────────────────────────────────────────────────
-covered <- c(installed, base_pkgs)
+covered <- c(installed, base_pkgs, optional_pkgs)
 drift   <- setdiff(used, covered)
 
 cat(sprintf("Scanned %d .R files; found %d unique library()/require() targets.\n",

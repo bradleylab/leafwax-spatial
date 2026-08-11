@@ -47,7 +47,7 @@ output_dir <- "model_analysis/spatial_pattern_diagnostics"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Get all fitted models (April mirror, excluding _prepared_data)
-model_names <- list.dirs(APRIL_RUN, full.names = FALSE, recursive = FALSE)
+model_names <- list.dirs(MODEL_RUN_DIR, full.names = FALSE, recursive = FALSE)
 model_names <- model_names[!grepl("^_", model_names)]
 
 cat("Found", length(model_names), "fitted models\n\n")
@@ -458,7 +458,7 @@ for (model_name in model_names) {
 
       # GP conditional-mean projection on the chordal metric (Matérn 3/2, full
       # (K_kk + 1e-4 I)^{-1} solve), replacing the former row-normalized
-      # Gaussian smoother (codex 2026-07-29). 5c collapses the two length
+      # Gaussian smoother. This diagnostic collapses the two length
       # scales to a single ls (ls_intercept == ls_slope above), so one
       # projection serves both fields. Plug-in of posterior means is
       # acceptable for this diagnostic.

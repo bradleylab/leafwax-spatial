@@ -1,117 +1,100 @@
 #!/usr/bin/env Rscript
 # 2i_freeze_calibration.R
 #
-# Builds the frozen leaf-wax n-C29 delta-2H calibration dataset from the audited
-# compilation. This is the FROZEN step: it applies the operator-approved audit
-# decisions (duplicate drops + sample-level archive classification) to a new,
-# versioned file. The source compilation (input_data/global_data_c29.csv) is
-# read-only and untouched.
+# Builds the audited leaf-wax n-C29 delta-2H calibration dataset from the source
+# compilation and its versioned curation table. The source compilation
+# (input_data/global_data_c29.csv) is read-only and untouched.
 #
 # Decisions applied:
-#   - Drop the value-matched re-ingestion duplicates (operator_decision in
-#     data/audit/duplicate_review.csv). After grounding every same-DOI candidate
-#     against the primary per-sample tables (NotebookLM), only one survives:
-#     Garcin 2012 Barombi Mbo. The 2g heuristic's other re-ingestion flags were
-#     reversed (distinct transect/cluster samples sharing a 2-dp coordinate).
-#   - Archive class: sample-level overrides (data/audit/archive_overrides_proposal.csv,
-#     each grounded in the source paper / its data archive) for Repasch /
-#     Gaviria-Lugo / Gensel / Hren & Brandon, plus NLM-confirmed whole-study soil
-#     reclassification of Bai 2014 / Schwab 2015 / Lu 2020 / Feng 2019 /
-#     Jaeschke 2018 and a Garcin 2012 coastal-lake de-marine; coordinate heuristic
-#     for all others (data/audit/archive_type_proposal.csv). 4th class: "fluvial sediment".
-#   - Flags (not exclusions): near-coast lake/marine ambiguity; Hren
-#     sediment-tagged drainage rows; Gaviria zonal-mean rows.
+#   - One value-matched re-ingestion duplicate is excluded: Garcin 2012 Barombi
+#     Mbo. Other same-DOI coordinate matches are distinct samples.
+#   - Archive classes combine a coordinate-based initial classification with
+#     source-specific review documented in input_data/calibration_curation_v1.csv.
+#   - Review flags are retained in the curation table but are not exclusions.
 #
-# Run:  Rscript 2i_freeze_calibration.R   (from repo root, after 2g + 2h)
-# Out:  data/frozen/leafwax_d2h_c29_calibration_v1.{csv,rds}  (+ .parquet if arrow)
-#       data/frozen/leafwax_d2h_c29_calibration_v1_dictionary.md
-#       data/frozen/leafwax_d2h_c29_calibration_v1_exclusions.csv
+# Run:  Rscript 2i_freeze_calibration.R   (from repo root)
+# Out:  input_data/leafwax_d2h_c29_calibration_v1.{csv,rds}  (+ .parquet if arrow)
+#       input_data/leafwax_d2h_c29_calibration_v1_dictionary.md
+#       input_data/leafwax_d2h_c29_calibration_v1_exclusions.csv
 
 suppressWarnings(suppressMessages(library(dplyr)))
 
 DATASET <- "leafwax_d2h_c29_calibration_v1"
+EXPECTED_SOURCE_MD5 <- "5c451a2ecc4db4f51fbfd15cffe2bc99"
+ALLOWED_ARCHIVE_CLASSES <- c(
+  "soil", "lake sediment", "marine sediment", "fluvial sediment"
+)
 
 repo_root <- "."   # scripts run from the repository root (see README)
-audit <- file.path(repo_root, "data", "audit")
-frozen_dir <- file.path(repo_root, "data", "frozen")
+frozen_dir <- Sys.getenv(
+  "LEAFWAX_FROZEN_DATA_DIR",
+  unset = file.path(repo_root, "input_data")
+)
 dir.create(frozen_dir, showWarnings = FALSE, recursive = TRUE)
 
-# ---- Base compilation + obs_id (same convention as 2g_data_audit.R) ---------
-raw <- read.csv(file.path(repo_root, "input_data", "global_data_c29.csv"),
+# ---- Source compilation + stable row ids ------------------------------------
+source_path <- file.path(repo_root, "input_data", "global_data_c29.csv")
+source_md5 <- unname(tools::md5sum(source_path))
+if (!identical(source_md5, EXPECTED_SOURCE_MD5)) {
+  stop(
+    "global_data_c29.csv does not match the curated source version. ",
+    "Expected MD5 ", EXPECTED_SOURCE_MD5, "; found ", source_md5, "."
+  )
+}
+
+raw <- read.csv(source_path,
                 stringsAsFactors = FALSE, check.names = FALSE)
 raw$obs_id <- sprintf("obs_%04d", seq_len(nrow(raw)))
 n_raw <- nrow(raw)
 
-# ---- Decisions ---------------------------------------------------------------
-# Duplicate drops come from the human-reviewed, value-matched decisions
-# (operator_decision in duplicate_review.csv), NOT the 2g heuristic
-# proposed_action. Value-matching each same-DOI candidate against the primary
-# per-sample tables (via the NotebookLM "Leafwax" notebook) reversed all but one
-# of the heuristic's re-ingestion flags: the colliding rows are distinct
-# transect/cluster/land-use samples that merely round to the same 2-dp
-# coordinate. Only Garcin 2012 Barombi Mbo (a single crater lake at that
-# coordinate) is a genuine re-ingestion. See HANDOFF.md and
-# Lessons/coordinate-collision-not-proof-of-duplicate.md.
-rev <- read.csv(file.path(audit, "duplicate_review.csv"), stringsAsFactors = FALSE)
-drop_ids <- rev$obs_id[grepl("^DROP", rev$operator_decision)]
+# ---- Versioned scientific curation decisions --------------------------------
+curation_path <- file.path(repo_root, "input_data", "calibration_curation_v1.csv")
+curation <- read.csv(curation_path, stringsAsFactors = FALSE, check.names = FALSE)
 
-ov <- read.csv(file.path(audit, "archive_overrides_proposal.csv"), stringsAsFactors = FALSE) %>%
-  select(obs_id, archive_class_ov = archive_class, archive_evidence = evidence)
-
-heur <- read.csv(file.path(audit, "archive_type_proposal.csv"), stringsAsFactors = FALSE) %>%
-  select(obs_id, archive_type_heur = archive_type, archive_ambiguous, dist_coast_km)
-
-stopifnot(!anyDuplicated(ov$obs_id), !anyDuplicated(heur$obs_id))
+required_curation_columns <- c(
+  "obs_id", "include_in_calibration", "exclusion_reason", "archive_class",
+  "archive_assignment", "review_flag"
+)
+missing_curation_columns <- setdiff(required_curation_columns, names(curation))
+if (length(missing_curation_columns) > 0) {
+  stop("Missing curation columns: ", paste(missing_curation_columns, collapse = ", "))
+}
+if (!identical(curation$obs_id, raw$obs_id)) {
+  stop("calibration_curation_v1.csv must contain every source obs_id in source-row order.")
+}
+if (anyDuplicated(curation$obs_id)) {
+  stop("calibration_curation_v1.csv contains duplicate obs_id values.")
+}
+if (anyNA(curation$include_in_calibration)) {
+  stop("include_in_calibration must be TRUE or FALSE for every source row.")
+}
+unexpected_archive_classes <- setdiff(unique(curation$archive_class), ALLOWED_ARCHIVE_CLASSES)
+if (length(unexpected_archive_classes) > 0) {
+  stop("Unexpected archive classes: ", paste(unexpected_archive_classes, collapse = ", "))
+}
+if (any(!curation$include_in_calibration & !nzchar(curation$exclusion_reason))) {
+  stop("Every excluded source row must have an exclusion_reason.")
+}
 
 # ---- Assemble ----------------------------------------------------------------
 d <- raw %>%
-  left_join(ov, by = "obs_id") %>%
-  left_join(heur, by = "obs_id")
+  left_join(curation, by = "obs_id")
 stopifnot(nrow(d) == n_raw)   # joins must not fan out
-
-# Final archive class: override wins; "FLAG"/"review" override labels are mapped
-# to their underlying clean class and surfaced via archive_flag instead.
-d <- d %>% mutate(
-  archive_source = ifelse(!is.na(archive_class_ov), "source-override", "coord-heuristic"),
-  archive_class = case_when(
-    is.na(archive_class_ov)                              ~ archive_type_heur,
-    grepl("^soil", archive_class_ov)                     ~ "soil",
-    grepl("zonal mean", archive_class_ov)                ~ "fluvial sediment",
-    TRUE                                                 ~ archive_class_ov
-  )
-)
-
-# Flags (semicolon-joined; not exclusions)
-flag <- function(cond, txt) ifelse(cond, txt, "")
-join_flags <- function(...) {
-  m <- cbind(...)
-  apply(m, 1, function(r) paste(r[r != ""], collapse = "; "))
-}
-d <- d %>% mutate(
-  archive_flag = join_flags(
-    flag(archive_source == "coord-heuristic" & archive_ambiguous %in% TRUE,
-         "near-coast: lake/marine ambiguous"),
-    flag(!is.na(archive_class_ov) & grepl("sediment-tagged", archive_class_ov),
-         "Hren sediment-tagged drainage row: soil vs fluvial unresolved"),
-    flag(!is.na(archive_class_ov) & grepl("zonal mean", archive_class_ov),
-         "Gaviria zonal-mean aggregate: possible redundant with riverbed sites")
-  )
-)
 
 # ---- Apply exclusions --------------------------------------------------------
 d <- d %>% mutate(
   .finite_ok = is.finite(latitude) & is.finite(longitude) & is.finite(d2H_wax),
-  .is_drop   = obs_id %in% drop_ids)
+  .is_drop   = !include_in_calibration)
 n_nonfinite <- sum(!d$.finite_ok)
+drop_ids <- d$obs_id[d$.is_drop]
 
 frozen <- d %>% filter(.finite_ok & !.is_drop)
-n_flagged <- sum(frozen$archive_flag != "")   # capture before trimming columns
+n_flagged <- sum(nzchar(frozen$review_flag))
 
 # Final column set: 13 core fields (identity/provenance, coordinates, predictor,
-# response, audited medium). Audit-process metadata used to DERIVE archive_class
-# (archive_source/evidence/flag/ambiguous, dist_coast_km), the unreliable raw
-# sample_type, the constant chain (==29), and the near-empty d2H_precip_year are
-# dropped from the released file; they remain in data/audit/ for provenance.
+# response, audited medium). The curation table retains the assignment basis,
+# exclusion decisions, and review flags. The unreliable raw sample_type, the
+# constant chain (==29), and the near-empty d2H_precip_year are omitted.
 col_order <- c("obs_id", "source", "compilation", "location", "DOI",
                "latitude", "longitude", "elevation",
                "d2H_precip", "d2H_precip_err", "d2H_wax", "d2H_wax_err",
@@ -141,44 +124,43 @@ try({ if (requireNamespace("digest", quietly = TRUE)) {
 # ---- Exclusion log -----------------------------------------------------------
 excl_rows <- d %>% filter(.is_drop | !.finite_ok) %>%
   mutate(exclusion_reason = case_when(
-    .is_drop ~ "duplicate: non-canonical member of same-DOI re-ingestion set",
+    .is_drop ~ exclusion_reason,
     TRUE     ~ "non-finite latitude/longitude/d2H_wax")) %>%
   select(obs_id, source, compilation, DOI, latitude, longitude, d2H_wax, exclusion_reason)
 write.csv(excl_rows, file.path(frozen_dir, paste0(DATASET, "_exclusions.csv")), row.names = FALSE)
 
 # ---- Data dictionary ---------------------------------------------------------
 dict <- c(
-  sprintf("# %s -- data dictionary", DATASET), "",
-  "Frozen global leaf-wax n-C29 alkane delta-2H calibration compilation. Built by",
+  "# Audited leaf-wax calibration data dictionary", "",
+  "Audited global leaf-wax *n*-C29 alkane δ²H calibration compilation. Built by",
   "`2i_freeze_calibration.R` from `input_data/global_data_c29.csv`",
-  "(read-only) with the audited duplicate + archive decisions applied. Journal-neutral name.",
+  "(read-only) and `input_data/calibration_curation_v1.csv`.",
   "",
   sprintf("- Source rows: %d", n_raw),
   sprintf("- Duplicates dropped (same-DOI re-ingestion): %d", length(drop_ids)),
   sprintf("- Non-finite lat/lon/d2H_wax dropped: %d", n_nonfinite),
-  sprintf("- **Frozen rows: %d**", nrow(frozen)),
+  sprintf("- **Audited calibration rows: %d**", nrow(frozen)),
   "",
-  "## Columns (13)",
+  "## Columns (13)", "",
   "- `obs_id` -- stable id, `obs_%04d` by source-compilation row order.",
   "- `source`, `compilation`, `location`, `DOI` -- provenance as compiled.",
   "- `latitude`, `longitude`, `elevation` -- site coordinates (WGS84) and metres.",
-  "- `d2H_precip`, `d2H_precip_err` -- precipitation delta-2H predictor (permil, VSMOW).",
-  "- `d2H_wax`, `d2H_wax_err` -- leaf-wax n-C29 delta-2H response (permil, VSMOW).",
+  "- `d2H_precip`, `d2H_precip_err` -- precipitation δ²H predictor (‰, VSMOW).",
+  "- `d2H_wax`, `d2H_wax_err` -- leaf-wax *n*-C29 δ²H response (‰, VSMOW).",
   "- `archive_class` -- final depositional class: soil / lake sediment /",
-  "  marine sediment / **fluvial sediment** (the audit's 4th class). Derivation",
-  "  recorded below; see data/audit/ for the per-row evidence/flags.",
+  "  marine sediment / **fluvial sediment**. Per-row assignments and review",
+  "  flags are recorded in `input_data/calibration_curation_v1.csv`.",
   "",
-  "Dropped from the released file (retained in data/audit/ for provenance):",
-  "`chain` (constant 29), `d2H_precip_year` (near-empty), `sample_type` (raw binary,",
-  "unreliable -- superseded by `archive_class`), and the audit-process metadata",
-  "`archive_source` / `archive_evidence` / `archive_flag` / `archive_ambiguous` /",
-  "`dist_coast_km` used to derive `archive_class`.",
+  "Omitted from the audited calibration file:",
+  "`chain` (constant 29), `d2H_precip_year` (near-empty), `sample_type` (a coarse",
+  "source field not used after archive-class curation), and the curation columns",
+  "`archive_assignment`, `review_flag`, and `exclusion_reason`.",
   "",
-  "## archive_class composition",
+  "## archive_class composition", "",
   paste0("- ", names(table(frozen$archive_class)), ": ", as.integer(table(frozen$archive_class))),
   "",
-  "## Source-override provenance",
-  "- Repasch et al. 2021 -> fluvial (whole Rio Bermejo suspended/bed/floodplain system).",
+  "## Archive-class assignments", "",
+  "- Repasch et al. 2020 PANGAEA deposit -> fluvial (whole Rio Bermejo suspended/bed/floodplain system).",
   "- Gaviria-Lugo et al. 2023 -> Table 1 'Sediment type' (Riverine/Soils/Marine);",
   "  GeoB#### = MARUM marine core-tops.",
   "- Gensel et al. 2022 -> per-sample sub-environment from PANGAEA",
@@ -186,29 +168,30 @@ dict <- c(
   "- Hren & Brandon 2026 -> soil (leaf-wax delta-2H dataset; Fig. 2 'soil sample location map').",
   "- Bai 2014 / Schwab 2015 / Lu 2020 / Feng 2019 / Jaeschke 2018 -> soil (whole-study);",
   "  leaf-wax delta-2H samples are terrestrial soils, confirmed from each paper full",
-  "  text via NotebookLM (2026-06-23). DOI-keyed override (avoids Bai 2011/2014 and",
+  "  text. DOI-keyed override (avoids Bai 2011/2014 and",
   "  Gaviria-Lugo/Lu homograph leakage).",
   "- Garcin et al. 2012 -> lake sediment for the coastal Debundscha row the coordinate",
-  "  heuristic mis-filed as marine (Garcin = 11 lake surface sediments, NLM).",
+  "  heuristic mis-filed as marine (Garcin = 11 lake surface sediments).",
   "",
-  "## Flags (review items, NOT exclusions)",
+  "## Retained curation flags", "",
+  "These records remain in the audited calibration dataset; the flags document",
+  "classification ambiguities rather than exclusions.", "",
   "- Hren sediment-tagged drainage rows (9): soil vs fluvial unresolved.",
   "- Gaviria zonal-mean rows (3): possible redundant aggregates of the 26 riverbed sites.",
   "",
-  "## Parameters (from 2g_data_audit.R)",
+  "## Parameters (from 2g_data_audit.R)", "",
   "- duplicate coordinate resolution: 2 dp (~1.1 km); wax tolerance: 5 permil.",
   "- coast ambiguity buffer: 25 km.",
   "",
   sprintf("Companion files: `%s_exclusions.csv`, `%s.sha256`.", DATASET, DATASET),
-  if (!parquet_ok) "(parquet not written -- `arrow` package unavailable; csv + rds only.)" else
-    "Formats: csv, rds, parquet."
+  "The public repository tracks the CSV. Local RDS and Parquet formats are generated when their dependencies are available."
 )
 writeLines(dict, file.path(frozen_dir, paste0(DATASET, "_dictionary.md")))
 
 # ---- Console summary ---------------------------------------------------------
-cat(sprintf("FROZEN: %s\n  %d source -> %d frozen (-%d dup, -%d nonfinite)\n\n",
+cat(sprintf("AUDITED: %s\n  %d source -> %d retained (-%d excluded, -%d nonfinite)\n\n",
             DATASET, n_raw, nrow(frozen), length(drop_ids), n_nonfinite))
 cat("columns:", ncol(frozen), "-", paste(names(frozen), collapse = ", "), "\n")
 cat("\narchive_class:\n"); print(table(frozen$archive_class))
-cat("\nrows with an audit flag (dropped from file; counted from data/audit/):", n_flagged, "\n")
+cat("\nrows with a review flag (retained in the curation table):", n_flagged, "\n")
 cat("parquet written:", parquet_ok, " | sha256 written:", sha_ok, "\n")

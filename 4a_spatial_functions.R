@@ -100,10 +100,9 @@ compute_weighted_interaction <- function(values1, values2, distances_deg, scale_
   return(sum(weights * interaction_values) / weight_sum)
 }
 
-# Convert distances in degrees to great circle distances in km
-compute_great_circle_distances <- function(lon1, lat1, lon2, lat2) {
-  # Use geosphere for accurate great circle distances
-  # Returns distances in meters, so divide by 1000 for km
+# Compute surface-geodesic distances in km
+compute_geodesic_distances <- function(lon1, lat1, lon2, lat2) {
+  # distHaversine returns distances in meters, so divide by 1000 for km
   if (length(lon2) == 1) {
     # Single point to single point
     return(distHaversine(c(lon1, lat1), c(lon2, lat2)) / 1000)
@@ -162,8 +161,8 @@ calculate_min_dist_to_data <- function(coords_all, coords_obs) {
   
   # For each point, find minimum distance to any observation
   for (i in 1:n_all) {
-    # Calculate great circle distances from point i to all observations
-    dists <- compute_great_circle_distances(
+    # Calculate surface-geodesic distances from point i to all observations
+    dists <- compute_geodesic_distances(
       coords_all[i,1], coords_all[i,2],
       coords_obs[,1], coords_obs[,2]
     )
@@ -211,8 +210,7 @@ calculate_knot_data_density <- function(knot_coords, obs_coords, radius = 0.2, v
 # Convert lon/lat (degrees) to 3-D chordal coordinates on a sphere of radius R km.
 # The Euclidean distance between two such rows is the chordal (straight-line)
 # distance in km: isotropic, positive-definite by construction, and within ~1.5%
-# of the great-circle distance at continental scales. This replaces the former
-# per-axis coordinate standardization, which induced spurious anisotropy.
+# of the corresponding surface-arc distance at continental scales.
 lonlat_to_chordal <- function(lon, lat, R = 6371) {
   lon_r <- lon * pi / 180
   lat_r <- lat * pi / 180
@@ -714,7 +712,7 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
                               apply_range_factor = NULL) {
   # apply_range_factor: per-model override of gp_regularization.apply_range_factor.
   # NULL (default) uses the global config value; pass FALSE for the range_factor-off
-  # sensitivity variants (config model_configs *_rfoff entries, spec v2 §3).
+  # sensitivity variants (config model_configs *_rfoff entries).
   if (is.null(apply_range_factor)) {
     apply_range_factor <- isTRUE(CONFIG$gp_regularization$apply_range_factor)
   } else {
@@ -1412,7 +1410,7 @@ prepare_stan_data <- function(data, include_c4 = TRUE, include_pft = TRUE, inclu
     # Only regular_global is chordal-safe: it lays a lon/lat grid and
     # select_pp_knots returns those grid points directly. The kmeans and
     # cover.design paths still place knots using raw lon/lat DEGREES (anisotropic
-    # in km — only cover.design's pre-filter uses great-circle distance), so they
+    # in km — only cover.design's pre-filter uses spherical surface distance), so they
     # are not yet valid for a chordal fit. Reject them here until made spherical.
     if (!identical(CONFIG$knot_selection_method, "regular_global")) {
       stop("knot_selection_method '", CONFIG$knot_selection_method,

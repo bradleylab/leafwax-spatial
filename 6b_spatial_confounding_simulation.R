@@ -1,17 +1,11 @@
-# run_confounding_test_v2.R
-# Phase 3c: Spatial Confounding Simulation Study (CORRECTED)
+# 6b_spatial_confounding_simulation.R
+# Spatial confounding simulation study
 #
-# Fixes from v1:
-#   1. Re-standardizes simulated d2H_wax (mean=0, sd=1) so model priors are
-#      correctly calibrated. v1 fed unstandardized data (sd up to 2.0) into a
-#      model with priors tuned for sd=1, producing inflated slope estimates.
-#   2. Uses the SAME z_indep draw across all scenarios so only rho varies.
-#      v1 used different seeds per scenario, confounding the comparison.
-#   3. Rescales d2H_wax_err to match new standardization.
-#   4. Computes true beta_oipc in re-standardized space for correct evaluation.
+# The simulation standardizes d2H_wax to match the fitted model, uses the same
+# independent spatial-field draw across correlation scenarios, rescales
+# d2H_wax_err consistently, and evaluates beta_oipc on the standardized scale.
 #
 # Design follows Paciorek (2010, Biostatistics) and Dupont et al. (2022).
-# See validation_log/NOTE_spatial_confounding_theory.md for full background.
 #
 # Usage: Rscript run_confounding_test_v2.R [scenario]
 #   scenario: "rho00", "rho03", "rho05", "empirical", or "all" (default)
@@ -279,7 +273,7 @@ fit_and_save <- function(stan_data_orig, d2h_sim, scenario_name,
 # intercept (alpha_spatial) correlated against the SINGLE-SCALE predictor
 # sed$oipc_d2h20 (NOT the multi-scale oipc_weighted). Anchoring to the reported
 # single-scale statistic keeps the "empirical" scenario tied to the manuscript's
-# reported r (per the 2026-07-29 codex diff review). Correlation is scale-
+# reported r. Correlation is scale-
 # invariant, so regen's per-mil back-transform of alpha_spatial does not change r
 # and is omitted. Achieved rho is still measured vs oipc_weighted below (the
 # predictor the generator mixes into z_confound); uniroot equates that achieved

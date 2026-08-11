@@ -2,16 +2,11 @@
 #
 # Computes the global interpolated range of the spatial intercept field
 # alpha_spatial(s) and the spatial slope field beta_oipc_spatial(s) for
-# each spatial model, using the SAME interpolation method as
-# manuscript/figure_code/Figure_04_spatial_maps.R (Matérn 3/2 kernel +
-# full conditional GP posterior mean), but vectorized and applied to all
-# 9 spatial models, with results saved to CSV.
-#
-# This factors out a calculation that previously existed only inside
-# Figure_04's render path. The numbers below are the same numbers
-# Figure_04 prints to stdout when it builds Panel A (intercept) and
-# Panel B (slope), and are the values quoted in the manuscript prose
-# ("interpolated intercept field ranges from X to Y ‰ globally";
+# each spatial model using the reported map interpolation method (Matérn
+# 3/2 kernel with the full conditional GP posterior mean), vectorized and
+# applied to all 9 spatial models, with results saved to CSV. These are the
+# values used for the reported intercept and slope field ranges
+# ("interpolated intercept field ranges from X to Y ‰ globally" and
 # "interpolated slope field ranges from X to Y").
 #
 # Method (chordal metric, matches Figure_04_spatial_maps.R):
@@ -32,7 +27,7 @@
 #      deterministic subsample of draws. This replaces the former
 #      plug-in-of-posterior-means approximation (interpolating the mean
 #      z/sigma/rho, a plug-in surface rather than the true posterior-mean
-#      field), per the 2026-07-29 codex review.
+#      field).
 #   5. Output: per-model min/max/SD of the posterior-mean field, plus the
 #      across-model envelope for prose.
 #
@@ -45,6 +40,7 @@ suppressPackageStartupMessages({
 })
 
 source("scripts/posterior_helpers.R")
+.load_saved_model_config <- load_config
 source("4a_spatial_functions.R")  # lonlat_to_chordal()
 
 # Posterior-mean field via a deterministic draw subsample (see Method above).
@@ -54,15 +50,13 @@ SEED <- 42
 GRID_LON_BY <- 2
 GRID_LAT_BY <- 2
 
-# Output path, honoring the retrace redirect when LEAFWAX_RETRACE_OUT_DIR is
-# set (writes interpolated_field_ranges.csv there instead of the default).
-.retrace_out <- Sys.getenv("LEAFWAX_RETRACE_OUT_DIR", unset = "")
-if (nzchar(.retrace_out)) dir.create(.retrace_out, recursive = TRUE, showWarnings = FALSE)
-OUT_CSV <- if (nzchar(.retrace_out)) {
-  file.path(.retrace_out, "interpolated_field_ranges.csv")
-} else {
-  "model_analysis/spatial_pattern_diagnostics/interpolated_field_ranges.csv"
-}
+# Set LEAFWAX_OUTPUT_DIR to override the generated-output directory.
+.output_dir <- Sys.getenv(
+  "LEAFWAX_OUTPUT_DIR",
+  unset = "model_analysis/spatial_pattern_diagnostics"
+)
+dir.create(.output_dir, recursive = TRUE, showWarnings = FALSE)
+OUT_CSV <- file.path(.output_dir, "interpolated_field_ranges.csv")
 
 spatial_models <- c(
   "baseline_sp", "baseline_env_sp", "baseline_veg_sp",
@@ -78,6 +72,7 @@ matern32 <- function(d, alpha = 1, rho = 1) {
 interpolate_one <- function(m) {
   draws  <- load_draws(m)
   sd_obj <- load_stan_data(m)
+  cfg <- .load_saved_model_config(m)
 
   # Knots are 3-D chordal km (stan_data$knot_coords); use directly.
   knot_coords <- sd_obj$knot_coords
@@ -131,7 +126,10 @@ interpolate_one <- function(m) {
   }
   n_used <- length(draw_idx)
   alpha_bar <- alpha_sum / n_used   # E[alpha(s)] per grid cell (per mil)
-  slope_bar <- slope_sum / n_used   # E[slope(s)] per grid cell
+  slope_bar <- slope_model_to_physical(
+    slope_sum / n_used,
+    cfg$scaling_params
+  ) # E[slope(s)] per grid cell, per mil wax per per mil precipitation
 
   tibble(
     model = m,
@@ -161,9 +159,6 @@ out <- lapply(spatial_models, function(m) {
            })
 }) |> bind_rows()
 
-if (!nzchar(.retrace_out)) {
-  dir.create(dirname(OUT_CSV), recursive = TRUE, showWarnings = FALSE)
-}
 write.csv(out, OUT_CSV, row.names = FALSE)
 
 cat("\nWrote", OUT_CSV, "\n\n")
