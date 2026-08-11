@@ -15,8 +15,8 @@
 # models that ground the slope claims in §3 / §4 of the manuscript.
 # Each task uses the same compiled Stan model as the main fits; only
 # the predictor matrices in stan_data are residualized against
-# coordinates (per 3i_spatial_plus_residuals.R). Walltime mirrors
-# job_fit.sh; full_interact_sp_splus is the slowest expected element.
+# coordinates (per 3i_spatial_plus_residuals.R). Walltime mirrors the main
+# chordal fitting array; full_interact_sp_splus is the slowest expected element.
 
 set -eo pipefail
 
@@ -41,7 +41,7 @@ module load apptainer/1.3.6   # bumped from 1.3.4 after the 2026-07-15 C2 upgrad
 cd "${WORKDIR}"
 mkdir -p logs model_output/${MODEL}
 
-# Resume guard mirrors job_fit.sh: only skip if fit.rds is newer than
+# Resume guard mirrors the main fitting array: only skip if fit.rds is newer than
 # its stan_data, otherwise a freshly residualized stan_data would be
 # silently shadowed by a stale fit.
 FIT_RDS="model_output/${MODEL}/fit.rds"
@@ -65,7 +65,7 @@ echo "Node: $(hostname)"
 echo "CPUs: ${SLURM_CPUS_PER_TASK}"
 echo "Start: $(date)"
 
-# Per-task R wrapper. Identical pattern to job_fit.sh — set model_names
+# Per-task R wrapper. Set model_names before sourcing 4c so the auto-discovery
 # before sourcing 4c so the auto-discovery short-circuits to just this
 # one model.
 RUNNER=/tmp/fit_${MODEL}_${SLURM_JOB_ID}.R

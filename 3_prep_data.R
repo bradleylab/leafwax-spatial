@@ -781,7 +781,7 @@ if (sum(sediment_ready$has_measured_elevation) > 0) {
 }
 
 cat("Ready for Bayesian modeling with climate covariates!\n")
-cat("Next step: 4b_stan_prep.R, then 4c_fit_models.R (or SLURM job_fit.sh on C2)\n")
+cat("Next step: 4b_stan_prep.R, then 4c_fit_models.R (or slurm/job_fit_chordal.sh)\n")
 
 # Show sample of final data
 cat("\nSample of final dataset:\n")

@@ -42,15 +42,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     && rm -rf /var/lib/apt/lists/*
 
-# Install core R packages needed by the pipeline
-# Order matters: dependencies first, then packages that depend on them
-# Post-fit scripts (5c, 5e, 7) added geoR/ape/ggpubr/corrplot/cowplot/
-# patchwork/rnaturalearth/viridis over time; backfilled here so the full
-# pipeline runs in-container (not just the fit step).
+# Install the R packages used across preparation, fitting, diagnostics, and
+# manuscript-number regeneration. Compilation is deliberately serial: parallel
+# source builds of terra and its dependency tree can exceed GitHub runner memory.
+# Arrow is optional in 2i_freeze_calibration.R and is not required by the tracked
+# pipeline, so it is omitted from the image.
 RUN R -e ' \
-    install.packages(c( \
+    packages <- c( \
         "yaml", \
-        "arrow", \
         "digest", \
         "jsonlite", \
         "tidyverse", \
@@ -80,7 +79,10 @@ RUN R -e ' \
         "ncf", \
         "openxlsx", \
         "spdep" \
-    ), repos = "https://cloud.r-project.org", Ncpus = 4) \
+    ); \
+    install.packages(packages, repos = "https://cloud.r-project.org", Ncpus = 1); \
+    missing <- packages[!vapply(packages, requireNamespace, logical(1), quietly = TRUE)]; \
+    if (length(missing)) stop("R package installation failed: ", paste(missing, collapse = ", ")) \
 '
 
 # Install CmdStanR from R-universe (official distribution channel)
@@ -94,7 +96,7 @@ RUN R -e ' \
 # Install CmdStan (the C++ toolchain that cmdstanr calls)
 # This compiles Stan's math library — takes ~10 min
 ENV CMDSTAN_VERSION=2.36.0
-RUN R -e 'cmdstanr::install_cmdstan(version = "2.36.0", cores = 4)'
+RUN R -e 'cmdstanr::install_cmdstan(version = "2.36.0", cores = 2)'
 
 # Verify the installation
 RUN R -e ' \

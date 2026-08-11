@@ -7,8 +7,9 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=120G
 #SBATCH --time=96:00:00
-# Node isolation: each model owns its node (see job_fit.sh for the rationale —
-# co-scheduled array tasks trip the per-user process limit).
+# Node isolation: each model owns its node. Co-scheduled array tasks each spawn
+# eight CmdStan chains plus compilation processes and can exceed the per-user
+# process limit even when memory use is modest.
 #SBATCH --exclusive
 #SBATCH --array=0-16
 #SBATCH --output=logs/fit_chordal_%A_%a.out

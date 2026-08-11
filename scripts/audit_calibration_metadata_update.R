@@ -1,12 +1,12 @@
 #!/usr/bin/env Rscript
 
 # Verify that the public audited calibration input differs from the exact
-# chordal fit-time snapshot only in the corrected Río Bermejo source and DOI
-# fields. This audit does not rerun model preparation or fitting.
+# chordal fit-time snapshot only in corrected provenance and location-label
+# metadata. This audit does not rerun model preparation or fitting.
 
 fit_path <- Sys.getenv(
   "LEAFWAX_FIT_INPUT_SNAPSHOT",
-  unset = "data/frozen/leafwax_d2h_c29_calibration_v1.csv"
+  unset = "provenance/chordal_fit_2026-07-28/leafwax_d2h_c29_calibration_fit.csv"
 )
 public_path <- Sys.getenv(
   "LEAFWAX_PUBLIC_CALIBRATION",
@@ -18,8 +18,8 @@ output_path <- Sys.getenv(
 )
 
 expected_fit_md5 <- "bb52649130a02b9b7d897325899b4f5a"
-expected_public_md5 <- "81d8276e28e4c05dc7784604e1120baf"
-allowed_changed_fields <- c("source", "DOI")
+expected_public_md5 <- "25f1f279a6b487955a8adefc2f7b303a"
+allowed_changed_fields <- c("source", "location", "DOI")
 
 for (path in c(fit_path, public_path)) {
   if (!file.exists(path)) stop("Missing calibration input: ", path)
@@ -69,8 +69,9 @@ if (length(unexpected) > 0L) {
   stop("Unexpected changed fields: ", paste(unexpected, collapse = ", "))
 }
 if (!identical(audit$n_differences[audit$field == "source"], 27L) ||
+    !identical(audit$n_differences[audit$field == "location"], 6L) ||
     !identical(audit$n_differences[audit$field == "DOI"], 27L)) {
-  stop("Expected exactly 27 corrected source and DOI values")
+  stop("Expected exactly 27 corrected source/DOI values and 6 location labels")
 }
 
 audit$fit_input_md5 <- expected_fit_md5

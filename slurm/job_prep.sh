@@ -85,7 +85,7 @@ else
         printf '  - %s\n' "${missing_rasters[@]}"
         echo ""
         echo "Pre-stage them from local input_data/ via scp before running prep."
-        echo "See README and ec2_rasters_location memory for raster sources."
+        echo "See README.md and slurm/README_chordal_run.md for raster sources and staging."
         exit 1
     fi
     echo "✓ All required env rasters present"

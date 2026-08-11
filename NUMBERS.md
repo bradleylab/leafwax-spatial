@@ -8,18 +8,22 @@ quantities do not depend on this distance metric.
 
 ## Provenance
 
-- **Run:** `results/c2_run_20260728_chordal/model_output/` (14 models plus
-  simulation and prior-sensitivity outputs).
+- **Run:** `results/c2_run_20260728_chordal/model_output/` (14 comparison models,
+  three range-factor sensitivity fits, and simulation/prior-sensitivity outputs).
   Authoritative manifest: `results/c2_run_20260728_chordal/RUN_MANIFEST_chordal.rds`.
-- **Fit-time calibration snapshot:** `data/frozen/leafwax_d2h_c29_calibration_v1.csv`,
+- **Fit-time calibration snapshot:**
+  `provenance/chordal_fit_2026-07-28/leafwax_d2h_c29_calibration_fit.csv`,
   md5 `bb52649130a02b9b7d897325899b4f5a`.
   The fit-time file labeled 27 Río Bermejo records with the Repasch et al. (2021)
   article DOI. The public compilation corrects those provenance fields to the 2020
   PANGAEA deposit (10.1594/PANGAEA.925616) and associates the records with Dosch
   et al. (2024; 10.5194/esurf-12-907-2024). Coordinates, isotope measurements,
   archive classes, and modeled values are identical. The
-  corrected public calibration CSV has md5 `81d8276e28e4c05dc7784604e1120baf`
-  and sha256 `34d90e3207f81056e486501e1da50498eaee6f58a4ddeffcd26a194272171ad5`.
+  The public CSV also repairs six corrupted location labels from the source
+  compilation. These changes are metadata-only: coordinates, isotope
+  measurements, archive classes, and modeled values remain identical. The
+  corrected public calibration CSV has md5 `25f1f279a6b487955a8adefc2f7b303a`
+  and sha256 `f5243a07026ab2a4fdac2be221f4d4185669c515873643e97bf974200f64a8f5`.
 - **Regenerated:** via `scripts/regen_tables.R` + `scripts/regen_manuscript_numbers.R`
   + `scripts/regen_simulation_numbers.R` with `LEAFWAX_RUN_DIR` pointed at the chordal run.
 - Sediment for classical stats: `results/3_sediment_ready_for_modeling.rds` (1,128 rows).
@@ -35,6 +39,7 @@ different directory; only the output path changes, never a value.
 | Artifact | Command | Output |
 |---|---|---|
 | Core tables + reported scalars (slopes, variance, RMSE, CIs, C₃/C₄, vegetation coefficients) | `LEAFWAX_RUN_DIR=MO Rscript scripts/regen_tables.R` + `scripts/regen_manuscript_numbers.R` | `model_analysis/reported_outputs/` |
+| Within/between decomposition and region-specific slopes | `Rscript scripts/within_between_decomposition.R` | `model_analysis/reported_outputs/within_between_decomposition.csv` and `regional_slopes.csv` |
 | Spatial intercept/slope component audit | `LEAFWAX_RUN_DIR=MO Rscript scripts/audit_spatial_variance_decomposition.R` | `scripts/reference_outputs/spatial_variance_decomposition_audit.csv` |
 | Simulation and threshold quantities not in the table scripts (recovery + confounding intervals, intercept–OIPC correlations, vegetation effects, detection thresholds) | `LEAFWAX_RUN_DIR=MO Rscript scripts/regen_simulation_numbers.R` | `model_analysis/reported_outputs/SIMULATION_NUMBERS.md` plus CSV sources for Tables S4 and S5 |
 | Precip-scale reconstruction SD + detection thresholds | `LEAFWAX_RUN_DIR=MO Rscript scripts/regen_precip_space.R` | `REGENERATED_NUMBERS_precip_space.md` |

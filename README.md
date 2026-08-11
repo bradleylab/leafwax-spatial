@@ -7,8 +7,9 @@ Hierarchical Bayesian spatial model that calibrates sedimentary leaf-wax
 n-C₂₉ hydrogen isotope ratios (δ²H<sub>wax</sub>) against precipitation
 isotope composition and environmental covariates. Spatial autocorrelation
 is captured by a Gaussian process with a Matérn 3/2 kernel; intercept and
-slope vary across Earth's surface. Fourteen model variants are compared by
-leave-one-out cross-validation.
+slope vary across Earth's surface. Fourteen principal model variants are
+compared by leave-one-out cross-validation, with three additional fits testing
+the slope range-factor regularization.
 
 ## What is in this repo
 
@@ -24,18 +25,19 @@ leave-one-out cross-validation.
 | `6b_spatial_confounding_simulation.R` | Spatial-confounding simulation (Paciorek 2010) |
 | `6c_prior_sensitivity.R` | Prior / hyperparameter sensitivity |
 | `7_paleo_inversion.R` | Paleoclimate inversion application |
-| `scripts/posterior_helpers.R`, `scripts/table_helpers.R` | Helpers sourced by the numbered scripts |
+| `scripts/` | Reproducible summaries, audits, and supporting analysis, including the within/between decomposition |
 | `slurm/` | SLURM preparation, fitting, and post-processing scripts |
+| `provenance/chordal_fit_2026-07-28/` | Exact fit input and sanitized fit-environment checksums |
 | `Dockerfile`, `.github/workflows/build-container.yml` | Containerized environment + CI |
-| `config.yaml` | MCMC settings + 14 model specifications |
+| `config.yaml` | MCMC settings + 14 comparison models and 3 sensitivity fits |
 | `input_data/global_data_c29.csv` | Source compilation (1,136 rows from 73 publications) |
 | `input_data/calibration_curation_v1.csv` | Versioned inclusion and archive-class decisions for every source row |
 | `input_data/leafwax_d2h_c29_calibration_v1.csv` | Audited calibration input (1,135 rows with archive classes; model preparation retains 1,128 after raster-coverage filtering) |
 
 The repo does **not** include manuscript source or manuscript-assembly code.
-It does include the scientific scripts that generate reported figures, tables,
-and numeric summaries. The upstream pipeline that builds the input compilation
-from primary-source files is maintained separately.
+It does include the scientific scripts that generate reported numerical results
+and the calculated inputs to tables and figures. The upstream pipeline that
+builds the input compilation from primary-source files is maintained separately.
 
 ## Quick start (containerized)
 
@@ -91,7 +93,7 @@ Rscript 2f_process_terraclimate.R
 Rscript 2i_freeze_calibration.R        # source compilation + curation decisions
 Rscript 3_prep_data.R                  # joins all covariates + spatial averaging
 
-# Model fitting (loops 14 model variants)
+# Model fitting (loops over all 17 configured fits)
 Rscript 4b_stan_prep.R                 # Stan data assembly per model
 Rscript 4c_fit_models.R                # MCMC sampling via cmdstanr
 ```
@@ -103,27 +105,27 @@ artifacts and can be run independently.
 
 ## Running on SLURM
 
-Production fits are most efficient on a cluster. `slurm/submit.sh` chains
-the prep job and 14 parallel fitting jobs (one per model variant); each
-fitting job requests 8 CPUs and ≈120 GB RAM. Wall time is set by the
-slowest spatial model (~3–6 h).
+Production fits are most efficient on a cluster. The current workflow prepares
+all configured inputs, then launches 17 fitting tasks: 14 comparison models and
+three range-factor sensitivity fits. Each fitting task requests 8 CPUs and
+approximately 120 GB RAM. The slowest spatial fits typically take 3–6 h.
 
 ```bash
-sbatch slurm/job_prep.sh
-sbatch --dependency=afterok:<prep_job_id> --array=0-13 slurm/job_fit.sh
-sbatch --dependency=afterok:<fit_job_id> slurm/postprocess_fits.sh
-# or:
-bash slurm/submit.sh
+prep_job_id=$(sbatch --parsable slurm/job_prep.sh)
+sbatch --dependency=afterok:${prep_job_id} slurm/job_fit_chordal.sh
 ```
 
-Scripts target WashU Compute2 conventions (account flag, partition); adapt
-to your cluster as needed.
+The fitting script writes posterior draws and diagnostics for each model. See
+`slurm/README_chordal_run.md` for the pilot checks, completeness gate, and
+provenance-preservation steps. Scripts target WashU Compute2 conventions
+(account flag, partition, and scratch path); adapt them to your cluster.
 
 ## Configuration
 
-`config.yaml` defines MCMC settings, the 14 model variants, raster paths,
-and output directories. Every numbered script begins by sourcing
-`0_load_config.R`, which reads `config.yaml`.
+`config.yaml` defines MCMC settings, the 14 comparison models, three
+range-factor sensitivity fits, raster paths, and output directories. Every
+numbered script begins by sourcing `0_load_config.R`, which reads
+`config.yaml`.
 
 ## Repository scope (what is intentionally not here)
 
@@ -139,6 +141,9 @@ and output directories. Every numbered script begins by sourcing
   fresh fits from a clean clone takes the wall-clock time noted above. The
   posterior draws used by the manuscript are in
   [bradleylab/leafwax-data](https://github.com/bradleylab/leafwax-data).
+  The exact calibration CSV and sanitized environment record for the reported
+  fit are retained under `provenance/` so later metadata corrections can be
+  checked without rerunning the models.
 
 ## License
 

@@ -20,7 +20,7 @@
 suppressWarnings(suppressMessages(library(dplyr)))
 
 DATASET <- "leafwax_d2h_c29_calibration_v1"
-EXPECTED_SOURCE_MD5 <- "8e5cc5ab1c84be1116ac7a9812baa5d7"
+EXPECTED_SOURCE_MD5 <- "5c451a2ecc4db4f51fbfd15cffe2bc99"
 ALLOWED_ARCHIVE_CLASSES <- c(
   "soil", "lake sediment", "marine sediment", "fluvial sediment"
 )

@@ -1,0 +1,97 @@
+{
+  "fit_label": "2026-07-28 chordal-distance calibration fit",
+  "captured_at": "2026-07-26 00:33:20.425009",
+  "environment": {
+    "r_version": "R version 4.4.1 (2024-06-14)",
+    "cmdstan_version": "2.36.0",
+    "packages": {
+      "cmdstanr": "0.9.0",
+      "posterior": "1.7.0",
+      "loo": "2.9.0",
+      "rstan": null,
+      "tidyverse": "2.0.0"
+    }
+  },
+  "container_md5": "bb7ff51b7d92d4fa2fa1b721f5ef40a3",
+  "code_md5": {
+    "spatial_functions": "ee88f8518e47df8e8cffd8a590a65969",
+    "stan_prep": "0241ab6bb52af87b1468b133620ddc7d",
+    "fit_models": "18d6e46630e95bbc5787301c29ea6ad2",
+    "stan_model": "c704042d99854654e14474cfed72218d",
+    "config": "88e02c257651b41017f30ca7993aaa76"
+  },
+  "input_md5": {
+    "calibration_csv": "bb52649130a02b9b7d897325899b4f5a",
+    "sediment_prepared_rds": "746197de0e50c6952941455dea3ea6bd"
+  },
+  "prepared_md5": {
+    "baseline_env_sp_rfoff": {
+      "stan_data": "bd93d3bcbac72d2471e4514e51fa5b64",
+      "config": "d2eea76df34f9a2f5c1a855528eaf9dc"
+    },
+    "baseline_env_sp": {
+      "stan_data": "9983b05abfacae2cb008755f60b7cd03",
+      "config": "0af6d3abbce6989356428467071f6413"
+    },
+    "baseline_env": {
+      "stan_data": "2d098d2444462e114d0ba4f9e1a600f1",
+      "config": "48852d20cf364142567379ce175c47a1"
+    },
+    "baseline_sp_rfoff": {
+      "stan_data": "8eb27c0da6a7f04c6d76befea19d2674",
+      "config": "f3a4fe25914b83f6f23d1327aa59a37d"
+    },
+    "baseline_sp": {
+      "stan_data": "99cf2a6e61231e7bd19c5f785bdec339",
+      "config": "11eba325e7b676181ef6df9488a9e55b"
+    },
+    "baseline_veg_sp": {
+      "stan_data": "b8e5b8119a0d91f267fbce438bfef2ce",
+      "config": "4b30f1800a0ab64ae6da9781b543e33d"
+    },
+    "baseline_veg": {
+      "stan_data": "e1ffcae4fc02875bb8b53a2f6bd9e4f9",
+      "config": "1a8ea16986a5b98b4abd1b863c1822c0"
+    },
+    "baseline": {
+      "stan_data": "b5b361967172ddfd68c2fc629df472c6",
+      "config": "df62c1012df91083008a0b045c59a482"
+    },
+    "c4_only_sp": {
+      "stan_data": "ed84dbfd5832fb78a26981003ae002d0",
+      "config": "ced2276b707252827272bcf35938bbd4"
+    },
+    "elevation_c4_interact_sp": {
+      "stan_data": "26f64b465de93c68d73bf5ae2ce05421",
+      "config": "f7cc1d6b000c5f4b49512effbba6fe6a"
+    },
+    "elevation_c4_sp": {
+      "stan_data": "7f52970d3ab3a27855aee165b7c4f4cf",
+      "config": "e4f1bd2c7857200e2a67bb1a0a393763"
+    },
+    "elevation_only_sp": {
+      "stan_data": "a4d15e7ad2d000e131170dfee1ecb0ba",
+      "config": "7583e928837fe16e723ab1bae2a18134"
+    },
+    "full_interact_sp_rfoff": {
+      "stan_data": "f577269543d4077c19d206349abeed68",
+      "config": "46c0434fb9a2f768d5b5a9f95c38bbbb"
+    },
+    "full_interact_sp": {
+      "stan_data": "3a013d9295544c4709a15cbda7e0a910",
+      "config": "0797c36bc3c7c7842e8f4b27a1a05b21"
+    },
+    "full_interact": {
+      "stan_data": "15579c4a3efb5ab0f5308b3055495e35",
+      "config": "61224eaea88d73cc3e9bf907b436833f"
+    },
+    "full_sp": {
+      "stan_data": "172e007868ba889d9eff5157ca294514",
+      "config": "3bfd0def64239e1005095ce1c66c16a4"
+    },
+    "full": {
+      "stan_data": "c8843f45f565d13f0bdd3d2d3e49ab67",
+      "config": "59b57a6388e7e29f9b4819fe405bce81"
+    }
+  }
+}

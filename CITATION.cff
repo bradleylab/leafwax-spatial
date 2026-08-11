@@ -2,6 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, cite the archived release and the associated manuscript."
 type: software
 title: "leafwax-spatial: hierarchical Bayesian spatial calibration of leaf-wax hydrogen isotopes"
+version: "2.0.0"
 authors:
   - family-names: Bradley
     given-names: Alexander S.
@@ -12,8 +13,9 @@ abstract: >-
   Companion code for fitting hierarchical Bayesian spatial models that
   calibrate sedimentary leaf-wax n-C29 alkane hydrogen isotope ratios
   against precipitation isotope composition and environmental covariates.
-  Implements 14 model variants in Stan with a Matern 3/2 Gaussian process
-  predictive-process approximation on 125 globally distributed knots.
+  Implements 14 comparison models and three range-factor sensitivity fits in
+  Stan with a Matern 3/2 Gaussian process predictive-process approximation on
+  125 globally distributed knots.
   Compares spatial and non-spatial calibrations across n = 1,128 surface
   sediment and soil sites from 73 publications.
 keywords:
