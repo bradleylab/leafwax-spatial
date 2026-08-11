@@ -30,6 +30,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     libcurl4-openssl-dev \
     libxml2-dev \
+    libuv1-dev \
+    libtbb-dev \
+    tcl8.6-dev \
+    tk8.6-dev \
     libfontconfig1-dev \
     libharfbuzz-dev \
     libfribidi-dev \
@@ -42,6 +46,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     make \
     && rm -rf /var/lib/apt/lists/*
 
+# Deriv 4.3.0 uses an R API introduced after the frozen R 4.4.1 environment.
+# Pin the last compatible CRAN release. Install terra separately so its
+# compiled geospatial dependency layer is cached and verified independently.
+RUN R -e ' \
+    install.packages( \
+        "https://cloud.r-project.org/src/contrib/Archive/Deriv/Deriv_4.2.0.tar.gz", \
+        repos = NULL, \
+        type = "source" \
+    ); \
+    if (!requireNamespace("Deriv", quietly = TRUE) || \
+        as.character(packageVersion("Deriv")) != "4.2.0") { \
+        stop("Deriv 4.2.0 installation failed") \
+    }; \
+    install.packages("terra", repos = "https://cloud.r-project.org", Ncpus = 1); \
+    if (!requireNamespace("terra", quietly = TRUE)) stop("terra installation failed") \
+'
+
 # Install the R packages used across preparation, fitting, diagnostics, and
 # manuscript-number regeneration. Compilation is deliberately serial: parallel
 # source builds of terra and its dependency tree can exceed GitHub runner memory.
@@ -53,7 +74,6 @@ RUN R -e ' \
         "digest", \
         "jsonlite", \
         "tidyverse", \
-        "terra", \
         "sf", \
         "fields", \
         "geosphere", \
